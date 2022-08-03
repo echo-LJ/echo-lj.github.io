@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>前端工程化---琐碎小记 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">前端工程化---琐碎小记</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: December 17, 2020&nbsp;&nbsp;10:00:00
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h2 id="Node-js诞生带来的技术更新？"><a href="#Node-js诞生带来的技术更新？" class="headerlink" title="Node.js诞生带来的技术更新？"></a>Node.js诞生带来的技术更新？</h2><hr>
+<ol>
+<li><p>改进：<br>通过Node.js,除了前端工具链、工程化得以发展，前端也实现BFF（Backend For Frontend）</p>
+<ul>
+<li>自行编写后端服务，实现数据的适配，应用场景包括接口的整合编排、字段裁剪；</li>
+<li>实现SSR（服务端渲染直出）技术，达到提升首屏性能以及 SEO 友好的目的；</li>
+</ul>
+</li>
+<li><p>改进带来的成本：</p>
+<p>落地Node.js 和 SSR架构模式 从而就要关心服务器的运维、部署、发布、监控。</p>
+</li>
+<li><p>成本带来的新技术变更：</p>
+<p>Serverless概念：运行和构建不需要服务器管理的应用程序的概念。</p>
+<ul>
+<li>将服务器的运维功能都交给 Serverless 平台进行管理，研发人员只需要专注于实现云函数即可完成功能开发。</li>
+</ul>
+</li>
+</ol>
+<h2 id="前端技术架构的特点？"><a href="#前端技术架构的特点？" class="headerlink" title="前端技术架构的特点？"></a>前端技术架构的特点？</h2><hr>
+<ul>
+<li>组件化是基本 UI 架构</li>
+<li>依托于 SSR 同构技术以及心智负担的最小化，框架层面提供的虚拟 DOM 会成为生态标配；</li>
+<li>数据状态管理方案将会以职责单一、minimal necessary 为目标，以组合性、函数式为理念，而不以双向数据流和单向数据流的区分为重点；</li>
+</ul>
+<h2 id="CSR-→-SSR-→-NSR-→-ESR-几种渲染方案的特点？"><a href="#CSR-→-SSR-→-NSR-→-ESR-几种渲染方案的特点？" class="headerlink" title="CSR → SSR → NSR → ESR 几种渲染方案的特点？"></a>CSR → SSR → NSR → ESR 几种渲染方案的特点？</h2><hr>
+<p><strong>CSR：Client Side Rendering</strong>：</p>
+<ul>
+<li>实现了前后端架构分离，职责分离。</li>
+<li>TTFB(网站加载) 时间最小，但由于客户端和服务端会有多次交互（获取静态资源、获取数据）才能进行渲染，实际首屏效果以及 FCP/FMP 时间不够理想。</li>
+</ul>
+<p><strong>SSR：Server Side Rendering</strong>：</p>
+<ul>
+<li>在服务端完成页面模板、数据预取、填充，并且在服务端就可以将完整的 HTML 内容返回给浏览器。</li>
+</ul>
+<p>使性能优化到极致 还可以发展： <code>Streaming server rendering（流式 SSR 渲染）</code>或 <code>Progressive Rehydration（渐进式 SSR 渲染）</code></p>
+<ul>
+<li><p>流式 SSR 渲染，允许服务端通过 stream 的方式向浏览器发送 HTML 内容。在 React 中，我们可以使用renderToNodeStream()方法来完成流式 SSR 渲染。</p>
+</li>
+<li><p>渐进式 SSR 渲染可以允许在 hydrating 没有完全结束前，部分已经渲染并注水完成的页面内容，可以优先完成交互响应。React 专门将Partial Hydration开了一个 PR 来讨论。</p>
+</li>
+</ul>
+<p><strong>NSR：Native Side Rendering</strong>：<br>简单说就是通过 Native 渲染生成 HTML 数据，并且缓存在客户端。这样一来，对于一个 hybrid WebView 的用户访问，会优先从离线包中加载离线页面模板，再通过前端 Ajax/或客户端能力请求数据，最终完成页面完整的展示。</p>
+<ul>
+<li>好处：我们将服务器的渲染工作放在了一个个独立的移动设备中，并借助离线存储技术，实现了页面的预加载，同时又不会增加额外的服务器压力。</li>
+</ul>
+<p><strong>ESR：Edge Side Rendering</strong>：</p>
+<ul>
+<li>边缘计算，是指在靠近物或数据源头的一侧，采用网络、计算、存储、应用核心能力为一体的开放平台，就近提供最近端服务。</li>
+</ul>
+<h2 id="npm安装机制"><a href="#npm安装机制" class="headerlink" title="npm安装机制"></a>npm安装机制</h2><hr>
+<h4 id="npm在工程项目中的作用？"><a href="#npm在工程项目中的作用？" class="headerlink" title="npm在工程项目中的作用？"></a>npm在工程项目中的作用？</h4><ul>
+<li>负责依赖的安装和维护</li>
+<li>通过npm scripts 串联起项目的智能部分，让独立的环节自动运转起来。<h4 id="npm的安装机制"><a href="#npm的安装机制" class="headerlink" title="npm的安装机制"></a>npm的安装机制</h4><code>扩展:</code> Ruby的Gem、Python的pip都是全局安装</li>
+<li>优先安装依赖包到当前项目目录，使得不同应用项目的依赖各成体系，同时还减轻了包作者的 API 兼容性压力。</li>
+<li>安装机制缺点： 因为多个项目需要安装相同的依赖，会导致同一个依赖包在电脑中多次安装.</li>
+</ul>
+<p><strong><code>npm install的机制示意图</code></strong></p>
+<p><img src="https://s0.lgstatic.com/i/image2/M01/02/A9/Cip5yF_axkqAclTFAAJmlxGYSmI551.png" alt="image.png"></p>
+<h4 id="npm的缓存机制"><a href="#npm的缓存机制" class="headerlink" title="npm的缓存机制"></a>npm的缓存机制</h4><p><strong>对于一个依赖包的同一版本进行本地化缓存，是当代依赖包管理工具的一个常见设计。</strong><br>执行命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config get cache</span><br></pre></td></tr></table></figure></p>
+<p>得到配置缓存的根目录在 <code>/Users/cehou/.npm</code>（ Mac OS 中，npm 默认的缓存位置） 当中。我们 cd 进入 <code>/Users/cehou/.npm</code> 中可以发现<code>_cacache</code>文件。事实上，在 npm v5 版本之后，缓存数据均放在根目录中的_cacache文件夹中。<br>使用以下命令清除 /Users/cehou/.npm/_cacache 中的文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm cache clean --force</span><br></pre></td></tr></table></figure></p>
+<p>接下来打开<code>_cacache</code>文件，看看 npm 缓存了哪些东西，一共有 3 个目录：</p>
+<ul>
+<li><p>content-v2: 一些二进制文件，将二进制文件的扩展名改为.tgz，解压之后就是npm包资源</p>
+</li>
+<li><p>index-v5：同上操作，得到的是content-v2里文件的索引</p>
+</li>
+<li><p>tmp</p>
+<blockquote>
+<p>这些缓存如何被储存并被利用的呢？</p>
+</blockquote>
+</li>
+</ul>
+<p>！！在npm v5版本才支持缓存</p>
+<p>npm install =&gt; 通过<code>pacote</code>把相应的包解压在对应的 node_modules 下面。=&gt; npm下载依赖时，先下载到缓存当中，在解压到项目的node_modules中。=&gt; pacote依赖npm-registry-fetch来下载包，npm-registry-fetch可以通过设置cache属性，在给定的路径下根据<br>IETF RFC 7234生成缓存数据。</p>
+<p>在每次安装资源时，根据package-lock.json 中存储的 integrity、version、name 信息生成一个唯一的 key，这个 key 能够对应到 index-v5 目录下的缓存记录。如果发现有缓存资源，就会找到 tar 包的 hash，根据 hash 再去找缓存的 tar 包，并再次通过pacote把对应的二进制文件解压到相应的项目 node_modules 下面，省去了网络下载资源的开销。</p>
+<h2 id="npm的小技巧"><a href="#npm的小技巧" class="headerlink" title="npm的小技巧"></a>npm的小技巧</h2><hr>
+<h4 id="自定义npm-init"><a href="#自定义npm-init" class="headerlink" title="自定义npm init"></a>自定义npm init</h4><p><code>原理</code>： 调用shell脚本输出一个初始化的package.json<br>实现一个更加灵活的自定义功能：</p>
+<p>使用 prompt() 方法，获取用户输入并动态产生的内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">.npm-init.js</span><br><span class="line">const desc = prompt(&apos;请输入项目描述&apos;, &apos;项目描述...&apos;)</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  key: &apos;value&apos;,</span><br><span class="line">  name: prompt(&apos;name?&apos;, process.cwd().split(&apos;/&apos;).pop()),</span><br><span class="line">  version: prompt(&apos;version?&apos;, &apos;0.0.1&apos;),</span><br><span class="line">  description: desc,</span><br><span class="line">  main: &apos;index.js&apos;,</span><br><span class="line">  repository: prompt(&apos;github repository url&apos;, &apos;&apos;, function (url) &#123;</span><br><span class="line">    if (url) &#123;</span><br><span class="line">      run(&apos;touch README.md&apos;);</span><br><span class="line">      run(&apos;git init&apos;);</span><br><span class="line">      run(&apos;git add README.md&apos;);</span><br><span class="line">      run(&apos;git commit -m &quot;first commit&quot;&apos;);</span><br><span class="line">      run(`git remote add origin $&#123;url&#125;`);</span><br><span class="line">      run(&apos;git push -u origin master&apos;);</span><br><span class="line">    &#125;</span><br><span class="line">    return url;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>执行命令来确保 npm init 所对应的脚本指向正确的文件：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config set init-module ~\.npm-init.js</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>还可以通过配置npm init 默认字段来自定义npm init内容</p>
+<h4 id="利用-npm-link，高效率在本地调试以验证包的可用性"><a href="#利用-npm-link，高效率在本地调试以验证包的可用性" class="headerlink" title="利用 npm link，高效率在本地调试以验证包的可用性"></a>利用 <code>npm link</code>，高效率在本地调试以验证包的可用性</h4><blockquote>
+<p>当我们开发完成一个组件库，如何验证该组件在我的业务项目中正常运行呢？</p>
+</blockquote>
+<p><strong>举个🌰</strong>：正在开发项目 project 1，其中有个包 package 1，对应 npm 模块包名称是 npm-package-1，我们在 package 1 项目中加入了新功能 feature A，现在要验证在 project 1 项目中能否正常使用 package 1 的 feature A，你应该怎么做？</p>
+<ul>
+<li><p>在 package 1 目录中，执行 <code>npm link</code>，这样 npm link 通过链接目录和可执行文件，实现 npm 包命令的全局可执行。</p>
+</li>
+<li><p>在 project 1 中创建链接，执行 npm link npm-package-1 命令时，它就会去 /usr/local/lib/node_modules/ 这个路径下寻找是否有这个包，如果有就建立软链接。</p>
+</li>
+<li><p>就可以在 project 1 的 node_module 中会看到链接过来的模块包 npm-package-1，此时的 npm-package-1 就带有最新开发的 feature A，这样一来就可以在 project 1 中正常开发调试 npm-package-1。</p>
+</li>
+<li><p>!当然别忘了，调试结束后可以执行 npm unlink 以取消关联。</p>
+</li>
+</ul>
+<p><strong><code>npm link原理</code></strong>： </p>
+<ol>
+<li><p>为目标 npm 模块（npm-package-1）创建软链接，将其链接到全局 node 模块安装路径 /usr/local/lib/node_modules/ 中；</p>
+</li>
+<li><p>为目标 npm 模块（npm-package-1）的可执行 bin 文件创建软链接，将其链接到全局 node 命令安装路径 /usr/local/bin/ 中。</p>
+</li>
+</ol>
+<h4 id="npx的作用"><a href="#npx的作用" class="headerlink" title="npx的作用"></a>npx的作用</h4><p>npx 由 npm v5.2 版本引入，解决了 npm 的一些使用快速开发、调试，以及项目内使用全局模块的痛点。</p>
+<ul>
+<li>项目安装使用eslint<br><strong><code>举个npm🌰</code></strong>:<br>在传统的npm 模式下，使用eslint,需要先执行命令安装<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install eslint --save-dev</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>然后在项目根目录下执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./node_modules/.bin/eslint --init</span><br><span class="line">./node_modules/.bin/eslint yourfile.js</span><br></pre></td></tr></table></figure>
+<p>或者通过项目脚本和 package.json 的 npm scripts 字段调用 ESLint。<br><strong><code>举个npx🌰</code></strong>:<br>执行命令即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npx eslint --init</span><br><span class="line">npx eslint yourfile.js</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>为什么 npx 操作起来如此便捷呢？</p>
+</blockquote>
+<p>这是因为它可以直接执行 node_modules/.bin 文件夹下的文件。在运行命令时，npx 可以自动去 node_modules/.bin 路径和环境变量 $PATH 里面检查命令是否存在，而不需要再在 package.json 中定义相关的 script。</p>
+<p><strong>npx 另一个更实用的好处是：npx 执行模块时会优先安装依赖，但是在安装执行后便删除此依赖，这就避免了全局安装模块带来的问题。</strong></p>
+<h2 id="npm-多源镜像"><a href="#npm-多源镜像" class="headerlink" title="npm 多源镜像"></a>npm 多源镜像</h2><hr>
+<p>npm 中的源（registry），其实就是一个查询服务。</p>
+<ul>
+<li>举个🌰： <a href="https://registry.npmjs.org/react，就会看到" target="_blank" rel="noopener">https://registry.npmjs.org/react，就会看到</a> react 模块所有版本的信息。</li>
+<li><p>设置安装源： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config set</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用多个安装源的项目，可以通过 npm-preinstall 的钩子，通过 npm 脚本，在安装公共依赖前自动进行源切换：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;preinstall&quot;: &quot;node ./bin/preinstall.js&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//preinstall.js : 通过node.js执行npm config set命令。</span><br><span class="line">require(&apos; child_process&apos;).exec(&apos;npm config get registry&apos;, function(error, stdout, stderr) &#123;</span><br><span class="line">  if (!stdout.toString().match(/registry\.x\.com/)) &#123;</span><br><span class="line">    exec(&apos;npm config set @xscope:registry https://xxx.com/npm/&apos;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line">#### 私服扩展</span><br><span class="line">* 部署私有 npm 镜像，可以提高npm下载第三方依赖包的速度缓慢的问题</span><br><span class="line">* 确保高速、稳定的 npm 服务，使发布私有模块更加安全。</span><br><span class="line">* 审核机制也可以保障私服上的 npm 模块质量和安全</span><br><span class="line">** 推荐搭建npm私服的工具**</span><br><span class="line">* nexus</span><br><span class="line">* verdaccio</span><br><span class="line">* cnpm</span><br></pre></td></tr></table></figure>
+<h2 id="Yarn-的安装理念"><a href="#Yarn-的安装理念" class="headerlink" title="Yarn 的安装理念"></a>Yarn 的安装理念</h2><hr>
+<p>它的出现(npm v3时期，还没有package-lock.json)是为了解决历史上 npm 的某些不足（比如 npm 对于依赖的完整性和一致性保障，以及 npm 安装速度过慢的问题等）</p>
+<ul>
+<li>确定性：通过 yarn.lock 等机制，保证了确定性。即不管安装顺序如何，相同的依赖关系在任何机器和环境下，都可以以相同的方式被安装。</li>
+<li>采用模块扁平安装模式：将依赖包的不同版本，按照一定策略，归结为单个版本，以避免创建多个副本造成冗余（npm 目前也有相同的优化）。</li>
+<li>采用缓存机制，实现了离线模式</li>
+</ul>
+<blockquote>
+<p>相比 npm，Yarn 另外一个显著区别是 yarn.lock 中子依赖的版本号不是固定版本。这就说明单独一个 yarn.lock 确定不了 node_modules 目录结构，还需要和 package.json 文件进行配合。</p>
+</blockquote>
+<p>甚至还有一个专门的 synp 工具，它可以将 yarn.lock 转换为 package-lock.json</p>
+<h4 id="Yarn-缓存"><a href="#Yarn-缓存" class="headerlink" title="Yarn 缓存"></a>Yarn 缓存</h4><p>查看缓存内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn cache dir</span><br></pre></td></tr></table></figure></p>
+<p>Yarn 默认使用 <code>prefer-online</code> 模式，即优先使用网络数据。如果网络数据请求失败，再去请求缓存数据</p>
+<h4 id="Yarn-安装机制"><a href="#Yarn-安装机制" class="headerlink" title="Yarn 安装机制"></a>Yarn 安装机制</h4><ul>
+<li>检测（checking）:<br>检测项目中是否存在一些 npm 相关文件，比如 package-lock.json 等。如果有，会提示用户注意：这些文件的存在可能会导致冲突。在这一步骤中，也会检查系统 OS、CPU 等信息。</li>
+<li>解析包（Resolving Packages）<br>解析package.json 定义的 dependencies、devDependencies、optionalDependencies 的内容，这属于首层依赖。<br>接着采用遍历首层依赖的方式获取依赖包的版本信息 </li>
+<li>获取包（Fetching Packages）<br>检查缓存中是否存在当前的依赖包，同时将缓存中不存在的依赖包下载到缓存目录。</li>
+<li>*链接包（Linking Packages）</li>
+<li>构建包（Building Packages</li>
+</ul>
+<h2 id="破解依赖管理困境"><a href="#破解依赖管理困境" class="headerlink" title="破解依赖管理困境"></a>破解依赖管理困境</h2><hr>
+<blockquote>
+<p>如何理解“嵌套地狱”呢？<br>项目依赖树的层级非常深，不利于调试和排查问题；<br>依赖树的不同分支里，可能存在同样版本的相同依赖。比如直接依赖 A 和 B，但 A 和 B 都依赖相同版本的模块 C，那么 C 会重复出现在 A 和 B 依赖的 node_modules 中。</p>
+</blockquote>
+<ul>
+<li>npm 包的安装顺序对于依赖树的影响很大。模块安装顺序可能影响 node_modules 内的文件数量。</li>
+</ul>
+<p>解决方案：优雅的方式是使用 <code>npm dedupe</code> 命令</p>
+<h2 id="CI-环境上的-npm-优化"><a href="#CI-环境上的-npm-优化" class="headerlink" title="CI 环境上的 npm 优化"></a>CI 环境上的 npm 优化</h2><hr>
+<h4 id="合理使用-npm-ci-和-npm-install"><a href="#合理使用-npm-ci-和-npm-install" class="headerlink" title="合理使用 npm ci 和 npm install"></a>合理使用 npm ci 和 npm install</h4><p>npm ci 就是专门为 CI 环境准备的安装命令，相比 npm install 它的不同之处在于：</p>
+<ul>
+<li>npm ci 要求项目中必须存在 package-lock.json 或 npm-shrinkwrap.json；</li>
+<li>npm ci 完全根据 package-lock.json 安装依赖，这可以保证整个开发团队都使用版本完全一致的依赖； </li>
+<li>正因为 npm ci 完全根据 package-lock.json 安装依赖，在安装过程中，它不需要计算求解依赖满足问题、构造依赖树，因此安装过程会更加迅速；<br><strong>package-lock.json 中已经缓存了每个包的具体版本和下载链接，你不需要再去远程仓库进行查询，即可直接进入文件完整性校验环节，减少了大量网络请求。</strong></li>
+<li>npm ci 在执行安装时，会先删除项目中现有的 node_modules，然后全新安装；</li>
+<li>npm ci 只能一次安装整个项目所有依赖包，无法安装单个依赖包；</li>
+<li>如果 package-lock.json 和 package.json 冲突，那么 npm ci 会直接报错，并非更新 lockfiles；</li>
+<li>npm ci 永远不会改变 package.json 和 package-lock.json。</li>
+</ul>
+<p><strong>我们在 CI 环境使用 npm ci 代替 npm install，一般会获得更加稳定、一致和迅速的安装体验。</strong></p>
+<h4 id="为什么要-lockfiles，要不要提交-lockfiles-到仓库？"><a href="#为什么要-lockfiles，要不要提交-lockfiles-到仓库？" class="headerlink" title="为什么要 lockfiles，要不要提交 lockfiles 到仓库？"></a>为什么要 lockfiles，要不要提交 lockfiles 到仓库？</h4><p><strong>package-lock.json 文件的作用是锁定依赖安装结构，目的是保证在任意机器上执行 npm install 都会得到完全相同的 node_modules 安装结果。</strong></p>
+<blockquote>
+<p>为什么单一的 package.json 不能确定唯一的依赖树：</p>
+</blockquote>
+<ul>
+<li><p>不同版本的 npm 的安装依赖策略和算法不同；</p>
+</li>
+<li><p>npm install 将根据 package.json 中的 semver-range version 更新依赖，某些依赖项自上次安装以来，可能已发布了新版本。</p>
+</li>
+</ul>
+<p>package-lock.json中并不是所有的子依赖都有 <code>dependencies</code> 属性，只有子依赖的依赖和当前已安装在根目录的 node_modules 中的依赖冲突之后，才会有这个属性</p>
+<h4 id="要不要提交-lockfiles-到仓库？"><a href="#要不要提交-lockfiles-到仓库？" class="headerlink" title="要不要提交 lockfiles 到仓库？"></a>要不要提交 lockfiles 到仓库？</h4><ul>
+<li>如果开发一个应用，我建议把 package-lock.json 文件提交到代码版本仓库。这样可以保证项目组成员、运维部署成员或者 CI 系统，在执行 npm install 后，能得到完全一致的依赖安装内容。</li>
+<li>如果你的目标是开发一个给外部使用的库，那就要谨慎考虑了，因为库项目一般是被其他项目依赖的，在不使用 package-lock.json 的情况下，就可以复用主项目已经加载过的包，减少依赖重复和体积。<br><strong><code>一个推荐的做法是：</code></strong>把 package-lock.json 一起提交到代码库中，不需要 ignore。但是执行 npm publish 命令，发布一个库的时候，它应该被忽略而不是直接发布出去。</li>
+</ul>
+<h4 id="为什么有-xxxDependencies？"><a href="#为什么有-xxxDependencies？" class="headerlink" title="为什么有 xxxDependencies？"></a>为什么有 xxxDependencies？</h4><p>npm 设计了以下几种依赖类型声明：</p>
+<ul>
+<li><p>dependencies 项目依赖</p>
+</li>
+<li><p>devDependencies 开发依赖: 不会被自动下载,比如 Webpack，预处理器 babel-loader、scss-loader，测试工具 E2E、Chai 等，这些都是辅助开发的工具包，无须在生产环境使用</p>
+</li>
+<li><p>peerDependencies 同版本依赖:如果你安装我，那么你最好也安装我对应的依赖。</p>
+<blockquote>
+<p>peerDependencies 主要的使用场景:<br>插件不能单独运行<br>插件正确运行的前提是核心依赖库必须先下载安装<br>我们不希望核心依赖库被重复下载<br>插件 API 的设计必须要符合核心依赖库的插件编写规范<br>在项目中，同一插件体系下，核心依赖库版本最好相同</p>
+</blockquote>
+</li>
+<li><p>bundledDependencies 捆绑依赖: bundledDependencies 和 npm pack 打包命令有关.<br>在 bundledDependencies 中指定的依赖包，必须先在 dependencies 和 devDependencies 声明过，否则在 npm pack 阶段会进行报错。</p>
+</li>
+<li><p>optionalDependencies 可选依赖: 不建议大家使用，因为它大概率会增加项目的不确定性和复杂性.</p>
+<h4 id="团队最佳实操建议"><a href="#团队最佳实操建议" class="headerlink" title="团队最佳实操建议"></a>团队最佳实操建议</h4></li>
+<li><p>优先使用 npm v5.4.2 以上的 npm 版本，以保证 npm 的最基本先进性和稳定性。</p>
+</li>
+<li><p>项目的第一次搭建使用 npm install 安装依赖包，并提交 package.json、package-lock.json，而不提交 node_modules 目录。</p>
+</li>
+<li><p>其他项目成员首次 checkout/clone 项目代码后，执行一次 npm install 安装依赖包。</p>
+</li>
+</ul>
+<p>对于升级依赖包的需求：</p>
+<p>依靠 npm update 命令升级到新的小版本；</p>
+<p>依靠 npm install @ 升级大版本；</p>
+<p>也可以手动修改 package.json 中版本号，并执行 npm install 来升级版本；</p>
+<ul>
+<li><p>本地验证升级后新版本无问题，提交新的 package.json、package-lock.json 文件。</p>
+</li>
+<li><p>对于降级依赖包的需求：执行 npm install @ 命令，验证没问题后，提交新的 package.json、package-lock.json 文件。</p>
+</li>
+</ul>
+<p>删除某些依赖：</p>
+<ul>
+<li><p>执行 npm uninstall 命令，验证没问题后，提交新的 package.json、package-lock.json 文件；</p>
+</li>
+<li><p>或者手动操作 package.json，删除依赖，执行 npm install 命令，验证没问题后，提交新的 package.json、package-lock.json 文件。</p>
+</li>
+<li><p>任何团队成员提交 package.json、package-lock.json 更新后，其他成员应该拉取代码后，执行 npm install 更新依赖。</p>
+</li>
+<li><p>任何时候都不要修改 package-lock.json。</p>
+</li>
+<li><p>如果 package-lock.json 出现冲突或问题，建议将本地的 package-lock.json 文件删除，引入远程的 package-lock.json 文件和 package.json，再执行 npm install 命令。</p>
+</li>
+</ul>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考链接：<a href="https://kaiwu.lagou.com/course/courseInfo.htm?courseId=584#/detail/pc?id=5907" target="_blank" rel="noopener">https://kaiwu.lagou.com/course/courseInfo.htm?courseId=584#/detail/pc?id=5907</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/前端工程化/"># 前端工程化</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/29/vue12/">Vue.js3.0源码部分流程--原理解析</a>
+            
+            
+            <a class="next" rel="next" href="/2020/12/13/Vue11/">组件渲染：vnode 到真实 DOM 是如何转变的-Vue.js3.0？</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

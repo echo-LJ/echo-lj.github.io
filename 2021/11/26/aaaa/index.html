@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title"></h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: November 26, 2021&nbsp;&nbsp;16:30:15
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="云图梭Web端：yts-v0-7-0版本性能优化"><a href="#云图梭Web端：yts-v0-7-0版本性能优化" class="headerlink" title="云图梭Web端：yts-v0.7.0版本性能优化"></a>云图梭Web端：yts-v0.7.0版本性能优化</h2><h2 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h2><p>风和日丽: 我正笑嘻嘻地抓着我炫酷的键盘疯狂的敲着Bug.<br>晴天霹雳: 突然,大家说我们的网站很卡,需要做性能优化.<br>难以置信: 手动狗头.<br>十分抗拒: 迫于yin威,我给网站做了体检和手术.</p>
+<p><strong><code>第一版集成打包资源占用情况：</code></strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-abc3add5daadcf9e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><strong>无痕模式下，浏览器访问pre环境，首屏渲染❗️竟然达到了5s\6s的心跳停止一般的渲染效果。</strong></p>
+<p>因pre环境已经部署经过性能优化之后的代码，现以本地服务访问sit数据为例，做个参考(因受网络情况限制，仅供参考)：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-6223e6e6da17575d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<h2 id="开启起死回生之术💔-只谈结果、省略代码配置过程"><a href="#开启起死回生之术💔-只谈结果、省略代码配置过程" class="headerlink" title="开启起死回生之术💔-只谈结果、省略代码配置过程"></a>开启起死回生之术💔-只谈结果、省略代码配置过程</h2><ol>
+<li>删除无用的svg文件</li>
+<li>配置打包移除<code>console</code></li>
+<li>将第三方静态资源以cdn的方式引入-融云、搜索组件</li>
+<li>检验并删除冗余第三方依赖<code>maia-echarts</code>等</li>
+</ol>
+<p><strong>经过上述优化，可以发现资源已经被大大压缩❗️两个首屏加载资源已经被压缩到原来的1/5，仿佛又有了心跳的迹象！</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-e2186e237a6c30d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-f67cb00e7d712cfa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>因pre环境已经部署性能优化之后的代码，现以本地服务访问sit数据为例，做个参考(因受网络情况限制，仅供参考)：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-6f382e8fbc8b68d4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<h2 id="继续❤️心脏复苏❤️"><a href="#继续❤️心脏复苏❤️" class="headerlink" title="继续❤️心脏复苏❤️"></a>继续❤️心脏复苏❤️</h2><ol>
+<li>删除第三方依赖<code>moment</code>插件默认引入本地包，如需特殊语言，开发手动配置。</li>
+</ol>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-6f97038d280f3eba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-c7586ec91c648d9f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<ol start="2">
+<li>删除第三方依赖引入的同名依赖</li>
+</ol>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-412924f5fbf41389.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-8eafaea14b88730d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<ol start="3">
+<li>删除冗余第三方依赖<code>vue-draggable-resizable</code></li>
+<li>删除冗余第三方依赖<code>vue-i18n</code></li>
+</ol>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-292d2297a988c456.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-95874e77a292b2f0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<h2 id="拔掉氧气罐，我们来看看！"><a href="#拔掉氧气罐，我们来看看！" class="headerlink" title="拔掉氧气罐，我们来看看！"></a>拔掉氧气罐，我们来看看！</h2><p>经过一系列抢救，它睁眼了❗️</p>
+<p>让我们来看看pre环境，无痕模式下首次加载情况。已经达到了毫秒级（因受网络情况限制，仅供参考）：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-9f20b6742f872570.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>本次‘救治’情况，因受<code>上线时间</code>、<code>其他需求</code>等不可抗拒因素，暂时停止，后期开发过程中持续维护。</p>
+<h2 id="通报批评（不具有针对性，如有冒犯，请查找自身原因）"><a href="#通报批评（不具有针对性，如有冒犯，请查找自身原因）" class="headerlink" title="通报批评（不具有针对性，如有冒犯，请查找自身原因）"></a>通报批评（不具有针对性，如有冒犯，请查找自身原因）</h2><p>为督促大家友好供养一个产品，现针对本次救治过程中部分’家长’存在<code>投毒</code>、<code>屡教不改</code>情况作出批评！</p>
+<p>❗️经过多次提醒：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-8c6aaf8593828ab3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-7dc0bda5f1461b12.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-75a09f03f7496632.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>❗️但是！还是没有删除干净，被框架组检查出来了！</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-dca101dd571c278d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><strong><code>做一个产品，就像养一个孩子一样，需要各位</code>家长<code>投入耐心，精选投食产品，现推出以下几种可以帮助</code>孩子<code>健康成长的必须食品！</code></strong></p>
+<h2 id="云图梭Web端-性能优化、SEO优化要求–必须"><a href="#云图梭Web端-性能优化、SEO优化要求–必须" class="headerlink" title="云图梭Web端:性能优化、SEO优化要求–必须"></a>云图梭Web端:性能优化、SEO优化要求–必须</h2><h5 id="1-删除无用的svg文件"><a href="#1-删除无用的svg文件" class="headerlink" title="1. 删除无用的svg文件"></a>1. 删除无用的svg文件</h5><h5 id="2-组件按需引入——后期需要优化"><a href="#2-组件按需引入——后期需要优化" class="headerlink" title="2. 组件按需引入——后期需要优化"></a>2. 组件按需引入——后期需要优化</h5><ul>
+<li>项目中现存的引入组件的方式，改成按需引入❗️❗️❗️❗️❗️ <h5 id="3-将第三方静态资源以cdn的方式引入-后期需要优化"><a href="#3-将第三方静态资源以cdn的方式引入-后期需要优化" class="headerlink" title="3.  将第三方静态资源以cdn的方式引入----后期需要优化"></a>3.  将第三方静态资源以cdn的方式引入<code>----后期需要优化</code></h5></li>
+<li><p>项目中存在的融云相关的配置文件，以cdn方式引入❗️❗️❗️❗️❗️ </p>
+<h5 id="4-移除console"><a href="#4-移除console" class="headerlink" title="4.移除console"></a>4.移除<code>console</code></h5></li>
+<li><p>console 可能造成内存泄露</p>
+</li>
+</ul>
+<p>⚠️： 现项目中已经配置打包自动移除<code>console.log</code></p>
+<h5 id="5-优化未设置尺寸的图片元素-后期需要优化"><a href="#5-优化未设置尺寸的图片元素-后期需要优化" class="headerlink" title="5.优化未设置尺寸的图片元素----后期需要优化"></a>5.优化未设置尺寸的图片元素<code>----后期需要优化</code></h5><ul>
+<li>图片元素设置显式的宽度和高度,从而减少布局偏移</li>
+<li>img标签设置alt: 有利于SEO</li>
+</ul>
+<p>举个🌰</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;hello.png&quot; width=&quot;50&quot; height=&quot;50&quot; alt=&quot;Hello World&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>项目中部分img标签缺少seo❗️❗️❗️❗️❗️ </p>
+<h5 id="6-避免-document-write-后期需要优化"><a href="#6-避免-document-write-后期需要优化" class="headerlink" title="6.避免 document.write()----后期需要优化"></a>6.避免 document.write()<code>----后期需要优化</code></h5></li>
+<li><p>对于连接速度较慢的用户，通过 <code>document.write()</code> 动态注入的外部脚本可以将页面加载延迟数十秒</p>
+</li>
+<li>项目中以 <code>document.write()</code>引入待办不同环境的sdk，后期优化成 根据 区分环境打包 根据环境区分引入不同的sdk(需要配置devops)❗️❗️❗️❗️❗️ <h5 id="7-避免过大的dom元素-后期需要优化"><a href="#7-避免过大的dom元素-后期需要优化" class="headerlink" title="7.避免过大的dom元素----后期需要优化"></a>7.避免过大的dom元素<code>----后期需要优化</code></h5></li>
+<li>项目中<code>approval_card_im.svg</code>资源过大❗️❗️❗️❗️❗️ <h5 id="8-避免使用gif-后期需要优化"><a href="#8-避免使用gif-后期需要优化" class="headerlink" title="8.避免使用gif ----后期需要优化"></a>8.避免使用gif <code>----后期需要优化</code></h5></li>
+<li>项目中待办模块中使用的loading.gif考虑是否改成video形式。目前占用字节过大。❗️❗️❗️❗️❗️ <h5 id="9-使用http2-后期需要优化"><a href="#9-使用http2-后期需要优化" class="headerlink" title="9.使用http2 ----后期需要优化"></a>9.使用http2 <code>----后期需要优化</code></h5></li>
+<li><p>项目中接口请求是http2， 资源请求基本都是http1❗️❗️❗️❗️❗️ </p>
+<h5 id="10-缺少meta标签-后期需要优化"><a href="#10-缺少meta标签-后期需要优化" class="headerlink" title="10.缺少meta标签 ----后期需要优化"></a>10.缺少meta标签 <code>----后期需要优化</code></h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta name=&quot;description&quot; content=&quot;Put your description here.&quot;&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>项目中缺少meta-description： 如需优化，需产品提供文案。❗️❗️❗️❗️❗️ </p>
+</li>
+</ul>
+<h5 id="11-css提取公共样式-后期需要优化"><a href="#11-css提取公共样式-后期需要优化" class="headerlink" title="11.css提取公共样式 ----后期需要优化"></a>11.css提取公共样式 <code>----后期需要优化</code></h5><ul>
+<li>项目中请使用混合scss,公共color、bgColor、padding等。❗️❗️❗️❗️❗️ </li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/04/07/spa/">spa</a>
+            
+            
+            <a class="next" rel="next" href="/2021/11/22/JS5/">4 个你从未听说过的更强大 JavaScript 运算符</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

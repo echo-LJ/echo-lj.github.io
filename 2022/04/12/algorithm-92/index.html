@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>leeCode-92： 反转链表二： (迭代、头插法两种解法)-中等 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">leeCode-92： 反转链表二： (迭代、头插法两种解法)-中等</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: April 12, 2022&nbsp;&nbsp;13:59:56
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+
+<h2 id="题目描述：给你单链表的头指针-head-和两个整数-left-和-right-，其中-left-lt-right-。请你反转从位置-left-到位置-right-的链表节点，返回-反转后的链表"><a href="#题目描述：给你单链表的头指针-head-和两个整数-left-和-right-，其中-left-lt-right-。请你反转从位置-left-到位置-right-的链表节点，返回-反转后的链表" class="headerlink" title="题目描述：给你单链表的头指针 head 和两个整数 left 和 right ，其中 left &lt;= right 。请你反转从位置 left 到位置 right 的链表节点，返回 反转后的链表"></a>题目描述：给你单链表的头指针 head 和两个整数 left 和 right ，其中 left &lt;= right 。请你反转从位置 left 到位置 right 的链表节点，返回 反转后的链表</h2><p><strong>示例1:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-19fd5de8d5231ee8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午2.02.08.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：head = [1,2,3,4,5], left = 2, right = 4</span><br><span class="line">输出：[1,4,3,2,5]</span><br></pre></td></tr></table></figure>
+<p><strong>示例2:</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">输入：head = [5], left = 1, right = 1</span><br><span class="line">输出：[5]</span><br><span class="line"></span><br><span class="line">`</span><br></pre></td></tr></table></figure></p>
+<h2 id="题解方法一：头插法-非常好理解"><a href="#题解方法一：头插法-非常好理解" class="headerlink" title="题解方法一：头插法(非常好理解)"></a>题解方法一：头插法(非常好理解)</h2><p><strong><code>算法思路</code></strong></p>
+<p>1、我们定义两个指针，分别称之为 g(guard 守卫) 和 p(point)。<br>我们首先根据方法的参数 m 确定 g 和 p 的位置。将 g 移动到第一个要反转的节点的前面，将 p 移动到第一个要反转的节点的位置上。我们以 m=2，n=4为例。</p>
+<p>2、将 p 后面的元素删除，然后添加到 g 的后面。也即头插法。</p>
+<p>3、根据 m 和 n 重复步骤（2）</p>
+<p>4、返回 dummyHead.next</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-334d93a02b670b07.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1616250561-sZiIjN-img1.png"></p>
+<p><strong><code>代码实现如下</code></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">var reverseBetween = function(head, left, right) &#123;</span><br><span class="line">    // 因为头节点有可能发生变化，使用虚拟头节点可以避免复杂的分类讨论</span><br><span class="line">    const dummyNode = new ListNode(-1);</span><br><span class="line">    dummyNode.next = head;</span><br><span class="line"></span><br><span class="line">     // 初始化指针</span><br><span class="line">    let g = dummyNode;</span><br><span class="line">    let p = dummyNode.next;</span><br><span class="line">    // 将指针移到相应的位置</span><br><span class="line">    for (let i = 0; i &lt; left - 1; i++) &#123;</span><br><span class="line">        g = g.next;</span><br><span class="line">        p = p.next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 头插法插入节点</span><br><span class="line"></span><br><span class="line">    for (let i = 0; i &lt; right - left; i++) &#123;</span><br><span class="line">        let removed = p.next;</span><br><span class="line">        p.next = p.next.next;</span><br><span class="line">        removed.next = g.next;</span><br><span class="line">        g.next = removed;</span><br><span class="line">    &#125;</span><br><span class="line">    return dummyNode.next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第一步图解：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 因为头节点有可能发生变化，使用虚拟头节点可以避免复杂的分类讨论</span><br><span class="line">    const dummyNode = new ListNode(-1);</span><br><span class="line">    dummyNode.next = head;</span><br></pre></td></tr></table></figure>
+<p>创建了一个节点，它的指针指向head：</p>
+<p><code>举例解释如下</code>：dummy_node可以把它理解为一个”哨兵”，因为我们的头结点可能会涉及到反转，当反转之后，原来的头结点就不是返回后的头结点了，举个例子,[5,3]进行1，2的反转，此时head指向的是5节点，而反转之后结果为[3,5]，而此时的head还是指向5，所以我们需要一个哨兵，来坚定不移的站在头结点前，这样不管他如何反转，哨兵dummy_node指向的下一个节点dummy_node.next就是我们要的头结点</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-e1a6db1ed0e604b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午3.02.30.png"></p>
+<h2 id="题解方法二：迭代（穿针引线）（官方给的绕脑解法）"><a href="#题解方法二：迭代（穿针引线）（官方给的绕脑解法）" class="headerlink" title="题解方法二：迭代（穿针引线）（官方给的绕脑解法）"></a>题解方法二：迭代（穿针引线）（官方给的绕脑解法）</h2><ul>
+<li>我们以图中黄色区域的链表反转为例。<br><img src="https://upload-images.jianshu.io/upload_images/11846892-d31b78d04ebfd926.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="[图片上传中...(1615105150-pfWiGq-image.png-faf0cb-1649743802741-0)]
+"></li>
+</ul>
+<p>使用[206反转链表的迭代解法]，反转left到right部分以后，在拼接起来。我们还需要记录left的前一个节点，和right的后一个节点。如图所示。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-a904b2d4a446e880.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1615105150-pfWiGq-image.png"></p>
+<p><strong><code>算法步骤</code></strong></p>
+<ul>
+<li>1、将待反转的区域反转；</li>
+<li>2、把pre的next指针指向反转以后的链表头节点，把反转以后的链表的尾节点的next指针指向succ。</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-677e3ccdbfa994e5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1615105168-ZQRZew-image.png"></p>
+<p><strong><code>代码实现如下</code></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">var reverseBetween = function(head, left, right) &#123;</span><br><span class="line">    // 因为头节点有可能发生变化，使用虚拟头节点可以避免复杂的分类讨论</span><br><span class="line">    const dummyNode = new ListNode(-1);</span><br><span class="line">    dummyNode.next = head;</span><br><span class="line"></span><br><span class="line">    let pre = dummyNode;</span><br><span class="line">    // 第 1 步：从虚拟头节点走 left - 1 步，来到 left 节点的前一个节点</span><br><span class="line">    // 建议写在 for 循环里，语义清晰</span><br><span class="line">    for (let i = 0; i &lt; left - 1; i++) &#123;</span><br><span class="line">        pre = pre.next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 第 2 步：从 pre 再走 right - left + 1 步，来到 right 节点</span><br><span class="line">    let rightNode = pre;</span><br><span class="line">    for (let i = 0; i &lt; right - left + 1; i++) &#123;</span><br><span class="line">        rightNode = rightNode.next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 第 3 步：切断出一个子链表（截取链表）</span><br><span class="line">    let leftNode = pre.next;</span><br><span class="line">    let curr = rightNode.next;</span><br><span class="line"></span><br><span class="line">    // 注意：切断链接</span><br><span class="line">    pre.next = null;</span><br><span class="line">    rightNode.next = null;</span><br><span class="line"></span><br><span class="line">    // 第 4 步：同第 206 题，反转链表的子区间</span><br><span class="line">    reverseLinkedList(leftNode);</span><br><span class="line"></span><br><span class="line">    // 第 5 步：接回到原来的链表中</span><br><span class="line">    pre.next = rightNode;</span><br><span class="line">    leftNode.next = curr;</span><br><span class="line">    return dummyNode.next;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">const reverseLinkedList = (head) =&gt; &#123;</span><br><span class="line">    let pre = null;</span><br><span class="line">    let cur = head;</span><br><span class="line"></span><br><span class="line">    while (cur) &#123;</span><br><span class="line">        const next = cur.next;</span><br><span class="line">        cur.next = pre;</span><br><span class="line">        pre = cur;</span><br><span class="line">        cur = next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以示例一为例，下面通过图解 来实现 反转链表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">head = [1,2,3,4,5], left = 2, right = 4</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第一步图解：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 因为头节点有可能发生变化，使用虚拟头节点可以避免复杂的分类讨论</span><br><span class="line">    const dummyNode = new ListNode(-1);</span><br><span class="line">    dummyNode.next = head;</span><br></pre></td></tr></table></figure>
+<p>创建了一个节点，它的指针指向head：</p>
+<p><code>举例解释如下</code>：dummy_node可以把它理解为一个”哨兵”，因为我们的头结点可能会涉及到反转，当反转之后，原来的头结点就不是返回后的头结点了，举个例子,[5,3]进行1，2的反转，此时head指向的是5节点，而反转之后结果为[3,5]，而此时的head还是指向5，所以我们需要一个哨兵，来坚定不移的站在头结点前，这样不管他如何反转，哨兵dummy_node指向的下一个节点dummy_node.next就是我们要的头结点</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-e1a6db1ed0e604b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午3.02.30.png"></p>
+<ul>
+<li>第二步图解：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">let pre = dummyNode;</span><br><span class="line">// 第 1 步：从虚拟头节点走 left - 1 步，来到 left 节点的前一个节点</span><br><span class="line">// 建议写在 for 循环里，语义清晰</span><br><span class="line">for (let i = 0; i &lt; left - 1; i++) &#123;</span><br><span class="line">    pre = pre.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>获取需要反转的子链表（黄色）的前一个节点</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-67af6f4cd2ea8fdc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午2.55.01.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// i = 0; 执行第一次for循环</span><br><span class="line"></span><br><span class="line">pre = pre.next;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-0a4dcb89f3b042ca.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午2.57.14.png"></p>
+<ul>
+<li>第三步图解：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 第 2 步：从 pre 再走 right - left + 1 步，来到 right 节点</span><br><span class="line">    let rightNode = pre;</span><br><span class="line">    for (let i = 0; i &lt; right - left + 1; i++) &#123;</span><br><span class="line">        rightNode = rightNode.next;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>获取需要反转的子链表（黄色）的尾部节点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let rightNode = pre;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-99cda9ca5e98ccca.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午3.11.53.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// i = 0; i&lt; 3 ;执行第一次for循环</span><br><span class="line"></span><br><span class="line">rightNode = rightNode.next;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-429d14c4e9f81149.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午3.15.09.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// i = 1; i&lt; 3 ;执行第二次for循环</span><br><span class="line"></span><br><span class="line">rightNode = rightNode.next;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-0b4564d921a6f924.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午3.15.43.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// i = 2; i&lt; 3 ;执行第三次for循环</span><br><span class="line"></span><br><span class="line">rightNode = rightNode.next;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-911b2ad32fa512f5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午3.16.37.png"></p>
+<ul>
+<li>第四步图解：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 第 3 步：切断出一个子链表（截取链表）</span><br><span class="line">    let leftNode = pre.next;</span><br><span class="line">    let curr = rightNode.next;</span><br><span class="line"></span><br><span class="line">    // 注意：切断链接</span><br><span class="line">    pre.next = null;</span><br><span class="line">    rightNode.next = null;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>获取需要反转的链表的头部<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let leftNode = pre.next;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-059bfab976beec77.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午3.04.03.png"></p>
+<p>获取需要反转的链表的尾部的下一个节点：curr;反转后的链表的尾部的next指向curr;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let curr = rightNode.next;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-c9f080900a34968c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午3.24.07.png"></p>
+<p>// 切断需要反转的子链表的前后链接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 注意：切断链接</span><br><span class="line">pre.next = null;</span><br><span class="line">rightNode.next = null;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-dc66cd58529231db.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午3.25.42.png"></p>
+<ul>
+<li>第五步图解：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 第 4 步：同第 206 题，反转链表的子区间</span><br><span class="line">reverseLinkedList(leftNode);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>请参考：缺地址<br><img src="https://upload-images.jianshu.io/upload_images/11846892-da5acd373fe15f8a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午3.28.52.png"></p>
+<ul>
+<li>第六步图解：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 第 5 步：接回到原来的链表中</span><br><span class="line">pre.next = rightNode;</span><br><span class="line">leftNode.next = curr;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-de3c634e69d56881.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-12 下午3.29.33.png"></p>
+<p>整个图解完成！！</p>
+<p>疑惑？？？：下面这个reverseLinkedList不是一个fun么，为什么没有return, 就可以改变leftNode 呢？<br>答疑：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//只是改变了指针的方向， left永远指向1 ，left.next 指向null</span><br><span class="line"> (left)1-&gt;2-&gt;3-&gt;4(right)</span><br><span class="line">(left)1&lt;-2&lt;-3&lt;-4(right)</span><br><span class="line">leftnode一直指向1</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/算法/"># 算法</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/04/12/promise/">面试官：“你能手写一个 Promise 吗”</a>
+            
+            
+            <a class="next" rel="next" href="/2022/04/11/dataStructure1/">数据结构：链表</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

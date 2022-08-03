@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>4 个你从未听说过的更强大 JavaScript 运算符 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">4 个你从未听说过的更强大 JavaScript 运算符</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: November 22, 2021&nbsp;&nbsp;13:35:22
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-93347174e21f02b6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1_Whvjdise1A-cNdXqTkiUVw.png"></p>
+<p>JavaScript 很难掌握。写这篇文章是因为 JavaScript 是一种庞大的语言，其功能即使是经验丰富的开发人员也可能无法完全理解。<a href="https://javascript.plainenglish.io/4-powerful-javascript-operators-youve-never-heard-of-487df37114ad" target="_blank" rel="noopener">在上一篇文章中</a>，我重点介绍了您可能从未听说过的四个运算符。让我们通过学习另外四个未充分利用的运算符来继续加强我们的 JavaScript 技能</p>
+<h2 id="1-delete"><a href="#1-delete" class="headerlink" title="1. delete"></a>1. <strong><code>delete</code></strong></h2><p><code>delete</code> 运算符的作用是从对象中删除属性。如果删除成功则返回真，否则返回假。虽然看起来很简单，但是<code>delete</code>有许多边缘情况使其行为变得棘手。<br>例如，如果您尝试删除一个不存在的属性，则不会删除任何属性并且返回 true。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const myTrip = &#123;</span><br><span class="line">    location: &quot;Boston&quot;,</span><br><span class="line">    budget: 600,</span><br><span class="line">    duration: function(arg) &#123; return arg &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function deleteProperty(object, property) &#123;</span><br><span class="line">    return delete object[property]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(deleteProperty(myTrip, &apos;budget&apos;)) // deleted budget property returns -&gt; true </span><br><span class="line">console.log(deleteProperty(myTrip, &apos;trainTickets&apos;)) // failed to locate and delete train-tickets -&gt; true </span><br><span class="line"></span><br><span class="line">console.log(myTrip) // &#123; location: &apos;Boston&apos;, duration: 6 &#125;</span><br></pre></td></tr></table></figure>
+<p>通过let、var、const声明的基本类型的变量不能被<code>delete</code>删除，但是可以删除未用let、var、const声明的变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const hello = &apos;hello&apos;</span><br><span class="line">goodbye = &apos;goodbye&apos;</span><br><span class="line"></span><br><span class="line">console.log(delete hello) // false</span><br><span class="line">console.log(delete goodbye) // true</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">console.log(hello, goodbye=undefined) // hello undefined</span><br></pre></td></tr></table></figure>
+<p>创建变量而不正确声明它们通常是一个非常糟糕的想法。展望未来，我们假设所有原始类型都已正确声明并且不可删除。与函数不同，方法可以从对象中删除。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const myTrip = &#123;</span><br><span class="line">    location: &quot;Boston&quot;,</span><br><span class="line">    budget: 600,</span><br><span class="line">    duration: function(arg) &#123; return arg &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function deleteProperty(object, property) &#123;</span><br><span class="line">    return delete object[property]</span><br><span class="line">&#125;</span><br><span class="line">console.log(myTrip) // &#123; location: &apos;Boston&apos;, budget: 600, duration: [Function: duration] &#125;</span><br><span class="line"></span><br><span class="line">console.log(deleteProperty(myTrip, &apos;duration&apos;)) // deleted duration method returns -&gt; true </span><br><span class="line"></span><br><span class="line">console.log(myTrip) // &#123; location: &apos;Boston&apos;, budget: 600 &#125;</span><br></pre></td></tr></table></figure></p>
+<p>内置对象上存在的属性，如<code>Array</code>和<code>Error</code>不能删除。它们被认为是不可配置的。非内置对象也可以使用方法<code>Object.defineProperty()</code>设置成不可配置的属性.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">let myTrip = &#123;</span><br><span class="line">    location: &quot;Boston&quot;,</span><br><span class="line">    budget: 600,</span><br><span class="line">    passports: true</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Object.defineProperty(myTrip, &apos;passports&apos;, &#123;configurable: false&#125; )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function deleteProperty(object, property) &#123;</span><br><span class="line">    return delete object[property]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(deleteProperty(myTrip, &apos;passports&apos;)) // can not delete non-config property </span><br><span class="line">                                                   // returns -&gt; false</span><br><span class="line"></span><br><span class="line">console.log(myTrip) // &#123; location: &apos;Boston&apos;, budget: 600, passports: true &#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后，虽然<code>delete</code>可以与数组一起使用，但通常该方法<code>Array.splice()</code> 更可取。</p>
+<h2 id="2-instanceof"><a href="#2-instanceof" class="headerlink" title="2. instanceof"></a>2. <strong><code>instanceof</code></strong></h2><p><code>??=</code>又称为逻辑 null/undefined 赋值操作符，与我们之前学到的内容密切相关。让我们看看它们是如何联系在一起的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var x = null</span><br><span class="line">var y = 5</span><br><span class="line"></span><br><span class="line">console.log(x ??= y) // =&gt; 5</span><br><span class="line">console.log(x = (x ?? y)) // =&gt; 5</span><br></pre></td></tr></table></figure></p>
+<p>如果当前值为null/undefined，则此<code>??=运算符</code>才会分配一个新值。上面的例子强调了这个运算符本质上是null/undefined赋值的语法糖。接下来，让我们看看这个运算符与默认参数有何不同。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function gameSettingsWithNullish(options) &#123;</span><br><span class="line">  options.gameSpeed ??= 1</span><br><span class="line">  options.gameDiff ??= &apos;easy&apos;</span><br><span class="line">  return options</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function gameSettingsWithDefaultParams(gameSpeed=1, gameDiff=&apos;easy&apos;) &#123;</span><br><span class="line">  return &#123;gameSpeed, gameDiff&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">gameSettingsWithNullish(&#123;gameSpeed: 2, gameDiff: &apos;busy&apos;&#125;) // =&gt; &#123;gameSpeed: 2, gameDiff: &quot;busy&quot;&#125;</span><br><span class="line">gameSettingsWithNullish(&#123;gameSpeed:&apos;&apos;, gameDiff: undefined&#125;)// =&gt; &#123;gameSpeed: &quot;&quot;, gameDiff: &quot;easy&quot;&#125;</span><br><span class="line">gameSettingsWithNullish(&#123;gameSpeed: null, gameDiff: null&#125;) // =&gt; &#123; gameSpeed: 1, gameDiff: &apos;easy&apos; &#125;</span><br><span class="line">gameSettingsWithDefaultParams(null, null) // =&gt; &#123; gameSpeed: null, gameDiff: null &#125;</span><br><span class="line">gameSettingsWithDefaultParams(&apos;&apos;, undefined) // =&gt; &#123;gameSpeed: &quot;&quot;, gameDiff: &quot;easy&quot;&#125;</span><br></pre></td></tr></table></figure>
+<p>上述函数处理空值的方式有一个值得注意的区别。 默认参数将会被null覆盖掉，<code>??=运算符</code>不会。默认参数和null/undefined赋值都不会覆盖 未定义 的值。<br><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Logical_nullish_assignment" target="_blank" rel="noopener">阅读更多</a></p>
+<h2 id="3-操作符"><a href="#3-操作符" class="headerlink" title="3. ?. 操作符"></a>3. <strong><code>?. 操作符</code></strong></h2><p>可选的链接操作符<code>?.</code>允许开发人员读取深度嵌套在一个对象链中的属性值，而不必沿途显式验证每个引用。当引用为 null 时，表达式停止计算并返回 undefined，让我们来看一个例子。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var travelPlans  = &#123;</span><br><span class="line">  destination: &apos;DC&apos;,</span><br><span class="line">  monday: &#123;</span><br><span class="line">    location: &apos;National Mall&apos;,</span><br><span class="line">    budget: 200</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">const tuesdayPlans = travelPlans.tuesday?.location;</span><br><span class="line">console.log(tuesdayPlans) // =&gt; undefined</span><br></pre></td></tr></table></figure></p>
+<p>现在，让我们把迄今为止所学到的一切结合起来，把星期二添加到我们的新旅行计划中去吧<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">function addPlansWhenUndefined(plans, location, budget) &#123;</span><br><span class="line">  if (plans.tuesday?.location === undefined) &#123;</span><br><span class="line">    var newPlans = &#123;</span><br><span class="line">      plans,</span><br><span class="line">      tuesday: &#123; location: location ?? &quot;Park&quot;, budget: budget ?? 200 &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    newPlans ??= plans; //will only override if newPlans is undefined</span><br><span class="line">    console.log(&quot;Plans have already been added!&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">  return newPlans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var newPlans = addPlansWhenUndefined(travelPlans, &quot;Ford Theatre&quot;, null);</span><br><span class="line">console.log(newPlans) // =&gt; &#123; plans:</span><br><span class="line">                  //&#123; destination: &apos;DC&apos;,</span><br><span class="line">                  // monday: &#123; location: &apos;National Mall&apos;, budget: 200 &#125; &#125;,</span><br><span class="line">                  // tuesday: &#123; location: &apos;Ford Theatre&apos;, budget: 200 &#125; &#125;</span><br><span class="line"></span><br><span class="line">newPlans = addPlansWhenUndefined(newPlans, null, null) // logs =&gt; Plans have already been added!</span><br><span class="line">                                                      // returns =&gt; newPlans object</span><br></pre></td></tr></table></figure></p>
+<p>我们现在已经创建了一个函数，该函数将计划添加到当前没有嵌套属性 的对象中<code>tuesday.location</code>。我们还使用 <code>?? 运算符</code>来提供默认值。此函数将错误地接受像“0”这样的值作为有效参数。这意味着我们的预算可以设置为零而不会出现任何错误。</p>
+<h2 id="4-操作符"><a href="#4-操作符" class="headerlink" title="4. ?  操作符"></a>4. <strong><code>?  操作符</code></strong></h2><p>三元运算符?接受三个操作数：一个条件，一个条件为真时执行的表达式，以及一个条件为假时执行的表达式。让我们看看它的实际效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function checkCharge(charge) &#123;</span><br><span class="line">return (charge &gt; 0) ? &apos;Ready for use&apos; : &apos;Needs to charge&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(checkCharge(20)) // =&gt; &apos;Ready for use&apos;</span><br><span class="line">console.log(checkCharge(0)) // =&gt; &apos;Needs to charge&apos;</span><br></pre></td></tr></table></figure></p>
+<p>如果您对 JavaScript 有一定的了解，那么您之前可能已经见过三元运算符。但是，您知道三元运算符可以用于变量赋值吗？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var budget = 0</span><br><span class="line">var transportion = (budget &gt; 0) ? &apos;Train&apos; : &apos;Walking&apos;</span><br><span class="line">console.log(transportion) // =&gt; &apos;Walking&apos;</span><br></pre></td></tr></table></figure></p>
+<p>我们甚至可以用它来复制<code>null/undefined赋值</code>的行为。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var x = 6</span><br><span class="line">var x = (x !== null || x !== undefined) ? x : 3</span><br><span class="line">console.log(x) // =&gt; 6</span><br></pre></td></tr></table></figure></p>
+<p>现在让我们通过创建一个函数来泛化这种行为！<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function nullishAssignment(x,y) &#123;</span><br><span class="line">  return (x == null || x == undefined) ? y : x</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var x = nullishAssignment(null, 8) // =&gt; 8</span><br><span class="line">var y = nullishAssignment(4,8) // =&gt; 4</span><br></pre></td></tr></table></figure></p>
+<p>在结束之前，让我们使用三元运算符来重构前面示例中的函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function addPlansWhenUndefined(plans, location, budget) &#123;</span><br><span class="line">  var newPlans =</span><br><span class="line">    plans.tuesday?.location === undefined</span><br><span class="line">      ? &#123;</span><br><span class="line">          ...plans,</span><br><span class="line">          tuesday: &#123; location: location ?? &quot;Park&quot;, budget: budget ?? 200 &#125;,</span><br><span class="line">        &#125;</span><br><span class="line">      : console.log(&quot;Plans have already been added!&quot;);</span><br><span class="line">  newPlans ??= plans;</span><br><span class="line">  return newPlans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>原文链接：<a href="https://javascript.plainenglish.io/4-powerful-javascript-operators-youve-never-heard-of-487df37114ad" target="_blank" rel="noopener">Four More Powerful JavaScript Operators You’ve Never Heard Of</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Js/"># Js</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2021/11/26/aaaa/"></a>
+            
+            
+            <a class="next" rel="next" href="/2021/08/03/Webpack1/">vite和webpack对比，为什么vite在dev模式下运行快很多？</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

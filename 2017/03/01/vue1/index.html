@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>基于 vue-cli 打造属于自己的 UI 库 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">基于 vue-cli 打造属于自己的 UI 库</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: March 1, 2017&nbsp;&nbsp;10:00:00
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h2 id="知识前置"><a href="#知识前置" class="headerlink" title="知识前置"></a>知识前置</h2><hr>
+<p>我们可能习惯了在一个 vue 里面引入组件的方式，所以先这里要巩固一下全局引入组件的方式。举个栗子🌰，一般我们的用法是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import Loading from &apos;../components/loading&apos;</span><br><span class="line">// 方法一：name 是组件的名字</span><br><span class="line">Vue.component(Loading.name, Loading)</span><br><span class="line">// 方法二：前提是 Loading 有提供 install 这个方法</span><br><span class="line">Vue.use(Loading);</span><br></pre></td></tr></table></figure></p>
+<h2 id="基于vue-cli3打造组件库"><a href="#基于vue-cli3打造组件库" class="headerlink" title="基于vue-cli3打造组件库"></a>基于vue-cli3打造组件库</h2><hr>
+<h3 id="搭建目录"><a href="#搭建目录" class="headerlink" title="搭建目录"></a>搭建目录</h3><h4 id="快速创建项目"><a href="#快速创建项目" class="headerlink" title="快速创建项目"></a>快速创建项目</h4><ul>
+<li><code>vue-cli3</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vue create projectName</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="修改目录结构"><a href="#修改目录结构" class="headerlink" title="修改目录结构"></a>修改目录结构</h3><ul>
+<li>把 <code>src</code> 目录名字改成 <code>examples</code>，这是用于展示组件示例的.</li>
+<li><p>在根目录下新建一个 <code>packages</code> 文件夹，这是用来放组件的.<br><img src="https://upload-images.jianshu.io/upload_images/11846892-ded6c43e63e7097f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1ll.png"></p>
+<p> 你可能会问为什么要建这样的目录结构，问得好，原因很简单，因为别人是这样做的，所以借鉴（模仿）喽。。。<br>当我们水平不够的时候，模仿是一种强大的学习能力👏。</p>
+</li>
+</ul>
+<h3 id="添加配置文件"><a href="#添加配置文件" class="headerlink" title="添加配置文件"></a>添加配置文件</h3><p>小改了一下目录之后，你会惊奇的发现项目不能运行了,没关系，这很正常，毕竟 src 都不见了，路径啥的肯定得报错。所以现在我们来解决这个问题。 在根目录下新建一个 <code>vue.config.js</code> 文件（新项目是没有这个文件的），并写入以下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;)</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  // 修改 pages 入口</span><br><span class="line">  pages: &#123;</span><br><span class="line">    index: &#123;</span><br><span class="line">      entry: &apos;examples/main.js&apos;, // 入口</span><br><span class="line">      template: &apos;public/index.html&apos;, // 模板</span><br><span class="line">      filename: &apos;index.html&apos; // 输出文件</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  // 扩展 webpack 配置</span><br><span class="line">  chainWebpack: config =&gt; &#123;</span><br><span class="line">    // @ 默认指向 src 目录，这里要改成 examples</span><br><span class="line">    // 另外也可以新增一个 ~ 指向 packages</span><br><span class="line">    config.resolve.alias</span><br><span class="line">      .set(&apos;@&apos;, path.resolve(&apos;examples&apos;))</span><br><span class="line">      .set(&apos;~&apos;, path.resolve(&apos;packages&apos;))</span><br><span class="line"></span><br><span class="line">    // 把 packages 和 examples 加入编译，因为新增的文件默认是不被 webpack 处理的</span><br><span class="line">    config.module</span><br><span class="line">      .rule(&apos;js&apos;)</span><br><span class="line">      .include.add(/packages/).end()</span><br><span class="line">      .include.add(/examples/).end()</span><br><span class="line">      .use(&apos;babel&apos;)</span><br><span class="line">      .loader(&apos;babel-loader&apos;)</span><br><span class="line">      .tap(options =&gt; &#123;</span><br><span class="line">        // 修改它的选项...</span><br><span class="line">        return options</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的注释应该都写的挺明了，主要就是<code>修改别名</code>、<code>修改入口文件</code>以及把新文件加入 <code>webpack</code> 编译这几个步骤。然后我们再运行一下程序就可以跑得通了。至于为什么这么配置、或者怎么配置，不了解的同学可以去 <a href="https://cli.vuejs.org/zh/guide/" target="_blank" rel="noopener">Vue Cli</a> 官网看下，上面写的是清清楚楚、明明白白.</p>
+<h3 id="编写组件"><a href="#编写组件" class="headerlink" title="编写组件"></a>编写组件</h3><p>一个组件库没有组件怎么行呢，所以我们要先写个 <code>test</code> 组件（你可以随便写，这不重要）,ok👌。<br>我们先在 <code>packages</code> 目录下新建一个 <code>test</code> 文件夹，再在 <code>test</code> 文件夹下下面新建一个 src 文件夹，在 src 文件夹下面新建一个 <code>test.vue</code> 组件，大概长下面这样子👇：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-72c3c6fb69c57a58.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--test.vue--&gt;</span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;echojoy-test&quot; @click=&quot;handleClick&quot;&gt;&#123;&#123; num &#125;&#125;&lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &apos;EchojoyTest&apos;,</span><br><span class="line">  data () &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      num: 0</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    handleClick () &#123;</span><br><span class="line">      this.num++</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style &gt;</span><br><span class="line">.echojoy-test &#123;</span><br><span class="line">  width: 100px;</span><br><span class="line">  height: 100px;</span><br><span class="line">  line-height: 100px;</span><br><span class="line">  border-radius: 50%;</span><br><span class="line">  font-size: 30px;</span><br><span class="line">  text-align: center;</span><br><span class="line">  background: #24292e;</span><br><span class="line">  color: white;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<p>⚠️这里主要强调一点，就是 <code>name</code> 这个名字尤为重要, 否则可能会遇到坑。</p>
+<ul>
+<li>首先它是必须要写的，可以把它理解为 id，具有唯一标识组件的作用，将来我们可是要通过这个 name 来找到和判定这是什么组件，所以你写的所有组件应该是不重名的；</li>
+<li>其次这个 name 就是我们最终的标签名，比如这里我们的 name 是 <code>EchojoyTest</code>，到时候我们写的标签就长这样 <code>&lt;echojoy-test&gt;&lt;/echojoy-test&gt;</code>，就像 Element 一样，name 是 <code>ElButton</code>，用的时候就是 <code>&lt;el-button&gt;&lt;/el-button&gt;</code>。</li>
+</ul>
+<h3 id="暴露组件"><a href="#暴露组件" class="headerlink" title="暴露组件"></a>暴露组件</h3><p>让我们在 <code>packages/test</code> 下面新建一个 <code>index.js</code> 文件，具体代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 对外提供对组件的引用，注意组件必须声明 name</span><br><span class="line">import EchojoyTest from &apos;./src/test&apos;</span><br><span class="line">// 为组件提供 install 安装方法，供按需引入</span><br><span class="line">EchojoyTest.install = Vue =&gt; &#123;</span><br><span class="line">  Vue.component(EchojoyTest.name, EchojoyTest)</span><br><span class="line">&#125;</span><br><span class="line">export default EchojoyTest</span><br></pre></td></tr></table></figure>
+<p>这步的精髓就在于给组件扩展一个 <code>install</code> 方法，至于为什么要扩展这个方法，文章开头已经说到了，是因为 <code>Vue.use()</code> 的需要，use 会默认调用 <code>install</code> 方法安装，仅此而已。<br>接着我们在 <code>packages</code> 下面也新建一个 <code>index.js</code> 文件，注意和上面那个 <code>index.js</code> 区别开，上面那个是针对单个组件安装的，这个是针对所有组件全局安装的，先看代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">import EchojoyTest from &apos;./test&apos;</span><br><span class="line">// 存储组件列表</span><br><span class="line">const components = [</span><br><span class="line">  EchojoyTest</span><br><span class="line">]</span><br><span class="line">// 定义 install 方法，接收 Vue 作为参数。如果使用 use 注册插件，则所有的组件都将被注册</span><br><span class="line">const install = function (Vue) &#123;</span><br><span class="line">  // 判断是否安装</span><br><span class="line">  if (install.installed) return</span><br><span class="line">  install.installed = true</span><br><span class="line">  // 遍历注册全局组件</span><br><span class="line">  components.map(component =&gt; Vue.component(component.name, component))</span><br><span class="line">  // 下面这个写法也可以</span><br><span class="line">  // components.map(component =&gt; Vue.use(component))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 判断是否是直接引入文件</span><br><span class="line">if (typeof window !== &apos;undefined&apos; &amp;&amp; window.Vue) &#123;</span><br><span class="line">  install(window.Vue)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  // 导出的对象必须具有 install，才能被 Vue.use() 方法安装</span><br><span class="line">  install,</span><br><span class="line">  // 以下是具体的组件列表</span><br><span class="line">  ...components</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这步的主要作用就是统一导出所有组件及暴露 <code>install</code> 方法。之前的 <code>index.js</code> 只是安装单个组件，而现在这个 <code>index.js</code> 是循环安装所有组件，具体使用就看你是不是要按需引用了。这里给个目录结构方便大家观看：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-b539cdd4f6327d1e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="4ll.png"></p>
+<p>因为这步挺重要的，所以建议好好停下来理解消化一下🤔。。。<br>当然你可能会问道，为什么这样建目录？还能什么原因，因为 <code>Element</code> 是这样（如下图），所以我们这样写，仅此而已。</p>
+<h3 id="组件测试"><a href="#组件测试" class="headerlink" title="组件测试"></a>组件测试</h3><p>ok，组件写完了，接下来我们就在 <code>examples</code> 下面测试一下，看看能不能引用成功。 首先在 <code>examples</code> 下的 <code>main.js</code> 中引入刚刚写好的包，就像下面这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import EchojoyUI from &apos;./../packages&apos;</span><br><span class="line">Vue.use(EchojoyUI);</span><br></pre></td></tr></table></figure></p>
+<p>然后把 <code>examples/components</code>下面的 <code>HelloWorld</code>里面的内容删了，写入自己标签组件，就像下面这样：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-af5876cc2dfddcf0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>好了，最后让我们运行一下项目 <code>npm run  serve</code>，看看效果，嗯，还凑合吧。</p>
+<h3 id="库模式打包"><a href="#库模式打包" class="headerlink" title="库模式打包"></a>库模式打包</h3><p>在 <code>vue-cli3</code> 中我们通过以下命令可以将一个单独的入口打包成一个库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// target: 默认为构建应用，改为 lib 即可启用构建库模式</span><br><span class="line">// name: 输出文件名</span><br><span class="line">// dest: 输出目录，默认为 dist，这里我们改为 lib</span><br><span class="line">// entry: 入口文件路径</span><br><span class="line">vue-cli-service build --target lib --name lib [entry]</span><br></pre></td></tr></table></figure>
+<p>要注意的是在库模式中，打包出来的库中是不包含 Vue 的。 然后我们修改一下 <code>package.json</code> 文件，就像下面这样：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-202f788eec24a66d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="xxxxx.png"></p>
+<p>接着执行 <code>npm run lib</code> 就能生成库啦，看看左侧的目录是不是多了个 lib 文件夹，那个就是我们要发布的东西。<br><img src="https://upload-images.jianshu.io/upload_images/11846892-0696a5a907bf1d38.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="cccc.png"></p>
+<p>补充下，lib 目录下面的 js 之所以有好几种，是因为有两种规范<code>（common 和 umd）</code>、是否压缩<code>（min）</code>和映射 <code>（map）</code>的区别，暂且知道有这么回事就行，不用深究。</p>
+<h2 id="发布到npm"><a href="#发布到npm" class="headerlink" title="发布到npm"></a>发布到npm</h2><hr>
+<p>万事俱备，只欠发布。</p>
+<ol>
+<li>完善一下 <code>README.md</code> 文档，这个随便写两句就好</li>
+<li>修改一下 <code>package.json</code> 文件：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123; </span><br><span class="line">  &quot;name&quot;: &quot;echojoy-ui&quot;,</span><br><span class="line">  &quot;version&quot;: &quot;0.1.0&quot;,</span><br><span class="line">  &quot;private&quot;: true,</span><br><span class="line">  &quot;description&quot;: &quot;基于 vue-cli3 的 UI 组件库&quot;,</span><br><span class="line">  &quot;main&quot;: &quot;lib/xr-ui.umd.min.js&quot;,</span><br><span class="line">  &quot;keywords&quot;: &quot;echojoy-ui&quot;,</span><br><span class="line">  &quot;private&quot;: false,</span><br><span class="line">  &quot;license&quot;: &quot;MIT&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>在根目录下新建一个 <code>.npmignore</code> 文件，内容和 <code>.gitignore</code> 差不多：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"># 这是复制 .gitignore 里面的</span><br><span class="line">.DS_Store</span><br><span class="line">node_modules</span><br><span class="line">/dist</span><br><span class="line"></span><br><span class="line"># local env files</span><br><span class="line">.env.local</span><br><span class="line">.env.*.local</span><br><span class="line"></span><br><span class="line"># Log files</span><br><span class="line">npm-debug.log*</span><br><span class="line">yarn-debug.log*</span><br><span class="line">yarn-error.log*</span><br><span class="line"></span><br><span class="line"># Editor directories and files</span><br><span class="line">.idea</span><br><span class="line">.vscode</span><br><span class="line">*.suo</span><br><span class="line">*.ntvs*</span><br><span class="line">*.njsproj</span><br><span class="line">*.sln</span><br><span class="line">*.sw*</span><br><span class="line"></span><br><span class="line"># 以下是新增的</span><br><span class="line"># 要忽略目录和指定文件</span><br><span class="line">examples/</span><br><span class="line">packages/</span><br><span class="line">public/</span><br><span class="line">vue.config.js</span><br><span class="line">babel.config.js</span><br><span class="line">*.map</span><br><span class="line">*.html</span><br></pre></td></tr></table></figure>
+<p>最后执行 <code>npm login</code> 登入 npm 账号，再执行 <code>npm publish</code> 发布即可，就这么简单的两步就可以，过一会在 <code>npm</code> 上就能搜到了。当然前提是你有个 <code>npm</code> 账号，没有的话去注册一个吧，很 easy 的，然后还要搜下你的 <code>npm</code> 包名是否有人用，有的话就换一个。</p>
+<h2 id="小试牛刀"><a href="#小试牛刀" class="headerlink" title="小试牛刀"></a>小试牛刀</h2><hr>
+<p>终于，历尽千辛万苦，我们可以引用自己写的库拉，想想就牛叉。别激动，让我们试验一下，用 <code>vue create echojoy-ui-use</code> 另起一个新项目，然后 <code>npm i echojoy-ui -S</code>，可以在 <code>node_modules</code> 里面看到我们的包大概长这样：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-481e0f1c018096c0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="zzzz.png"></p>
+<p>然后在 main.js 引入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import EchojoyUI from &quot;echojoy-ui&quot;;</span><br><span class="line">import &quot;echojoy-ui/lib/echojoy-ui.css&quot;;</span><br><span class="line">Vue.use(EchojoyUI);</span><br></pre></td></tr></table></figure>
+<p>这样我们就能在页面中引入组件啦，哈哈哈哈，贼开心，喜上眉梢。。。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;echojoy-test&gt;&lt;/echojoy-test&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="vue-cli3（vue-cli2）"><a href="#vue-cli3（vue-cli2）" class="headerlink" title="! vue-cli3（vue-cli2）"></a>! vue-cli3（vue-cli2）</h2><hr>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vue init webpack projectName</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-51e06302184372b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1111.png"></p>
+<h4 id="启动项目"><a href="#启动项目" class="headerlink" title="启动项目"></a>启动项目</h4><p><code>npm run dev</code><br><img src="https://upload-images.jianshu.io/upload_images/11846892-93b0c42320cb0948.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="4444.png"><br>浏览器输入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost:8080</span><br></pre></td></tr></table></figure></p>
+<h4 id="编写组件-1"><a href="#编写组件-1" class="headerlink" title="编写组件"></a>编写组件</h4><p>在<code>src</code>的<code>components</code>新建组件<code>limit</code>：即文件夹<code>EchoLimit</code>-&gt;文件<code>index.vue</code> + 文件<code>index+css</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">// index.vue</span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;echo-limit-container&quot; v-if=&quot;visible === false&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;echo-limit-container-inner&quot;&gt;</span><br><span class="line">      &lt;span class=&quot;echo-limit-text&quot;&gt;</span><br><span class="line">        &#123;&#123;limitTip&#125;&#125;</span><br><span class="line">      &lt;/span&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    visible: &#123;</span><br><span class="line">      type: Boolean,</span><br><span class="line">      default: false</span><br><span class="line">    &#125;,</span><br><span class="line">    limitTip: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      default: &apos;没有权限！！&apos;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  name: &quot;EchoLimit&quot; // 这个名字很重要，它就是未来的标签名&lt;echo-limit&gt;&lt;/echo-limit&gt;</span><br><span class="line">&#125;;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;style&gt;</span><br><span class="line">  @import &quot;./index&quot;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure></p>
+<p>⚠️这里主要强调一点，就是 name 这个名字尤为重要，你可以把它理解为 id，具有唯一标识组件的作用，将来我们可是要通过这个 name 来找到和判定这是什么组件，所以你写的所有组件应该是不重名的；其次这个 name 就是我们最终的标签名，比如这里我们的 name 是 EchoLimit，到时候我们写的标签就长这样 <echo-limit></echo-limit>，就像<code>Element</code> 一样，name 是 <code>ElButton</code>，用的时候就是 <el-button></el-button>。</p>
+<h4 id="暴露组件-1"><a href="#暴露组件-1" class="headerlink" title="暴露组件"></a>暴露组件</h4><ul>
+<li>注册单个组件</li>
+</ul>
+<p>在 <code>components</code> 的 <code>EchoLimit</code>下面新建一个 <code>index.js</code> 文件，具体代码如下：<br>// 为组件提供 install 方法，供组件对外按需引入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import EchoLimit from &quot;./EchoLimit/index.vue&quot;;</span><br><span class="line">EchoLimit.install = Vue =&gt; &#123;</span><br><span class="line">  Vue.component(EchoLimit.name, EchoLimit);</span><br><span class="line">&#125;;</span><br><span class="line">export default EchoLimit;</span><br></pre></td></tr></table></figure></p>
+<p>这步的精髓就在于给组件扩展一个 <code>install</code> 方法，至于为什么要扩展这个方法，文章开头已经说到了，是因为 <code>Vue.use()</code> 的需要，use 会默认调用 <code>install</code> 方法安装。</p>
+<ul>
+<li>注册全局组件<br>让我们在 components 下面新建一个 index.js 文件，具体代码如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// index.js</span><br><span class="line">import EchoLimit from &apos;./EchoLimit&apos;</span><br><span class="line">// 所有组件列表</span><br><span class="line">const components = [</span><br><span class="line">  EchoLimit</span><br><span class="line">]</span><br><span class="line">// 定义 install 方法，接收 Vue 作为参数</span><br><span class="line">const install = function (Vue) &#123;</span><br><span class="line">  // 判断是否安装，安装过就不继续往下执行</span><br><span class="line">  if (install.installed) return</span><br><span class="line">  install.installed = true</span><br><span class="line">  // 遍历注册所有组件</span><br><span class="line">  components.map(component =&gt; Vue.component(component.name, component))</span><br><span class="line">  // 下面这个写法也可以</span><br><span class="line">  // components.map(component =&gt; Vue.use(component))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 检测到 Vue 才执行，毕竟我们是基于 Vue 的</span><br><span class="line">if (typeof window !== &apos;undefined&apos; &amp;&amp; window.Vue) &#123;</span><br><span class="line">  install(window.Vue)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(components[0].name) // 控制台输出组件的name,方便引用组件</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  install,</span><br><span class="line">  // 所有组件，必须具有 install，才能使用 Vue.use()</span><br><span class="line">  ...components</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>目录结构方便大家观看：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-146fa983af0cd96a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="6666.png"></p>
+<h4 id="组件测试-1"><a href="#组件测试-1" class="headerlink" title="组件测试"></a>组件测试</h4><p>ok，组件写完了，接下来我们就在 <code>HelloWorld.vue</code>下面测试一下，看看能不能引用成功。 首先在 src下的 <code>main.js</code> 中引入刚刚写好的包，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import EchoUI from &apos;./components&apos;</span><br><span class="line">Vue.use(EchoUI)</span><br></pre></td></tr></table></figure>
+<p>在 HelloWorld.vue中引入组件EchoLimit.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;EchoLimit&gt;&lt;/EchoLimit&gt;</span><br><span class="line">     &lt;echo-limit&gt;&lt;/echo-limit&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/echo-limit&gt;</span><br></pre></td></tr></table></figure></p>
+<p>运行项目<code>npm run dev</code>,会发现成功了！！!<br><img src="https://upload-images.jianshu.io/upload_images/11846892-8bf68bbc8041c8ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="999.png"></p>
+<p>过程同上！！！！！！！！！</p>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考 连接：<a href="https://www.jianshu.com/p/41cc796488df" target="_blank" rel="noopener">https://www.jianshu.com/p/41cc796488df</a><br>参考 链接：<a href="https://juejin.im/post/5c95c61f6fb9a070c40acf65" target="_blank" rel="noopener">https://juejin.im/post/5c95c61f6fb9a070c40acf65</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Vue/"># Vue</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/04/01/Node1/">有助于理解前端工具的 node 知识</a>
+            
+            
+            <a class="next" rel="next" href="/2017/02/01/hexo2/">Hexo deplay报错问题</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

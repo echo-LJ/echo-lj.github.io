@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>leeCode-114： 二叉树展开为链表： (前序遍历两种解法+ 寻找前驱节点的一种解法)-中等 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">leeCode-114： 二叉树展开为链表： (前序遍历两种解法+ 寻找前驱节点的一种解法)-中等</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: April 25, 2022&nbsp;&nbsp;16:58:45
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+
+<h2 id="题目描述：-给你二叉树的根结点-root-，请你将它展开为一个单链表：展开后的单链表应该同样使用-TreeNode-，其中-right-子指针指向链表中下一个结点，而左子指针始终为-null-。展开后的单链表应该与二叉树-先序遍历-顺序相同。"><a href="#题目描述：-给你二叉树的根结点-root-，请你将它展开为一个单链表：展开后的单链表应该同样使用-TreeNode-，其中-right-子指针指向链表中下一个结点，而左子指针始终为-null-。展开后的单链表应该与二叉树-先序遍历-顺序相同。" class="headerlink" title="题目描述：  给你二叉树的根结点 root ，请你将它展开为一个单链表：展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。展开后的单链表应该与二叉树 先序遍历 顺序相同。"></a>题目描述：  给你二叉树的根结点 root ，请你将它展开为一个单链表：展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。展开后的单链表应该与二叉树 先序遍历 顺序相同。</h2><p><strong>示例1:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-cfd25d60bdcda93c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.01.06.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1,2,5,3,4,null,6]</span><br><span class="line">输出：[1,null,2,null,3,null,4,null,5,null,6]</span><br></pre></td></tr></table></figure></p>
+<p><strong>示例2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = []</span><br><span class="line">输出：[]</span><br></pre></td></tr></table></figure>
+<p><strong>示例3:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [0]</span><br><span class="line">输出：[0]</span><br></pre></td></tr></table></figure>
+<h2 id="题解方法一：前序遍历和展开相继进行"><a href="#题解方法一：前序遍历和展开相继进行" class="headerlink" title="题解方法一：前序遍历和展开相继进行"></a>题解方法一：前序遍历和展开相继进行</h2><p><strong><code>解题思路</code></strong></p>
+<ul>
+<li>于当前节点，如果其左子节点不为空，则在其左子树中找到最右边的节点，作为前驱节点，将当前节点的右子节点赋给前驱节点的右子节点，然后将当前节点的左子节点赋给当前节点的右子节点，并将当前节点的左子节点设为空。对当前节点处理结束后，继续处理链表中的下一个节点，直到所有节点都处理结束。</li>
+</ul>
+<p>作者：LeetCode-Solution<br>链接：<a href="https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/solution/er-cha-shu-zhan-kai-wei-lian-biao-by-leetcode-solu/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/solution/er-cha-shu-zhan-kai-wei-lian-biao-by-leetcode-solu/</a><br>来源：力扣（LeetCode）<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+<p>代码实现如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">var flatten = function(root) &#123;</span><br><span class="line">    const list = [];</span><br><span class="line">    preorderTraversal(root, list);</span><br><span class="line">    const size = list.length;</span><br><span class="line">    for (let i = 1; i &lt; size; i++) &#123;</span><br><span class="line">        const prev = list[i - 1], curr = list[i];</span><br><span class="line">        prev.left = null;</span><br><span class="line">        prev.right = curr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">const preorderTraversal = (root, list) =&gt; &#123;</span><br><span class="line">    if (root != null) &#123;</span><br><span class="line">        list.push(root);</span><br><span class="line">        preorderTraversal(root.left, list);</span><br><span class="line">        preorderTraversal(root.right, list);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>迭代代码实现如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">var flatten = function(root) &#123;</span><br><span class="line">    const list = [];</span><br><span class="line">    const stack = [];</span><br><span class="line">    let node = root;</span><br><span class="line">    while (node !== null || stack.length) &#123;</span><br><span class="line">        while (node !== null) &#123;</span><br><span class="line">            list.push(node);</span><br><span class="line">            stack.push(node);</span><br><span class="line">            node = node.left;</span><br><span class="line">        &#125;</span><br><span class="line">        node = stack.pop();</span><br><span class="line">        node = node.right;</span><br><span class="line">    &#125;</span><br><span class="line">    const size = list.length;</span><br><span class="line">    for (let i = 1; i &lt; size; i++) &#123;</span><br><span class="line">        const prev = list[i - 1], curr = list[i];</span><br><span class="line">        prev.left = null;</span><br><span class="line">        prev.right = curr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="题解方法二：前序遍历和展开同步进行"><a href="#题解方法二：前序遍历和展开同步进行" class="headerlink" title="题解方法二：前序遍历和展开同步进行"></a>题解方法二：前序遍历和展开同步进行</h2><p><strong><code>解题思路（没看懂可以看下面的图解）</code></strong></p>
+<ul>
+<li>展开为单链表的做法是，维护上一个访问的节点 prev，每次访问一个节点时，令当前访问的节点为 curr，将 prev 的左子节点设为 null 以及将 prev 的右子节点设为 curr，然后将 curr 赋值给 prev，进入下一个节点的访问，直到遍历结束。需要注意的是，初始时 prev 为 null，只有在 prev 不为 null 时才能对 prev 的左右子节点进行更新。</li>
+</ul>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">var flatten = function(root) &#123;</span><br><span class="line">    if (root === null) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    const stack = [];</span><br><span class="line">    stack.push(root);</span><br><span class="line">    let prev = null;</span><br><span class="line">    while (stack.length) &#123;</span><br><span class="line">        const curr = stack.pop();</span><br><span class="line">        if (prev !== null) &#123;</span><br><span class="line">            prev.left = null;</span><br><span class="line">            prev.right = curr;</span><br><span class="line">        &#125;</span><br><span class="line">        const left = curr.left, right = curr.right;</span><br><span class="line">        if (right !== null) &#123;</span><br><span class="line">            stack.push(right);</span><br><span class="line">        &#125;</span><br><span class="line">        if (left !== null) &#123;</span><br><span class="line">            stack.push(left);</span><br><span class="line">        &#125;</span><br><span class="line">        prev = curr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>我们以示例1为例，进行图解分析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1,2,5,3,4,null,6]</span><br><span class="line">输出：[1,null,2,null,3,null,4,null,5,null,6]</span><br></pre></td></tr></table></figure>
+<p>执行代码第一步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stack.push(root);</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-88b1bc8a393dc6ac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.19.30.png"></p>
+<p>此时stack.length不为0 ，进入while循环: 第一次循环</p>
+<p>执行代码第2步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">while (stack.length) &#123; stack = [0]</span><br><span class="line">        const curr = stack.pop(); // while第一次循环第一步：curr = 1, stack = []</span><br><span class="line">        if (prev !== null) &#123;</span><br><span class="line">            prev.left = null;</span><br><span class="line">            prev.right = curr;</span><br><span class="line">        &#125;</span><br><span class="line">        const left = curr.left, right = curr.right; //while第一次循环第二步：left = 2, right = 5</span><br><span class="line">        if (right !== null) &#123; //while第一次循环第三步：stack = [5,2]</span><br><span class="line">            stack.push(right);</span><br><span class="line">        &#125;</span><br><span class="line">        if (left !== null) &#123;</span><br><span class="line">            stack.push(left);</span><br><span class="line">        &#125; </span><br><span class="line">        prev = curr; //while第一次循环第四步： prev = 1 </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>while第一次循环第一步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-91b8baa5ddc317be.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.21.29.png"></p>
+<p>while第一次循环第二步：<img src="https://upload-images.jianshu.io/upload_images/11846892-6de9952f7769aa3f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.27.28.png"></p>
+<p>while第一次循环第3步：<img src="https://upload-images.jianshu.io/upload_images/11846892-66b24bab76dc3e3f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.27.42.png"></p>
+<p>while第一次循环第4步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-1a5a68a69b075bc1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.30.05.png"></p>
+<p>执行代码第3步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">while (stack.length) &#123; stack = [5,2]</span><br><span class="line">        const curr = stack.pop(); // while第二次循环第一步：curr = 2, stack = [5]</span><br><span class="line">        if (prev !== null) &#123; // while第二次循环第2步：prev = 1</span><br><span class="line">            prev.left = null;</span><br><span class="line">            prev.right = curr;</span><br><span class="line">        &#125;</span><br><span class="line">        const left = curr.left, right = curr.right; //while第2次循环第3步：left = 3, right = 4</span><br><span class="line">        if (right !== null) &#123; //while第2次循环第四步：stack = [5,4，3]</span><br><span class="line">            stack.push(right);</span><br><span class="line">        &#125;</span><br><span class="line">        if (left !== null) &#123;</span><br><span class="line">            stack.push(left);</span><br><span class="line">        &#125; </span><br><span class="line">        prev = curr; //while第2次循环第五步： prev = 2</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>while第2次循环第一步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-61f62e54e6a9b851.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.53.38.png"></p>
+<p>while第2次循环第二步：<img src="https://upload-images.jianshu.io/upload_images/11846892-cf49bbf472100c05.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.34.40.png"></p>
+<p>while第2次循环第3步：<img src="https://upload-images.jianshu.io/upload_images/11846892-a8236ce2125e1de2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.35.36.png"></p>
+<p>while第2次循环第4步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-95a155041b650267.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.36.35.png"></p>
+<p>while第2次循环第5步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-804283a413f12461.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.38.15.png"></p>
+<p>执行代码第4步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">while (stack.length) &#123; stack = [5,4，3]</span><br><span class="line">        const curr = stack.pop(); // while第3次循环第一步：curr = 3, stack = [5， 4]</span><br><span class="line">        if (prev !== null) &#123; // while第3次循环第2步：prev = 2</span><br><span class="line">            prev.left = null;</span><br><span class="line">            prev.right = curr;</span><br><span class="line">        &#125;</span><br><span class="line">        const left = curr.left, right = curr.right; //while第3次循环第3步：left = null, right = null</span><br><span class="line">        if (right !== null) &#123; </span><br><span class="line">            stack.push(right);</span><br><span class="line">        &#125;</span><br><span class="line">        if (left !== null) &#123;</span><br><span class="line">            stack.push(left);</span><br><span class="line">        &#125; </span><br><span class="line">        prev = curr; //while第3次循环第四步： prev = 3</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>while第3次循环第一步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-65a91f2ce7d0656e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.43.24.png"></p>
+<p>while第3次循环第二步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-697c50250c51bdb7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.43.37.png"></p>
+<p>while第3次循环第3步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-cf397ecb3c29bc0f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.44.44.png"></p>
+<p>while第3次循环第4步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-ea6e32394b1dd5e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.45.40.png"></p>
+<p>执行代码第5步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">while (stack.length) &#123; stack = [5,4]</span><br><span class="line">        const curr = stack.pop(); // while第4次循环第一步：curr = 4, stack = [5]</span><br><span class="line">        if (prev !== null) &#123; // while第4次循环第2步：prev = 3</span><br><span class="line">            prev.left = null;</span><br><span class="line">            prev.right = curr;</span><br><span class="line">        &#125;</span><br><span class="line">        const left = curr.left, right = curr.right; //while第4次循环第3步：left = null, right = null</span><br><span class="line">        if (right !== null) &#123; </span><br><span class="line">            stack.push(right);</span><br><span class="line">        &#125;</span><br><span class="line">        if (left !== null) &#123;</span><br><span class="line">            stack.push(left);</span><br><span class="line">        &#125; </span><br><span class="line">        prev = curr; //while第4次循环第四步： prev = 4</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>while第4次循环第一步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-1515f18459d0fdec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.48.09.png"></p>
+<p>while第4次循环第二步：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-2e4992a6ecded746.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.57.32.png"></p>
+<p>while第4次循环第3步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-29eef28a42628e43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.57.56.png"></p>
+<p>while第4次循环第4步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-c504e745a0ce0e1d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午5.58.25.png"></p>
+<p>执行代码第6步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">while (stack.length) &#123; stack = [5]</span><br><span class="line">        const curr = stack.pop(); // while第5次循环第一步：curr = 5, stack = []</span><br><span class="line">        if (prev !== null) &#123; // while第5次循环第2步：prev = 4</span><br><span class="line">            prev.left = null;</span><br><span class="line">            prev.right = curr;</span><br><span class="line">        &#125;</span><br><span class="line">        const left = curr.left, right = curr.right; //while第5次循环第3步：left = null, right = 6 stack = [6]</span><br><span class="line">        if (right !== null) &#123; </span><br><span class="line">            stack.push(right);</span><br><span class="line">        &#125;</span><br><span class="line">        if (left !== null) &#123;</span><br><span class="line">            stack.push(left);</span><br><span class="line">        &#125; </span><br><span class="line">        prev = curr; //while第5次循环第四步： prev = 5</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>while第5次循环第一步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-ee93bd5b55fb35c1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午6.06.00.png"></p>
+<p>while第5次循环第二步：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-ecbde1786c191e9d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午6.07.12.png"></p>
+<p>while第5次循环第3步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-a4f5f399adee86dc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午6.08.06.png"></p>
+<p>while第5次循环第4步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-0be38d180e47873f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午6.08.35.png"></p>
+<p>执行代码第7步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">while (stack.length) &#123; stack = [6]</span><br><span class="line">        const curr = stack.pop(); // while第6次循环第一步：curr = 6, stack = []</span><br><span class="line">        if (prev !== null) &#123; // while第6次循环第2步：prev = 5</span><br><span class="line">            prev.left = null;</span><br><span class="line">            prev.right = curr;</span><br><span class="line">        &#125;</span><br><span class="line">        const left = curr.left, right = curr.right; //while第6次循环第3步：left = null, right = null stack = []</span><br><span class="line">        if (right !== null) &#123; </span><br><span class="line">            stack.push(right);</span><br><span class="line">        &#125;</span><br><span class="line">        if (left !== null) &#123;</span><br><span class="line">            stack.push(left);</span><br><span class="line">        &#125; </span><br><span class="line">        prev = curr; //while第6次循环第四步： prev = 6</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>while第6次循环第一步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-3be80377bdf3d6d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午6.10.18.png"></p>
+<p>while第6次循环第二步：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-af4b5c965e868b43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午6.11.12.png"></p>
+<p>while第6次循环第3步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-af4b5c965e868b43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午6.11.12.png"></p>
+<p>while第6次循环第4步：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-a74965dc5a023989.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-25 下午6.12.51.png"></p>
+<p>此时stack.length 为0 跳出循环，函数执行完毕！！</p>
+<h2 id="题解方法三：寻找前驱节点的方法"><a href="#题解方法三：寻找前驱节点的方法" class="headerlink" title="题解方法三：寻找前驱节点的方法"></a>题解方法三：寻找前驱节点的方法</h2><p><strong><code>解题思路</code></strong></p>
+<ul>
+<li>对于当前节点，如果其左子节点不为空，则在其左子树中找到最右边的节点，作为前驱节点，将当前节点的右子节点赋给前驱节点的右子节点，然后将当前节点的左子节点赋给当前节点的右子节点，并将当前节点的左子节点设为空。对当前节点处理结束后，继续处理链表中的下一个节点，直到所有节点都处理结束。</li>
+</ul>
+<p>前驱节点代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">var flatten = function(root) &#123;</span><br><span class="line">    let curr = root;</span><br><span class="line">    while(curr !== null) &#123;</span><br><span class="line">        if(curr.left !==null) &#123;</span><br><span class="line">            const next = curr.left;</span><br><span class="line">            let predecessor = next;</span><br><span class="line">            while(predecessor.right!==null)&#123;</span><br><span class="line">                predecessor = predecessor.right;</span><br><span class="line">            &#125;</span><br><span class="line">            predecessor.right = curr.right;</span><br><span class="line">            curr.left = null;</span><br><span class="line">            curr.right = next;</span><br><span class="line">        &#125;</span><br><span class="line">        curr = curr.right</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们以示例1为例，进行图解分析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1,2,5,3,4,null,6]</span><br><span class="line">输出：[1,null,2,null,3,null,4,null,5,null,6]</span><br></pre></td></tr></table></figure>
+<p>执行代码第一步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let curr = root;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-a31a107b4fa98fb4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-26 上午10.06.40.png"></p>
+<p>进入第1次while循环☝️：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">while(curr !== null) &#123; </span><br><span class="line">        if(curr.left !==null) &#123;</span><br><span class="line">            const next = curr.left; //第1次while循环第1步: next = predecessor = 2</span><br><span class="line">            let predecessor = next;</span><br><span class="line">            while(predecessor.right!==null)&#123; //第1次while循环第2步: next = 2, predecessor = 4</span><br><span class="line">                predecessor = predecessor.right;</span><br><span class="line">            &#125;</span><br><span class="line">            predecessor.right = curr.right; //第1次while循环第3步: predecessor.right = 5</span><br><span class="line">            curr.left = null; //第1次while循环第4步: curr.right = 2</span><br><span class="line">            curr.right = next;</span><br><span class="line">        &#125;</span><br><span class="line">        curr = curr.right //第1次while循环第5步: curr = 2</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>第1次while循环第1步: next = predecessor = 2</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-aa1327ebacbf5d74.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-26 上午10.08.57.png"></p>
+<p>第1次while循环第2步: next = 2, predecessor = 4<br> <img src="https://upload-images.jianshu.io/upload_images/11846892-e456e81b0887af8b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-26 上午10.09.59.png"></p>
+<p>第1次while循环第3步: predecessor.right = 5</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-c3aef6805e645e03.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-26 上午10.11.57.png"></p>
+<p>//第1次while循环第4步: curr.right = 2</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-45ba3e13cbeb07c7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-26 上午10.13.36.png"></p>
+<p>//第1次while循环第5步: curr.right = 2</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-1f01ae17efa25e19.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-26 上午10.14.31.png"></p>
+<p>进入第2次while循环☝️：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">while(curr !== null) &#123;  // curr = 2</span><br><span class="line">        if(curr.left !==null) &#123; // curr.left = 3</span><br><span class="line">            const next = curr.left; //第2次while循环第1步: next = predecessor = 3</span><br><span class="line">            let predecessor = next;</span><br><span class="line">            while(predecessor.right!==null)&#123; </span><br><span class="line">                predecessor = predecessor.right;</span><br><span class="line">            &#125;</span><br><span class="line">            predecessor.right = curr.right; //第2次while循环第2步: predecessor.right = 4</span><br><span class="line">            curr.left = null; //第2次while循环第3步: curr.right = 3</span><br><span class="line">            curr.right = next;</span><br><span class="line">        &#125;</span><br><span class="line">        curr = curr.right //第2次while循环第4步: curr = 3</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>//第2次while循环第1步: next = predecessor = 2</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-c7a92718c73d9a71.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-26 上午10.16.55.png"></p>
+<p>此时predecessor = 3没有right节点，不执行内部的while循环继续向下执行</p>
+<p>//第2次while循环第2步: predecessor.right = 4</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-b89622b0261fe655.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-26 上午10.18.58.png"></p>
+<p>//第2次while循环第3步: curr.right = 3</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-373f6fc4470749fe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-26 上午10.21.50.png"><br>curr = curr.right //第2次while循环第4步: curr = 3</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-1b92825d6ed00c84.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-26 上午10.22.08.png"></p>
+<p>进入第3次while循环☝️：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">while(curr !== null) &#123;  // curr = 3</span><br><span class="line">        curr = curr.right //第3次while循环第1步: curr = 4</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>执行第3\4\5、6次while循环，curr.left 都为null,则curr = curr.right<br>执行第6次while循环 ,此时curr为null, 则整个function执行完毕。</p>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/算法/"># 算法</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/04/26/algorithm-19/">leeCode-19：  删除链表的倒数第 N 个结点： (链表长度、栈存储、双指针三种解法)-中等</a>
+            
+            
+            <a class="next" rel="next" href="/2022/04/24/algorithm-144/">leeCode-144： 二叉树的前序遍历： (迭代、递归、Morris遍历三种解法)-简单</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

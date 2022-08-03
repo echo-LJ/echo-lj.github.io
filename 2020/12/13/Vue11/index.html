@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>组件渲染：vnode 到真实 DOM 是如何转变的-Vue.js3.0？ | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">组件渲染：vnode 到真实 DOM 是如何转变的-Vue.js3.0？</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: December 13, 2020&nbsp;&nbsp;10:00:00
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h4 id="组件创建好以后是如何被调用并初始化的呢？"><a href="#组件创建好以后是如何被调用并初始化的呢？" class="headerlink" title="组件创建好以后是如何被调用并初始化的呢？"></a>组件创建好以后是如何被调用并初始化的呢？</h4><p>因为整个组件树是由<code>根组件</code>开始渲染的，我们从应用程序的初始化过程开始分析<br>在Vue2.x和Vue3.0中初始化一个应用的方式差别不大： 本质上都是把<code>组件App挂在到id为app的DOM节点上</code>。<br>Vue3.0中导入了一个<code>createApp</code>:Vue一个入口函数.<br>createApp函数主要做了两件事情： <code>创建app对象</code> + <code>重写app.mount方法</code></p>
+<h2 id="创建app对象"><a href="#创建app对象" class="headerlink" title="创建app对象"></a>创建app对象</h2><hr>
+<p><code>概念</code>：利用ensureRenderer().createApp()来创建app对象.</p>
+<ul>
+<li>其中利用<code>ensureRenderer()</code>来延时创建渲染器。<br>目的： 当用户只依赖响应式包的时候，就不会创建渲染器，通过tree-shaking的方式移除核心渲染逻辑相关的代码。<br>(ensureRenderer 是在执行 createApp 的时候调用的，如果你不执行 createApp 而只使用 vue 的一些响应式 API，)</li>
+</ul>
+<p><code>创建app对象-代码思想:</code> 3.0内部通过createRenderer创建一个渲染器，渲染器内部会有一个createApp方法，他是执行createAppAPI方法返回的函数，函数接受两个参数rootComponent 和 rootProps. 我们在应用层面执行creatApp(App）方法时，会把App组件对象作为根组件传递给rootComponent. 这样，createApp就创建了一个app对象，并会提供mount方法，用来挂载组件。</p>
+<h2 id="重写app-mount-方法"><a href="#重写app-mount-方法" class="headerlink" title="重写app.mount()方法"></a>重写app.mount()方法</h2><hr>
+<blockquote>
+<p>创建app对象中提供了mount方法，为什么还要重写？<br>createApp函数内部的app.mount方法是一个<code>标准的可跨平台的组件渲染流程:</code> 创建vnode + 渲染vnode.（web平台有DOM对象）<br>此方法里面不包含任何与平台相关的逻辑。所以需要重写mount来支持web平台的下的逻辑。</p>
+</blockquote>
+<blockquote>
+<p>mount重写做了哪些事情?</p>
+<ul>
+<li>通过normalizeContainer标准化容器（可以传字符串选择器、或DOM对象， 如果是字符串选择器，先转化成DOM对象，作为最终挂载的容器）。</li>
+<li>做一个if判断，如果组件对象没有render函数和template模版，则取容器的innerHTML作为组件的模版内容。</li>
+<li>挂载前清空容器的内容，调用<code>app.mount方法走标准的组件流程</code>。</li>
+</ul>
+</blockquote>
+<h2 id="创建vnode"><a href="#创建vnode" class="headerlink" title="创建vnode"></a>创建vnode</h2><hr>
+<p><code>vnode本质</code>：描述DOM的javascript对象。它可以是不同类型的节点，普通元素节点、组件节点等。</p>
+<p><strong>Vue3.0内部针对vnode的type,做了详细的分类，包括Suspense、Teleport等，且把vnode的类型信息做了编码，以便后面的patch阶段，根据不同的类型执行相应的处理逻辑。</strong></p>
+<blockquote>
+<p>vnode的优势？</p>
+<ol>
+<li>抽象。 引入vnode，可以把渲染过程抽象化，从而使得组件的抽象能力也得到提升。</li>
+<li>跨平台。因为patch vnode 的过程不同平台可以有不同的实现，基于vnode做服务端渲染，weex平台、小程序平台的渲染方便很多。</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>vnode不意味着不操作DOM,vnode的性能比原声DOM好？<br>基于vnode实现的MVVM框架，在每次render to vnode的过程中，渲染组件会有一定的js耗时，patch vnode阶段也会耗时。</p>
+</blockquote>
+<blockquote>
+<p>Vue.js内部是如何创建vnode的呢？</p>
+</blockquote>
+<p>app.mount()方法中通过<code>createVNode</code>函数创建了根组件的vnode:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const vnode = createVNode(rootComponent, rootProps)</span><br></pre></td></tr></table></figure></p>
+<p><strong>createVNode方法</strong></p>
+<ul>
+<li>对props做标准化处理： 标准化class、style</li>
+<li>对vnode的类型信息编码： 方便patch vnode阶段做不同的逻辑处理</li>
+<li>创建vnode对象： 包含type、 props、 等其他属性</li>
+<li>标准化子节点children: 把不同数据类型的children转化成文本或数组类型。</li>
+</ul>
+<h2 id="渲染vnode"><a href="#渲染vnode" class="headerlink" title="渲染vnode"></a>渲染vnode</h2><hr>
+<p>render渲染函数传入两个参数：vnode, rootContainer:挂载容器<br><strong><code>render处理逻辑:</code></strong></p>
+<ul>
+<li>if判断vnode,如果为空，执行销毁组件逻辑。</li>
+<li>不为空，执行<code>创建组件</code>或<code>更新组件</code>逻辑。</li>
+</ul>
+<hr>
+<h3 id="创建、更新组件-patch"><a href="#创建、更新组件-patch" class="headerlink" title="创建、更新组件-patch()"></a>创建、更新组件-patch()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">patch = (n1, n2, container, anchor = null, parentComponent = null, parentSuspense = null, isSVG = false, optimized = false)</span><br></pre></td></tr></table></figure>
+<p><strong><code>参数分析</code></strong></p>
+<ul>
+<li>n1表示旧的vnode,为null时，表示是一次挂载的过程。</li>
+<li>n2表示新的vnode节点，会根据vnode的类型做不同的逻辑处理。</li>
+<li>container 表示DOM容器，vnode生成DOM后，会挂载到Container下面<br><strong><code>patch函数逻辑分析</code></strong>： </li>
+<li>首先， 如果存在新旧节点，且类型不同，则销毁旧节点。</li>
+<li>其次，根据节点类型不同（组件、普通DOM元素、其他等），做不同渲染逻辑处理。</li>
+</ul>
+<p>我们着重看一下对组件+普通DOM元素的处理。</p>
+<h3 id="对组件的处理-processComponent"><a href="#对组件的处理-processComponent" class="headerlink" title="对组件的处理-processComponent()"></a>对组件的处理-processComponent()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">processComponent(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, optimized)</span><br></pre></td></tr></table></figure>
+<p><code>函数逻辑</code> 如果 n1 为 null，则执行挂载组件的逻辑，否则执行更新组件的逻辑。</p>
+<p><strong>挂载组件的 mountComponent 函数的实现</strong></p>
+<ul>
+<li><ol>
+<li>创建组件实例-instance<br>vue3.x: 通过对象的方式创建了当前渲染的组件实例。<br>vue2.x: 通过类的方式去实例化组件。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>设置组件实例-setupComponent(instance)<br>instance中包含了很多组件相关的数据，维护了组件的上下文，对props、插槽、以及其他实例的属性的初始化处理。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>设置并运行带副作用的渲染函数-setupRenderEffect(instance）<br>利用响应式库的 effect 函数创建了一个副作用渲染函数 componentEffect 。<blockquote>
+<p>副作用: 可以简单地理解为，当组件的数据发生变化时，effect 函数包裹的内部渲染函数 componentEffect 会重新执行一遍，从而达到重新渲染组件的目的。  </p>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+<p>effect副作用函数内部会判断是<code>初始渲染</code>还是<code>组件更新</code></p>
+<h4 id="初始渲染"><a href="#初始渲染" class="headerlink" title="初始渲染"></a>初始渲染</h4><ol>
+<li>渲染组件生成subTree-renderComponentRoot()<br>renderComponentRoot()函数就是去执行 render 函数创建整个组件树内部的 vnode，把这个 vnode 再经过内部一层标准化，就得到了该函数的返回结果：子树 vnode。</li>
+<li>把subTree挂载到container中。<br>调用 patch 函数把子树 vnode 挂载到 container 中.<br>patch()函数继续对子树 vnode 进行循环类型判断。</li>
+</ol>
+<blockquote>
+<p>subTree 和 initialVNode的区别？<br>Vue.js 2.x 中它们分别命名为 _vnode 和 $vnode<br>在 App 组件中， <hello> 节点渲染生成的 vnode ，对应的就是 Hello 组件的 initialVNode ，为了好记，你也可以把它称作“组件 vnode”。而 Hello 组件内部整个 DOM 节点对应的 vnode 就是执行 renderComponentRoot 渲染生成对应的 subTree，我们可以把它称作“子树 vnode”。</hello></p>
+</blockquote>
+<h3 id="对普通-DOM-元素的处理-processElement"><a href="#对普通-DOM-元素的处理-processElement" class="headerlink" title="对普通 DOM 元素的处理- processElement()"></a>对普通 DOM 元素的处理- processElement()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">patchElement(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, optimized)</span><br></pre></td></tr></table></figure>
+<p><code>函数逻辑</code> 如果 n1 为 null，则执行挂载元素节点逻辑，否则执行更新元素节点的逻辑。</p>
+<p><strong>挂载元素节点的 mountElement 函数的实现</strong></p>
+<ul>
+<li><ol>
+<li>创建 DOM 元素节点- hostCreateElement()<br>调用了底层的 DOM API document.createElement 创建元素，所以本质上 Vue.js 强调不去操作 DOM ，只是希望用户不直接碰触 DOM，它并没有什么神奇的魔法，底层还是会操作 DOM。<br>平台相关的方法是在创建渲染器阶段作为参数传入的</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>处理 props - hostPatchProp()<br>class、style、event 等属性: 平台相关的属性。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>处理 children<br>子节点是纯文本，则执行 hostSetElementText ,它在 Web 环境下通过设置 DOM 元素的 textContent 属性设置文本.<br>子节点是数组，则执行 mountChildren 方法.</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>挂载 DOM 元素到 container 上。<br>vue3.x: 通过对象的方式创建了当前渲染的组件实例。<br>vue2.x: 通过类的方式去实例化组件。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>设置组件实例-setupComponent(instance)<br>instance中包含了很多组件相关的数据，维护了组件的上下文，对props、插槽、以及其他实例的属性的初始化处理。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>设置并运行带副作用的渲染函数-setupRenderEffect(instance）<br>利用响应式库的 effect 函数创建了一个副作用渲染函数 componentEffect 。<blockquote>
+<p>副作用: 可以简单地理解为，当组件的数据发生变化时，effect 函数包裹的内部渲染函数 componentEffect 会重新执行一遍，从而达到重新渲染组件的目的。  </p>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+<p>effect副作用函数内部会判断是<code>初始渲染</code>还是<code>组件更新</code></p>
+<h4 id="初始渲染-1"><a href="#初始渲染-1" class="headerlink" title="初始渲染"></a>初始渲染</h4><ol>
+<li>渲染组件生成subTree-renderComponentRoot()<br>renderComponentRoot()函数就是去执行 render 函数创建整个组件树内部的 vnode，把这个 vnode 再经过内部一层标准化，就得到了该函数的返回结果：子树 vnode。</li>
+<li>把subTree挂载到container中。<br>调用 patch 函数把子树 vnode 挂载到 container 中.<br>patch()函数继续对子树 vnode 进行循环类型判断。</li>
+</ol>
+<blockquote>
+<p>subTree 和 initialVNode的区别？<br>Vue.js 2.x 中它们分别命名为 _vnode 和 $vnode<br>在 App 组件中， <hello> 节点渲染生成的 vnode ，对应的就是 Hello 组件的 initialVNode ，为了好记，你也可以把它称作“组件 vnode”。而 Hello 组件内部整个 DOM 节点对应的 vnode 就是执行 renderComponentRoot 渲染生成对应的 subTree，我们可以把它称作“子树 vnode”。</hello></p>
+</blockquote>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考链接： </p>
+<ul>
+<li><a href="https://kaiwu.lagou.com/course/courseInfo.htm?courseId=326#/detail/pc" target="_blank" rel="noopener">https://kaiwu.lagou.com/course/courseInfo.htm?courseId=326#/detail/pc</a></li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Vue/"># Vue</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/17/web-engineering5/">前端工程化---琐碎小记</a>
+            
+            
+            <a class="next" rel="next" href="/2020/12/01/web-engineering3/">前端工程化工具 ---- module-alias</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

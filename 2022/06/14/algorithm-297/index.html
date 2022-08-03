@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>leeCode-297： 二叉树的序列化与反序列化 (遍历、递归两种解法)-困难 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">leeCode-297： 二叉树的序列化与反序列化 (遍历、递归两种解法)-困难</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: June 14, 2022&nbsp;&nbsp;16:10:19
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+
+<h2 id="题目描述：-序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列-反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。"><a href="#题目描述：-序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列-反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。" class="headerlink" title="题目描述： 序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。"></a>题目描述： 序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。</h2><p><strong>示例1:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-89c61fd19ec7a6f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-14 下午2.01.53.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1,2,3,null,null,4,5]</span><br><span class="line">输出：[1,2,3,null,null,4,5]</span><br></pre></td></tr></table></figure>
+<p><strong>示例2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = []</span><br><span class="line">输出：[]</span><br></pre></td></tr></table></figure>
+<p><strong>示例3:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1]</span><br><span class="line">输出：[1]</span><br></pre></td></tr></table></figure>
+<p><strong>示例4:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1,2]</span><br><span class="line">输出：[1,2]</span><br></pre></td></tr></table></figure>
+<h2 id="题解方法一：递归DFS"><a href="#题解方法一：递归DFS" class="headerlink" title="题解方法一：递归DFS"></a>题解方法一：递归DFS</h2><p><code>解题思路:</code></p>
+<ul>
+<li>递归遍历一棵树，重点关注当前节点，它的子树的遍历交给递归完成：serialize函数，请帮我分别序列化我的左右子树，我等你返回的结果，再拼接一下。”</li>
+<li>选择前序遍历，是因为 根|左|右根∣左∣右 的打印顺序，在反序列化时更容易定位出根节点的值。</li>
+<li>遇到 null 节点也要翻译成特定符号，反序列化时才知道这里是 null。</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-c695a86b9cb03dda.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-14 下午2.05.55.png"></p>
+<p>序列化代码实现如下： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const serialize = (root) =&gt; &#123;</span><br><span class="line">  if (root == null) &#123;                  // 遍历到 null 节点</span><br><span class="line">    return &apos;X&apos;;</span><br><span class="line">  &#125;</span><br><span class="line">  const left = serialize(root.left);   // 左子树的序列化结果</span><br><span class="line">  const right = serialize(root.right); // 右子树的序列化结果</span><br><span class="line">  return root.val + &apos;,&apos; + left + &apos;,&apos;+ right; // 按  根,左,右  拼接字符串</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>反序列化实现方式:</code> </p>
+<ul>
+<li><p>前序遍历的序列化字符串，就像下图右一：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-542fae2d275e1282.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-14 下午2.08.13.png"></p>
+</li>
+<li><p>定义函数 buildTree 用于还原二叉树，传入由序列化字符串转成的 list 数组。</p>
+</li>
+<li>逐个 pop 出 list 的首项，构建当前子树的根节点，顺着 list，构建顺序是根节点，左子树，右子树。<br>  1、如果弹出的字符为 “X”，则返回 null 节点。<br>  2、如果弹出的字符是数值，则创建root节点，并递归构建root的左右子树，最后返回root。<br><img src="https://upload-images.jianshu.io/upload_images/11846892-4c52d349cd96979b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-14 下午2.09.50.png"></li>
+</ul>
+<p>反序列化代码实现如下： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">const deserialize = (data) =&gt; &#123;</span><br><span class="line">  const list = data.split(&apos;,&apos;);   // split成数组</span><br><span class="line"></span><br><span class="line">  const buildTree = (list) =&gt; &#123;   // 基于list构建当前子树</span><br><span class="line">    const rootVal = list.shift(); // 弹出首项，获取它的“数据”</span><br><span class="line">    if (rootVal == &quot;X&quot;) &#123;         // 是X，返回null节点</span><br><span class="line">      return null;</span><br><span class="line">    &#125;</span><br><span class="line">    const root = new TreeNode(rootVal); // 不是X，则创建节点</span><br><span class="line">    root.left = buildTree(list);        // 递归构建左子树</span><br><span class="line">    root.right = buildTree(list);       // 递归构建右子树</span><br><span class="line">    return root;                        // 返回当前构建好的root</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  return buildTree(list); // 构建的入口</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="题解方法二：遍历BFS"><a href="#题解方法二：遍历BFS" class="headerlink" title="题解方法二：遍历BFS"></a>题解方法二：遍历BFS</h2><ul>
+<li>维护一个队列，初始让根节点入列，考察出列节点：<br>  1、如果出列的节点是 null，将符号 ‘X’ 推入 res 数组。<br>  2、如果出列的节点是数值，将节点值推入数组 res，并将它的左右子节点入列。</li>
+<li>入列、出列…直到队列为空，就遍历完所有节点，res构建完毕，转成字符串就好。</li>
+</ul>
+<p>序列化代码实现如下： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">const serialize = (root) =&gt; &#123;</span><br><span class="line">  const queue = [root];</span><br><span class="line">  let res = [];</span><br><span class="line">  while (queue.length) &#123;</span><br><span class="line">    const node = queue.shift(); // 考察出列的节点</span><br><span class="line">    if (node) &#123;                 // 是真实节点，带出子节点入列</span><br><span class="line">      res.push(node.val);       // 节点值推入res</span><br><span class="line">      queue.push(node.left);    // 子节点入列，不管是不是null节点都入列</span><br><span class="line">      queue.push(node.right);    </span><br><span class="line">    &#125; else &#123;                    // 是null节点，没有子节点入列</span><br><span class="line">      res.push(&apos;X&apos;);            // X 推入res</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return res.join(&apos;,&apos;);  // 转成字符串</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>反序列化实现方式:</code> </p>
+<ul>
+<li><p>下图是BFS得到的序列化字符串，和DFS得到的不同，它是一层层的。除了第一个是根节点的值，其他节点值都是成对的，对应左右子节点。<br><img src="https://upload-images.jianshu.io/upload_images/11846892-409a43cbab7e2458.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-14 下午2.27.45.png"></p>
+</li>
+<li><p>依然先转成list数组，用一个指针 cursor 从第二项开始扫描。</p>
+</li>
+<li>起初，用list[0]构建根节点，并让根节点入列。</li>
+<li>节点出列，此时 cursor 指向它的左子节点值，cursor+1 指向它的右子节点值。<br>  1、如果子节点值是数值，则创建节点，并认出列的父亲，同时自己也是父亲，入列。<br>  2、如果子节点值为 ‘X’，什么都不用做，因为出列的父亲的 left 和 right 本来就是 null</li>
+<li>可见，所有的真实节点都会在队列里走一遍，出列就带出儿子入列<br><img src="https://upload-images.jianshu.io/upload_images/11846892-e3efbecab4a0df7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-14 下午2.32.24.png"></li>
+</ul>
+<p>实现代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">const deserialize = (data) =&gt; &#123;</span><br><span class="line">  if (data == &apos;X&apos;) return null;</span><br><span class="line"></span><br><span class="line">  const list = data.split(&apos;,&apos;);  // 序列化字符串split成数组</span><br><span class="line"></span><br><span class="line">  const root = new TreeNode(list[0]); // 获取首项，构建根节点</span><br><span class="line">  const queue = [root];          // 根节点推入队列</span><br><span class="line">  let cursor = 1;                // 初始指向list第二项</span><br><span class="line"></span><br><span class="line">  while (cursor &lt; list.length) &#123; // 指针越界，即扫完了序列化字符串</span><br><span class="line">    const node = queue.shift();  // 考察出列的节点</span><br><span class="line"></span><br><span class="line">    const leftVal = list[cursor];      // 它的左儿子的值</span><br><span class="line">    const rightVal = list[cursor + 1]; // 它的右儿子的值</span><br><span class="line"></span><br><span class="line">    if (leftVal != &apos;X&apos;) &#123;              // 是真实节点</span><br><span class="line">      const leftNode = new TreeNode(leftVal); // 创建左儿子节点</span><br><span class="line">      node.left = leftNode;                   // 认父亲</span><br><span class="line">      queue.push(leftNode);                   // 自己也是父亲，入列</span><br><span class="line">    &#125;</span><br><span class="line">    if (rightVal != &apos;X&apos;) &#123;</span><br><span class="line">      const rightNode = new TreeNode(rightVal);</span><br><span class="line">      node.right = rightNode;</span><br><span class="line">      queue.push(rightNode);</span><br><span class="line">    &#125;</span><br><span class="line">    cursor += 2; // 一次考察一对儿子，指针加2</span><br><span class="line">  &#125;</span><br><span class="line">  return root;  // BFS结束，构建结束，返回根节点</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考链接：<br><a href="https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/solution/shou-hui-tu-jie-gei-chu-dfshe-bfsliang-chong-jie-f/" target="_blank" rel="noopener">https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/solution/shou-hui-tu-jie-gei-chu-dfshe-bfsliang-chong-jie-f/</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/算法/"># 算法</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/06/16/algorithm-105/">leeCode-105： 从前序与中序遍历序列构造二叉树 (递归)-中等</a>
+            
+            
+            <a class="next" rel="next" href="/2022/06/13/algorithm-124/">leeCode-124： 二叉树中的最大路径和：(递归)-困难</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

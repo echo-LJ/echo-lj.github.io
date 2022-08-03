@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>leeCode-437： 路径总和III-中等 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">leeCode-437： 路径总和III-中等</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: June 17, 2022&nbsp;&nbsp;13:40:20
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+
+<h2 id="题目描述：-给定一个二叉树的根节点-root-，和一个整数-targetSum-，求该二叉树里节点值之和等于-targetSum-的-路径-的数目。-路径-不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。"><a href="#题目描述：-给定一个二叉树的根节点-root-，和一个整数-targetSum-，求该二叉树里节点值之和等于-targetSum-的-路径-的数目。-路径-不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。" class="headerlink" title="题目描述： 给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。 路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。"></a>题目描述： 给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。 路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。</h2><p><strong>示例1:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-9e8f56d9a785e81f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午1.45.00.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8</span><br><span class="line">输出：3</span><br><span class="line">解释：和等于 8 的路径有 3 条，如图所示。</span><br></pre></td></tr></table></figure>
+<p><strong>示例2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22</span><br><span class="line">输出：3</span><br></pre></td></tr></table></figure>
+<h2 id="题解方法一：前缀和-递归-回溯"><a href="#题解方法一：前缀和-递归-回溯" class="headerlink" title="题解方法一：前缀和+递归+回溯"></a>题解方法一：前缀和+递归+回溯</h2><p><code>前缀和的递归回溯思路:</code></p>
+<ul>
+<li>从当前节点反推到根节点(反推比较好理解，正向其实也只有一条)，有且仅有一条路径，因为这是一棵树</li>
+<li>如果此前有和为currSum-target,而当前的和又为currSum,两者的差就肯定为target了</li>
+<li>所以前缀和对于当前路径来说是唯一的，当前记录的前缀和，在回溯结束，回到本层时去除，保证其不影响其他分支的结果</li>
+</ul>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">var pathSum = function(root, targetSum) &#123;</span><br><span class="line">    const prefix = new Map();</span><br><span class="line">    prefix.set(0, 1);</span><br><span class="line">    return dfs(root, prefix, 0, targetSum);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var dfs = (root, prefix, curr, targetSum) =&gt; &#123;</span><br><span class="line">    </span><br><span class="line">    // 1.递归终止条件</span><br><span class="line">    if (root == null) &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 2.本层要做的事情</span><br><span class="line"></span><br><span class="line">    let ret = 0;</span><br><span class="line">    </span><br><span class="line">    curr += root.val; // 当前路径上的和</span><br><span class="line"></span><br><span class="line">    // 看看root到当前节点这条路上是否存在节点前缀和 + target = currSum的路径</span><br><span class="line">    // 当前节点root节点反推，有且仅有一条路径，如果此前有和为currSum-target,而当前的和又为currSum,两者的差就肯定为target了</span><br><span class="line">    // currSum-target相当于找路径的起点，起点的sum+target=currSum，当前点到起点的距离就是target</span><br><span class="line"></span><br><span class="line">    ret = prefix.get(curr - targetSum) || 0;</span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) + 1); // 更新路径上当前节点前缀和的个数</span><br><span class="line"></span><br><span class="line">        // 3.进入下一层</span><br><span class="line">    ret += dfs(root.left, prefix, curr, targetSum);</span><br><span class="line">    ret += dfs(root.right, prefix, curr, targetSum);</span><br><span class="line"></span><br><span class="line">    // 4.回到本层，恢复状态，去除当前节点的前缀和数量</span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) - 1);</span><br><span class="line">    return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们以示例1为例，进行图解分析<br><img src="https://upload-images.jianshu.io/upload_images/11846892-6340df48bc24e42c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午2.03.28.png"></p>
+<p><strong><code>执行代码第1步</code></strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var pathSum = function(root, targetSum) &#123;</span><br><span class="line">    const prefix = new Map();</span><br><span class="line">    prefix.set(0, 1);</span><br><span class="line">    return dfs(root, prefix, 0, targetSum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong><code>执行代码第2步</code></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">var dfs = (root, prefix, curr, targetSum) =&gt; &#123;</span><br><span class="line">    if (root == null) &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">    let ret = 0; // 执行代码第2步</span><br><span class="line">    </span><br><span class="line">    curr += root.val; // 执行代码第2步 curr = 0 + 10 = 10</span><br><span class="line"></span><br><span class="line">    ret = prefix.get(curr - targetSum) || 0; // 执行代码第2步 curr - targetSum = 10 - 8 = 2  ret = 0</span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) + 1); // 执行代码第2步</span><br><span class="line"></span><br><span class="line">    ret += dfs(root.left, prefix, curr, targetSum); // 执行代码第3步</span><br><span class="line">    ret += dfs(root.right, prefix, curr, targetSum);</span><br><span class="line"></span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) - 1);</span><br><span class="line">    return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-b055ed487ade8450.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午2.43.58.png"></p>
+<p><strong><code>执行代码第3步</code></strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">var dfs = (root, prefix, curr, targetSum) =&gt; &#123;</span><br><span class="line">    if (root == null) &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">    let ret = 0; // 执行代码第3步</span><br><span class="line">    </span><br><span class="line">    curr += root.val; // 执行代码第3步 curr = 10 + 5 = 15</span><br><span class="line"></span><br><span class="line">    ret = prefix.get(curr - targetSum) || 0; // 执行代码第3步 curr - targetSum = 15 - 8 = 7  ret = 0</span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) + 1); // 执行代码第3步</span><br><span class="line"></span><br><span class="line">    ret += dfs(root.left, prefix, curr, targetSum); // 执行代码第4步 ret = 1</span><br><span class="line">    ret += dfs(root.right, prefix, curr, targetSum); // 执行代码第10步 ret = 1+ 1 =2</span><br><span class="line"></span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) - 1);</span><br><span class="line">    return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-7c0ba8e6d082991c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午2.49.28.png"></p>
+<p><strong><code>执行代码第4步</code></strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">var dfs = (root, prefix, curr, targetSum) =&gt; &#123;</span><br><span class="line">    if (root == null) &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">    let ret = 0; // 执行代码第4步</span><br><span class="line">    </span><br><span class="line">    curr += root.val; // 执行代码第4步 curr = 15 + 3 = 18</span><br><span class="line"></span><br><span class="line">    ret = prefix.get(curr - targetSum) || 0; // 执行代码第4步 curr - targetSum = 18 - 8 = 19  ret = 1</span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) + 1); // 执行代码第4步</span><br><span class="line"></span><br><span class="line">    ret += dfs(root.left, prefix, curr, targetSum); // 执行代码第5步</span><br><span class="line">    ret += dfs(root.right, prefix, curr, targetSum); // root.right = null 执行返回</span><br><span class="line"></span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) - 1); // 执行代码第9步</span><br><span class="line">    return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-8165fb1e20378429.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午3.03.38.png"></p>
+<p><strong><code>执行代码第5步</code></strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">var dfs = (root, prefix, curr, targetSum) =&gt; &#123;</span><br><span class="line">    if (root == null) &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">    let ret = 0; // 执行代码第5步</span><br><span class="line">    </span><br><span class="line">    curr += root.val; // 执行代码第5步 curr = 18 + 3 = 21</span><br><span class="line"></span><br><span class="line">    ret = prefix.get(curr - targetSum) || 0; // 执行代码第5步 curr - targetSum = 21 - 8 = 13  ret = 0</span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) + 1); // 执行代码第5步</span><br><span class="line"></span><br><span class="line">    ret += dfs(root.left, prefix, curr, targetSum); // 执行代码第6步 root.left = null 直接返回 0 </span><br><span class="line">    ret += dfs(root.right, prefix, curr, targetSum); // 执行代码第7步</span><br><span class="line"></span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) - 1); // 执行代码第8步</span><br><span class="line">    return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-8293412406cd9543.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午3.11.42.png"></p>
+<p><strong><code>执行代码第6步 root.left = null 直接返回 0</code></strong></p>
+<p><strong><code>执行代码第7步</code></strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">var dfs = (root, prefix, curr, targetSum) =&gt; &#123;</span><br><span class="line">    if (root == null) &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">    let ret = 0; // 执行代码第7步</span><br><span class="line">    </span><br><span class="line">    curr += root.val; // 执行代码第7步 curr = 21 - 3 = 19</span><br><span class="line"></span><br><span class="line">    ret = prefix.get(curr - targetSum) || 0; // 执行代码第7步 curr - targetSum = 19 - 8 = 11  ret = 0</span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) + 1); // 执行代码第7.1步</span><br><span class="line"></span><br><span class="line">    ret += dfs(root.left, prefix, curr, targetSum); </span><br><span class="line">    ret += dfs(root.right, prefix, curr, targetSum); </span><br><span class="line"></span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) - 1); // 执行代码第7.2步</span><br><span class="line">    return ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-a9814d8925596b2c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午3.13.35.png"><br><img src="https://upload-images.jianshu.io/upload_images/11846892-56a6d92db3db3d08.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午3.15.41.png"></p>
+<p><strong><code>执行代码第8步</code></strong></p>
+<p>第8步是在第5步方法中执行的，</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-591c0045c7f2b247.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午3.27.57.png"></p>
+<p><strong><code>执行代码第9步</code></strong></p>
+<p>第9步是在第4步方法中执行的，</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-44c4966af5e02f67.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午3.31.48.png"></p>
+<p><strong><code>执行代码第10步</code></strong></p>
+<p>第10步是在第3步方法中执行的，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">var dfs = (root, prefix, curr, targetSum) =&gt; &#123;</span><br><span class="line">    if (root == null) &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">    let ret = 0; // 执行代码第10步</span><br><span class="line">    </span><br><span class="line">    curr += root.val; // 执行代码第10步 curr = 15 + 2 = 17</span><br><span class="line"></span><br><span class="line">    ret = prefix.get(curr - targetSum) || 0; // 执行代码第10步 curr - targetSum = 17 - 8 = 9  ret = 0</span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) + 1); // 执行代码第10步</span><br><span class="line"></span><br><span class="line">    ret += dfs(root.left, prefix, curr, targetSum); // 执行代码第10步 root.left = null 直接返回 0 </span><br><span class="line">    ret += dfs(root.right, prefix, curr, targetSum); // 执行代码第11步</span><br><span class="line"></span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) - 1); </span><br><span class="line">    return ret; // 第11步 ret = 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-d48f1b82d32038d7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午3.44.08.png"></p>
+<p><strong><code>执行代码第11步</code></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">var dfs = (root, prefix, curr, targetSum) =&gt; &#123;</span><br><span class="line">    if (root == null) &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">    let ret = 0; // 执行代码第11步</span><br><span class="line">    </span><br><span class="line">    curr += root.val; // 执行代码第11步 curr = 17 + 1 = 18</span><br><span class="line"></span><br><span class="line">    ret = prefix.get(curr - targetSum) || 0; // 执行代码第11步 curr - targetSum = 18 - 8 = 10  ret = 1</span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) + 1); // 执行代码第11步</span><br><span class="line"></span><br><span class="line">    ret += dfs(root.left, prefix, curr, targetSum); // 执行代码第11步 root.left = null 直接返回 0 </span><br><span class="line">    ret += dfs(root.right, prefix, curr, targetSum); // 执行代码第11步 root.left = null 直接返回 0 </span><br><span class="line"></span><br><span class="line">    prefix.set(curr, (prefix.get(curr) || 0) - 1);  // 执行代码第11步</span><br><span class="line">    return ret; // 执行代码第11步 ret = 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-885f85a2c85cf4bf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-17 下午3.48.06.png"></p>
+<p>执行完第10步之后，返回到第3步中 ret = 2</p>
+<p>右子树同理，此处省略相关图解，执行之后 ret = 3</p>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考链接：<br><a href="https://github.com/sisterAn/JavaScript-Algorithms/issues/41" target="_blank" rel="noopener">https://github.com/sisterAn/JavaScript-Algorithms/issues/41</a><br><a href="https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by--22/" target="_blank" rel="noopener">https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by--22/</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/算法/"># 算法</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/06/20/algorithm-337/">leeCode-337： 打家劫舍 III（动态规划）-中等</a>
+            
+            
+            <a class="next" rel="next" href="/2022/06/16/algorithm-105/">leeCode-105： 从前序与中序遍历序列构造二叉树 (递归)-中等</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

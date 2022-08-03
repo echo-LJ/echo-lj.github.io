@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>leeCode-226：翻转二叉树：（递归-深度优先遍历、迭代-广度优先遍历）-初级 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">leeCode-226：翻转二叉树：（递归-深度优先遍历、迭代-广度优先遍历）-初级</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: June 2, 2022&nbsp;&nbsp;14:15:42
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h2 id="题目描述：给你一棵二叉树的根节点-root-，翻转这棵二叉树，并返回其根节点。"><a href="#题目描述：给你一棵二叉树的根节点-root-，翻转这棵二叉树，并返回其根节点。" class="headerlink" title="题目描述：给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。"></a>题目描述：给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。</h2><p><strong>示例1:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-e2c4deee7e56e53e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="demo1.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [4,2,7,1,3,6,9]</span><br><span class="line">输出：[4,7,2,9,6,3,1]</span><br></pre></td></tr></table></figure>
+<p><strong>示例2:</strong><br><img src="https://upload-images.jianshu.io/upload_images/11846892-552a96237f3a4f91.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="demo2.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">输入：root = [2,1,3]</span><br><span class="line">输出：[2,3,1]</span><br></pre></td></tr></table></figure></p>
+<p><strong>示例3:</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">输入：root = []</span><br><span class="line">输出：[]</span><br></pre></td></tr></table></figure></p>
+<h3 id="题解方法一：-递归-深度优先遍历（本人自己可以写出来的第二道算法！此处庆祝，热烈鼓掌👏👏）"><a href="#题解方法一：-递归-深度优先遍历（本人自己可以写出来的第二道算法！此处庆祝，热烈鼓掌👏👏）" class="headerlink" title="题解方法一： 递归-深度优先遍历（本人自己可以写出来的第二道算法！此处庆祝，热烈鼓掌👏👏）"></a>题解方法一： 递归-深度优先遍历（本人自己可以写出来的第二道算法！此处庆祝，热烈鼓掌👏👏）</h3><p><code>从根节点开始，递归地对树进行遍历，并从叶子节点先开始翻转。</code></p>
+<ul>
+<li>如果当前遍历到的节点 \textit{root}root 的左右两棵子树都已经翻转，那么我们只需要交换两棵子树的位置，即可完成以 \textit{root}root 为根节点的整棵子树的翻转。</li>
+</ul>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var invertTree = function(root) &#123;</span><br><span class="line">    if (root === null) &#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">    const left = invertTree(root.left);</span><br><span class="line">    const right = invertTree(root.right);</span><br><span class="line">    root.left = right;</span><br><span class="line">    root.right = left;</span><br><span class="line">    return root;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="题解方法二：迭代-广度优先遍历"><a href="#题解方法二：迭代-广度优先遍历" class="headerlink" title="题解方法二：迭代-广度优先遍历"></a>题解方法二：迭代-广度优先遍历</h2><p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">var invertTree = function(root) &#123;</span><br><span class="line">    if(!root) return root</span><br><span class="line">    let stack = [root]</span><br><span class="line">    while(stack.length)&#123;</span><br><span class="line">        let node = stack.shift()</span><br><span class="line">        let temp = node.left</span><br><span class="line">        node.left = node.right</span><br><span class="line">        node.right = temp</span><br><span class="line">        if(node.left)&#123;</span><br><span class="line">            stack.push(node.left)</span><br><span class="line">        &#125;</span><br><span class="line">        if(node.right)&#123;</span><br><span class="line">            stack.push(node.right)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return root</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考链接：<br><a href="https://leetcode.cn/problems/invert-binary-tree/solution/dong-hua-yan-shi-liang-chong-shi-xian-226-fan-zhua/" target="_blank" rel="noopener">https://leetcode.cn/problems/invert-binary-tree/solution/dong-hua-yan-shi-liang-chong-shi-xian-226-fan-zhua/</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/算法/"># 算法</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/06/03/algorithm-101/">leeCode-101：对称二叉树：（递归-深度优先遍历、迭代-广度优先遍历）-初级</a>
+            
+            
+            <a class="next" rel="next" href="/2022/06/01/algorithm-617/">leeCode-617：合并二叉树：（深度优先搜索DFS、广度优先搜索BFS）-初级</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

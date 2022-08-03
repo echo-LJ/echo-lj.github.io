@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>VUE项目的优化 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">VUE项目的优化</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: January 19, 2021&nbsp;&nbsp;19:52:06
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>##VUE项目的优化</p>
+<p>Vue会在首屏加载的时候加载出所有的组件和插件，并且向服务器请求数据，导致可能有时候首屏加载的时间就会到4、5秒的样子。</p>
+<p>一．源码优化</p>
+<p>1、代码模块化组件化，</p>
+<ul>
+<li>封装基础组件+业务组件、复用性越高越好，可配置型越强越好</li>
+<li>css也可以通过less和sass的自定义css变量来减少重复代码。</li>
+</ul>
+<p>2、for循环设置key值，在用v-for进行数据遍历渲染的时候，为每一项都设置唯一的key值，为了让Vue内部核心代码能更快地找到该条数据，当旧值和新值去对比的时候，可以更快的定位到diff。</p>
+<p>3、Vue路由设置成懒加载，当首屏渲染的时候，能够加快渲染速度。</p>
+<p>4、更加理解Vue的生命周期，不要造成内部泄漏，使用过后的全局变量在组件销毁后重新置为null。</p>
+<p>5、可以使用keep-alive，keep-alive是Vue提供的一个比较抽象的组件，用来对组件进行缓存，从而节省性能。</p>
+<p>二．打包优化</p>
+<p>1、修改vue.config.js中的配置项，把productionSourceMap设置为false，不然最终打包过后会生成一些map文件，如果不关掉，生成环境是可以通过map去查看源码的，并且可以开启gzip压缩，使打包过后体积变小。</p>
+<p>2、使用cdn的方式外部加载一些资源，比如vue-router、axios等Vue的周边插件，在webpack.config.js里面，externals里面设置一些不必要打包的外部引用模块。然后在入门文件index.html里面通过cdn的方式去引入需要的插件。</p>
+<p>3、减少图片使用，因为对于网页来说，图片会占用很大一部分体积，所以，优化图片的操作可以有效的来加快加载速度。可以用一些css3的效果来代替图片效果，或者使用雪碧图来减少图片的体积。</p>
+<p>4、按需引入，咱们使用的一些第三方库可以通过按需引入的方式加载。避免引入不需要使用的部分，无端增加项目体积。比如在使用element-ui库的时候，可以只引入需要用到的组件。</p>
+<p>三、提高首屏加载速度的优化方案:<br>1、采用路由懒加载 2、将一些静态js css放到其他地方（如OSS），减小服务器压力 3、按需加载三方资源，如iview,建议按需引入iview中的组件 4、使用nginx开启gzip减小网络传输的流量大小 5、webpack开启gzip压缩 6、若首屏为登录页，可以做成多入口，登录页单独分离为一个入口 7、图片懒加载方案</p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2021/01/19/2/">Vue.js3.0响应式内部的实现原理-原理解析</a>
+            
+            
+            <a class="next" rel="next" href="/2021/01/11/vue14/">Vue.js3.0 & Vue.js2.x 细节对比</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

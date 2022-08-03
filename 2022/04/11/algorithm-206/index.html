@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>leeCode-206：反转链表：(迭代、递归两种解法)-初级 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">leeCode-206：反转链表：(迭代、递归两种解法)-初级</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: April 11, 2022&nbsp;&nbsp;14:44:59
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h2 id="题目描述：给你单链表的头节点-head-，请你反转链表，并返回反转后的链表。"><a href="#题目描述：给你单链表的头节点-head-，请你反转链表，并返回反转后的链表。" class="headerlink" title="题目描述：给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。"></a>题目描述：给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。</h2><p><strong>示例1:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-e379a9cc3764efd8.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="demo1.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：head = [1,2,3,4,5]</span><br><span class="line">输出：[5,4,3,2,1]</span><br></pre></td></tr></table></figure>
+<p><strong>示例2:</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：head = []</span><br><span class="line">输出：[]</span><br><span class="line">`</span><br></pre></td></tr></table></figure></p>
+<h2 id="题解方法一：迭代"><a href="#题解方法一：迭代" class="headerlink" title="题解方法一：迭代"></a>题解方法一：迭代</h2><p><code>在遍历链表时，将当前节点的 next 指针改为指向前一个节点。由于节点没有引用其前一个节点，因此必须事先存储其前一个节点。在更改引用之前，还需要存储后一个节点。最后返回新的头引用。</code></p>
+<ul>
+<li>存储当前节点的下一节点；</li>
+<li>更改next为前一个节点；</li>
+<li>存储前节点为当前节点，以供下次更改next使用；</li>
+<li>更改当前节点为自己的下节点；</li>
+</ul>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var reverseList = function(head) &#123;</span><br><span class="line">    let prev = null;</span><br><span class="line">    let curr = head;</span><br><span class="line">    while (curr) &#123;</span><br><span class="line">        const next = curr.next;</span><br><span class="line">        curr.next = prev;</span><br><span class="line">        prev = curr;</span><br><span class="line">        curr = next;</span><br><span class="line">    &#125;</span><br><span class="line">    return prev;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>下面通过图解 来实现 反转链表：</p>
+<ul>
+<li>第一行代码图解：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var reverseList = function(head) &#123; //1</span><br></pre></td></tr></table></figure>
+<p>我们以示例1为例，进行解析题目，当前链表有1、2、3、4、5个元素，链尾[缺链接]最后跟着一个null,所以即将要被反转的链表结构如下：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-ae51cab1329393ff.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-11 下午3.48.54.png"></p>
+<ul>
+<li>第二行代码图解：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let prev = null;   // 2</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>将null 赋值给prev, 即prev 指向null, 如图所示：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-7047e1b88c9f2346.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-11 下午3.52.00.png"></p>
+<ul>
+<li>第三行代码图解：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let curr = head; //3</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>将链表head赋值给curr,即curr指向head链表, 如图所示：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-5a23ea506a26afb3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-11 下午3.53.54.png"></p>
+<ul>
+<li>循环部分代码图解：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">while (curr) &#123;  //4</span><br><span class="line">      const next = curr.next; //5</span><br><span class="line">      curr.next = prev; //6</span><br><span class="line">      prev = curr; //7</span><br><span class="line">      curr = next; //8</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>循环部分是链表反转的核心部分，我们先走一遍循环，图解分析一波。</p>
+<p>因为curr指向了head，head不为null，所以进入循环。先来看第5行：</p>
+<ul>
+<li>第五行代码图解：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const next = curr.next; //5</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>将curr.next复制给变量next，即next指向curr的下一个节点，如图所示：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-b62650e4fa713e6f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-11 下午3.58.13.png"></p>
+<ul>
+<li>第六行代码图解：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curr.next = prev; //6</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>将prev赋值给curr.next， 因为prev指向null,即curr指向了null,但前各个变量如图所示：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-deab58010f4a1f98.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-11 下午4.03.42.png"></p>
+<ul>
+<li>第七行代码图解：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prev = curr; //7</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>将curr赋值给prev,即prev指向curr,如图所示：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-53fd2349465757bf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-11 下午4.05.35.png"></p>
+<ul>
+<li>第八行代码图解：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curr = next;; //8</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>将next赋值给curr,即curr指向next,如图所示：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-d30599903d8e870b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-11 下午4.07.01.png"></p>
+<p>至此，第一遍循环执行结束啦，回到while循环，因为curr依旧不为null， 我们需要重复上述循环继续解析它；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const next = curr.next; //5</span><br><span class="line">curr.next = prev; //6</span><br><span class="line">prev = curr; //7</span><br><span class="line">curr = next; //8</span><br></pre></td></tr></table></figure>
+<p>此处省略中间3遍5-8行代码解析，继续执行第5遍5-8行代码图解，如下所示：</p>
+<p>以此可得图解：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-9cf9cd948cb52607.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-11 下午4.14.27.png"><br><img src="https://upload-images.jianshu.io/upload_images/11846892-625dad964b02505b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-11 下午4.16.23.png"><br><img src="https://upload-images.jianshu.io/upload_images/11846892-bbcfc838b0d6677c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-11 下午4.16.56.png"><br><img src="https://upload-images.jianshu.io/upload_images/11846892-01867ef0a012d558.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-04-11 下午4.17.25.png"></p>
+<p>到了此处，我们发现curr已经为null了，跳出了while循环，prev已经指向了向标链表的反转了，所以执行到第九行，反转链表功能即可实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">return prev； //9</span><br></pre></td></tr></table></figure>
+<h2 id="题解方法二：递归"><a href="#题解方法二：递归" class="headerlink" title="题解方法二：递归"></a>题解方法二：递归</h2><p><code>递归版本稍微复杂一些，其关键在于反向工作。迭代方式从前面1开始依次往后处理，而递归方式恰恰相反，它先循环找到最后面的指向的数5，从而从5开始依次处理翻转整个链表</code></p>
+<p>解体思路： 首先设置一个新的指针newHead作为翻转后的链表的链头。由于整个链表反转之后的链头就是当前链表的链尾的数（最后一个数），所以整个过程newHead指针一直指向存放5的地址空间。</p>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var reverseList = function(head) &#123;</span><br><span class="line">    if (head == null || head.next == null) &#123;</span><br><span class="line">        return head;</span><br><span class="line">    &#125;</span><br><span class="line">    const newHead = reverseList(head.next);</span><br><span class="line">    head.next.next = head;</span><br><span class="line">    head.next = null;</span><br><span class="line">    return newHead;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>下面通过代码拆分解析如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">var reverseList = function(head) &#123;  //  head： 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;null </span><br><span class="line">    if (head == null || head.next == null) &#123;</span><br><span class="line">        return head;</span><br><span class="line">    &#125;</span><br><span class="line">    const newHead = function(head) &#123;  //  head： 2-&gt;3-&gt;4-&gt;5-&gt;null  // 执行顺序11: newHead: 5的地址空间</span><br><span class="line">        if (head == null || head.next == null) &#123;</span><br><span class="line">            return head;</span><br><span class="line">        &#125;</span><br><span class="line">        const newHead = function(head) &#123;  //  head： 3-&gt;4-&gt;5-&gt;null  // 执行顺序8: newHead: 5的地址空间</span><br><span class="line">            if (head == null || head.next == null) &#123;</span><br><span class="line">                return head;</span><br><span class="line">            &#125;</span><br><span class="line">            const newHead = function(head) &#123;  //  head： 4-&gt;5-&gt;null  // 执行顺序5: newHead: 5的地址空间</span><br><span class="line">                if (head == null || head.next == null) &#123;</span><br><span class="line">                    return head;</span><br><span class="line">                &#125;</span><br><span class="line">                const newHead = function(head) &#123;  //  执行顺序1: 此处newHead 5-&gt;null  执行到if后不向下执行 head： 5-&gt;null     newHead:   5的地址空间</span><br><span class="line">                    if (head == null || head.next == null) &#123;</span><br><span class="line">                        return head;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;;</span><br><span class="line">                head.next.next = head; // 执行顺序2: 4.next.next = 4 即 5.next = 4; head： 5-&gt;4</span><br><span class="line">                head.next = null; // 执行顺序3:   4.next = null,  head： 5-&gt;4-&gt;null</span><br><span class="line">                return newHead; // 执行顺序4: newHead指向节点: 5的地址空间  </span><br><span class="line">            &#125;;</span><br><span class="line">            head.next.next = head;  // 执行顺序6: 3.next.next = 3 即 4.next = 3; head： 5-&gt;4-&gt;3</span><br><span class="line">            head.next = null;  // 执行顺序7:   3.next = null,  head： 5-&gt;4-&gt;3-&gt;null</span><br><span class="line">            return newHead; // 执行顺序8: newHead指向节点: 5的地址空间  </span><br><span class="line">        &#125;;</span><br><span class="line">        head.next.next = head; // 执行顺序9: 2.next.next = 2 即 3.next = 2; head： 5-&gt;4-&gt;3-&gt;2</span><br><span class="line">        head.next = null; // 执行顺序10:   2.next = null,  head： 5-&gt;4-&gt;3-&gt;2-&gt;null</span><br><span class="line">        return newHead; // 执行顺序11: newHead指向节点: 5的地址空间  </span><br><span class="line">    &#125;;</span><br><span class="line">    head.next.next = head; // 执行顺序12: 1.next.next = 1 即 2.next = 1; head： 5-&gt;4-&gt;3-&gt;2-&gt;1</span><br><span class="line">    head.next = null; // 执行顺序13:   1.next = null,  head： 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;null</span><br><span class="line">    return newHead;  // 执行顺序14: newHead指向节点:5的地址空间 </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>中心思想讲解： </p>
+<ul>
+<li>设置一个新的指针[newHead]作为翻转后的链表的链头。由于整个链表翻转之后的头就是最后一个数，所以整个过程newHead指针一直存放5的地址空间。</li>
+<li><p>head指针逐层返回的时候依次将H的指针复制给head.next.next， 并且一定要将head.next设置为null, 即断开现在指针的链接，否则会新的链表会形成闭环。</p>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+</li>
+</ul>
+<p>参考链接：<br><a href="https://juejin.cn/post/6844904058562543623" target="_blank" rel="noopener">https://juejin.cn/post/6844904058562543623</a><br><a href="https://blog.csdn.net/FX677588/article/details/72357389" target="_blank" rel="noopener">https://blog.csdn.net/FX677588/article/details/72357389</a><br><a href="https://leetcode-cn.com/problems/reverse-linked-list/solution/dong-hua-yan-shi-206-fan-zhuan-lian-biao-by-user74/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/reverse-linked-list/solution/dong-hua-yan-shi-206-fan-zhuan-lian-biao-by-user74/</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/算法/"># 算法</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/04/11/dataStructure1/">数据结构：链表</a>
+            
+            
+            <a class="next" rel="next" href="/2022/04/07/spa/">spa</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

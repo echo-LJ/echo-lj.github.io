@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>leeCode-144： 二叉树的前序遍历： (迭代、递归、Morris遍历三种解法)-简单 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">leeCode-144： 二叉树的前序遍历： (迭代、递归、Morris遍历三种解法)-简单</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: April 24, 2022&nbsp;&nbsp;16:25:41
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h2 id="题目描述：-给你二叉树的根节点-root-，返回它节点值的-前序-遍历。"><a href="#题目描述：-给你二叉树的根节点-root-，返回它节点值的-前序-遍历。" class="headerlink" title="题目描述： 给你二叉树的根节点 root ，返回它节点值的 前序 遍历。"></a>题目描述： 给你二叉树的根节点 root ，返回它节点值的 前序 遍历。</h2><p><strong>示例1:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-ecf6dc20ad7a9e22.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2022-04-24 下午4.27.55.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1,null,2,3]</span><br><span class="line">输出：[1,2,3]</span><br></pre></td></tr></table></figure>
+<p><strong>示例2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = []</span><br><span class="line">输出：[]</span><br></pre></td></tr></table></figure>
+<p><strong>示例3:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1]</span><br><span class="line">输出：[1]</span><br></pre></td></tr></table></figure>
+<p><strong>示例4:</strong><br><img src="https://upload-images.jianshu.io/upload_images/11846892-621ab535519d00b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2022-04-24 下午4.29.16.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1,2]</span><br><span class="line">输出：[1,2]</span><br></pre></td></tr></table></figure>
+<p><strong>示例5:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-317cb88b31fa5df5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2022-04-24 下午4.29.39.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1,null,2]</span><br><span class="line">输出：[1,2]</span><br></pre></td></tr></table></figure>
+<h2 id="题解方法一：递归法"><a href="#题解方法一：递归法" class="headerlink" title="题解方法一：递归法"></a>题解方法一：递归法</h2><p>解题思路：二叉树的前序遍历：按照访问根节点——左子树——右子树的方式遍历这棵树，而在访问左子树或者右子树的时候，我们按照同样的方式遍历，直到遍历完整棵树。因此整个遍历过程天然具有递归的性质，我们可以直接用递归函数来模拟这一过程。</p>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var preorderTraversal = (root) =&gt; &#123;</span><br><span class="line">  let arr = []</span><br><span class="line">  preorder(root, arr);</span><br><span class="line">  return arr</span><br><span class="line">&#125;</span><br><span class="line">var preorder = (root, arr) =&gt; &#123;</span><br><span class="line">  if (root === null) return</span><br><span class="line">  arr.push(root.val);</span><br><span class="line">  preorder(root.left, arr)</span><br><span class="line">  preorder(root.right, arr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="题解方法二：迭代"><a href="#题解方法二：迭代" class="headerlink" title="题解方法二：迭代"></a>题解方法二：迭代</h2><p>解题思路：我们也可以用迭代的方式实现方法一的递归函数，两种方式是等价的，区别在于递归的时候隐式地维护了一个栈，而我们在迭代的时候需要显式地将这个栈模拟出来，其余的实现与细节都相同。</p>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var preorderTraversal = function(root) &#123;</span><br><span class="line">    if (!root) return []</span><br><span class="line">    const stack = [], res = []</span><br><span class="line">    stack.push(root)</span><br><span class="line">    while (stack.length) &#123;</span><br><span class="line">        const curr = stack.pop()</span><br><span class="line">        res.push(curr.val)</span><br><span class="line">        if (curr.right) stack.push(curr.right)</span><br><span class="line">        if (curr.left) stack.push(curr.left)</span><br><span class="line">    &#125;</span><br><span class="line">    return res</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>下面进行图解分析：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stack.push(root)</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-0753974f29e5145b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2022-04-24 下午5.20.25.png"></p>
+<p>stack.length不为0 ，进入while循环<br>执行第一次循环之后：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-83c93dca0a1ef3a0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2022-04-24 下午5.22.23.png"></p>
+<p>执行第二次循环之后：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-56773f3caac0d013.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2022-04-24 下午5.24.18.png"><br>执行第3次循环之后：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-bbfd616c532c7b42.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2022-04-24 下午5.25.05.png"><br>执行第4次循环之后：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-aec07ae65b31f893.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2022-04-24 下午5.25.46.png"></p>
+<p>执行第5次循环之后：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-3f4036c490b19e34.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2022-04-24 下午5.26.54.png"></p>
+<p>执行第6次循环之后：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-5cfe4c37d9b9dcdc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2022-04-24 下午5.27.45.png"></p>
+<p>结束循环，执行完毕！！</p>
+<h2 id="题解方法三：Morris遍历-没看懂"><a href="#题解方法三：Morris遍历-没看懂" class="headerlink" title="题解方法三：Morris遍历 !!没看懂"></a>题解方法三：Morris遍历 !!没看懂</h2><p>解题思路：Morris遍历的详细解释+注释版</p>
+<p>一些前置知识：</p>
+<p>前驱节点，如果按照中序遍历访问树，访问的结果为ABC，则称A为B的前驱节点，B为C的前驱节点。<br>前驱节点pre是curr左子树的最右子树（按照中序遍历走一遍就知道了）。<br>由此可知，前驱节点的右子节点一定为空。<br>主要思想：</p>
+<p>树的链接是单向的，从根节点出发，只有通往子节点的单向路程。</p>
+<p>中序遍历迭代法的难点就在于，需要先访问当前节点的左子树，才能访问当前节点。</p>
+<p>但是只有通往左子树的单向路程，而没有回程路，因此无法进行下去，除非用额外的数据结构记录下回程的路。</p>
+<p>在这里可以利用当前节点的前驱节点，建立回程的路，也不需要消耗额外的空间。</p>
+<p>根据前置知识的分析，当前节点的前驱节点的右子节点是为空的，因此可以用其保存回程的路。</p>
+<p>但是要注意，这是建立在破坏了树的结构的基础上的，因此我们最后还有一步“消除链接”’的步骤，将树的结构还原。</p>
+<p>重点过程： 当遍历到当前节点curr时，使用cuur的前驱节点pre</p>
+<p>标记当前节点是否访问过<br>记录回溯到curr的路径（访问完pre以后，就应该访问curr了）<br>以下为我们访问curr节点需要做的事儿：</p>
+<p>访问curr的节点时候，先找其前驱节点pre<br>找到前驱节点pre以后，我们根据其右指针的值，来判断curr的访问状态：<br>pre的右子节点为空，说明curr第一次访问，其左子树还没有访问，此时我们应该将其指向curr，并访问curr的左子树<br>pre的右子节点指向curr，那么说明这是第二次访问curr了，也就是说其左子树已经访问完了，此时将curr.val加入结果集中<br>更加细节的逻辑请参考代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Integer&gt; method3(TreeNode root) &#123;</span><br><span class="line">        List&lt;Integer&gt; ans=new LinkedList&lt;&gt;();</span><br><span class="line">        while(root!=null)&#123;</span><br><span class="line">            //没有左子树，直接访问该节点，再访问右子树</span><br><span class="line">            if(root.left==null)&#123;</span><br><span class="line">                ans.add(root.val);</span><br><span class="line">                root=root.right;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">            //有左子树，找前驱节点，判断是第一次访问还是第二次访问</span><br><span class="line">                TreeNode pre=root.left;</span><br><span class="line">                while(pre.right!=null&amp;&amp;pre.right!=root)</span><br><span class="line">                    pre=pre.right;</span><br><span class="line">                //是第一次访问，访问左子树</span><br><span class="line">                if(pre.right==null)&#123;</span><br><span class="line">                    pre.right=root;</span><br><span class="line">                    root=root.left;</span><br><span class="line">                &#125;</span><br><span class="line">                //第二次访问了，那么应当消除链接</span><br><span class="line">                //该节点访问完了，接下来应该访问其右子树</span><br><span class="line">                else&#123;</span><br><span class="line">                    pre.right=null;</span><br><span class="line">                    ans.add(root.val);</span><br><span class="line">                    root=root.right;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>参考地址：<a href="https://leetcode-cn.com/problems/binary-tree-preorder-traversal/solution/bao-ni-hui-de-dui-ge-lei-ti-jie-zhong-ge-mlgr/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/binary-tree-preorder-traversal/solution/bao-ni-hui-de-dui-ge-lei-ti-jie-zhong-ge-mlgr/</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/算法/"># 算法</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/04/25/algorithm-114/">leeCode-114： 二叉树展开为链表： (前序遍历两种解法+ 寻找前驱节点的一种解法)-中等</a>
+            
+            
+            <a class="next" rel="next" href="/2022/04/24/dataStructure2/">数据结构：链表</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

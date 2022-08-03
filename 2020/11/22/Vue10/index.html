@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>Vue3.0的优化 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Vue3.0的优化</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: November 22, 2020&nbsp;&nbsp;10:00:00
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h4 id="Vue1-x-—-gt-Vue2-x"><a href="#Vue1-x-—-gt-Vue2-x" class="headerlink" title="Vue1.x —-&gt; Vue2.x"></a>Vue1.x —-&gt; Vue2.x</h4><p>引入了<code>虚拟Dom</code>的概念： 为后续做<code>服务端渲染</code>以及<code>跨端框架Weex</code>提供了基础。</p>
+<h4 id="Vue2-x的痛点-其他优化考虑"><a href="#Vue2-x的痛点-其他优化考虑" class="headerlink" title="Vue2.x的痛点 + 其他优化考虑"></a>Vue2.x的痛点 + 其他优化考虑</h4><p><strong>痛点</strong></p>
+<ul>
+<li>源码自身的维护性</li>
+<li>数据量大后带来的渲染和更新的性能问题</li>
+<li>一些想舍弃但为了兼容一直保留的鸡肋API<br><strong>其他优化考虑</strong></li>
+<li>更好的Typescript支持</li>
+<li>更好的逻辑复用实践（mixins带来的逻辑模糊）</li>
+</ul>
+<h1 id="Vue3-0的优化"><a href="#Vue3-0的优化" class="headerlink" title="Vue3.0的优化"></a>Vue3.0的优化</h1><h2 id="一、源码的优化"><a href="#一、源码的优化" class="headerlink" title="一、源码的优化"></a>一、源码的优化</h2><hr>
+<h3 id="1、更好的代码管理方式：-monorepo"><a href="#1、更好的代码管理方式：-monorepo" class="headerlink" title="1、更好的代码管理方式： monorepo"></a>1、更好的代码管理方式： monorepo</h3><p>monorepo： 一个项目仓库（repo）中管理多个模块/包（package）<br>扩展： 目前有很多大型开源项目采用了这种方式： Babel、 create-react-app、 react-router等。</p>
+<p>Vue2.x根据功能拆分出了几个目录：<br><img src="https://s0.lgstatic.com/i/image/M00/2C/DC/Ciqc1F8Cn6mAHaUrAACzRBFsL1g844.png" alt="image.png"></p>
+<ul>
+<li>compiler（模板编译的相关代码）</li>
+<li>core（与平台无关的通用运行时代码）</li>
+<li>platforms（平台专有代码）</li>
+<li>server（服务端渲染的相关代码）</li>
+<li>sfc（.vue 单文件解析相关代码）</li>
+<li>shared（共享工具代码） 等目录</li>
+</ul>
+<p>Vue3.0根据功能将不同的模块拆分到packages目录下面的不同子目录中：<br><img src="https://s0.lgstatic.com/i/image/M00/2C/DC/Ciqc1F8Cn7KAELkqAAJkxFes1zw593.png" alt="image.png"></p>
+<p>每个package有各自的API、类型定义、测试。<br>优点： 使模块拆分更细化、职责划分更明确，模块之间依赖关系更明确。</p>
+<p>另外一些package（reactivity响应式库）是可以独立于Vue.js使用的，如果只想使用Vue.js3.0的响应式能力，可以单独依赖这个响应式库而不去依赖整个Vue.js,从而<code>减小了引用包的体积大小</code>。</p>
+<h3 id="2-有类型的Javascript-Typescript"><a href="#2-有类型的Javascript-Typescript" class="headerlink" title="2.有类型的Javascript: Typescript"></a>2.有类型的Javascript: Typescript</h3><p>类型语言优点： 有利于代码的维护、避免了类型导致的错误、有利于接口的定义、利于IDE对变量类型的推导。</p>
+<ul>
+<li>Vue1.x没有语法检查</li>
+<li>Vue2.x选择Flow<br>Flow 是 Facebook 出品的 JavaScript 静态类型检查工具。它可以以非常小的成本对已有的 JavaScript 代码迁入，非常灵活。<br>但是Flow对于复杂场景类型的检查，支持的不好，在Vue2.x中，有对Flow的吐槽。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const propOptions: any = vm.$options.props // wtf flow?</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>由于这里 Flow 并没有正确推导出 vm.$options.props 的类型 ，开发人员不得不强制申明 propsOptions 的类型为 any，显得很不合理.</p>
+<ul>
+<li>Vue3.0使用Typescript 重构了整个项目</li>
+</ul>
+<h2 id="二、性能的优化"><a href="#二、性能的优化" class="headerlink" title="二、性能的优化"></a>二、性能的优化</h2><hr>
+<h3 id="1、源码体积的优化"><a href="#1、源码体积的优化" class="headerlink" title="1、源码体积的优化"></a>1、源码体积的优化</h3><p>JavaScript 包体积越小，意味着网络传输时间越短，JavaScript 引擎解析包的速度也越快。</p>
+<blockquote>
+<p>Vue.js 3.0 在源码体积的减少方面做了哪些工作呢？</p>
+</blockquote>
+<ul>
+<li>首先，移除一些冷门的 <code>feature</code>（比如 filter、inline-template 等）；</li>
+<li>其次，引入 <code>tree-shaking</code> 的技术，减少打包体积。</li>
+</ul>
+<p><strong><code>tree-shaking</code></strong>: 利用ES2015模块语法的静态结构（即 import 和 export），通过<code>编译阶段</code>的静态分析，找到没有引入的模块并打上标记。<br>然后<code>压缩阶段</code>会利用例如uglify-js、terser 等压缩工具真正地删除这些没有用到的代码。例如项目中没有用到Transition、keepAlive等组件，对应的代码就不会提交，这样就间接达到了减少Vue.js包体积的目的。</p>
+<h3 id="2、数据劫持优化"><a href="#2、数据劫持优化" class="headerlink" title="2、数据劫持优化"></a>2、数据劫持优化</h3><p>数据劫持：当数据发生改变后，为了自动更新DOM,必须劫持数据的更新，也就是当数据发生改变后能自动执行一些代码去更新DOM，那么Vue.js如何知道更新哪一片DOM呢？（大体的思路）因为在渲染DOM的时候访问了数据，我们对它进行访问劫持，在内部进行依赖关系，也就知道数据对应的DOM是什么了。</p>
+<ul>
+<li>Vue.js1.x和Vue.js2.x是通过<code>Object.defineProperty</code>这个Api去劫持数据的getter和setter<br><strong>`</strong>缺陷：<code>**
+1.必须知道拦截的Key是什么，他不能检测对象属性的添加和删除
+**Vue解决办法:** 提供了</code>$set<code>和</code>$delete`方法。</li>
+</ul>
+<ol start="2">
+<li>对于嵌套层级比较深的对象<br><strong>Vue解决办法:</strong> 如果要劫持它内部深层次的对象，遍历递归整个对象，执行Object.defineProperty把每一层对象数据都变成响应式的。</li>
+</ol>
+<ul>
+<li>Vue.js3.0s使用了<code>Proxy API</code>做数据劫持</li>
+</ul>
+<ol>
+<li>他劫持的是整个对象，对于对象属性的增加和删除都能检测到。</li>
+<li>对于嵌套层级比较深的对象<br><strong>Vue解决办法:</strong> 在Getter中去递归响应式，好处是真正访问到的内部对象才会变成响应式，而不是无脑递归，增加了性能。</li>
+</ol>
+<h3 id="3、编译优化"><a href="#3、编译优化" class="headerlink" title="3、编译优化"></a>3、编译优化</h3><p><img src="https://s0.lgstatic.com/i/image/M00/2C/FF/CgqCHl8Cuf2AZw70AAEFU2EMA50521.png" alt="image.png"></p>
+<ul>
+<li><p>Vue.js2.x中从 new Vue 开始渲染DOM的流程，在init阶段处理响应式（数据劫持优化），还有耗时较多的patch阶段。<br><code>diff过程缺点:</code><br><strong>举个🌰：</strong>一段代码中有多个同级dom节点，但只有一个节点绑定了动态数据。<br>导致问题：vnode的性能跟模版大小正相关，跟动态节点的数量无关，当一些组件内只有少量动态节点，很多的diff和遍历都是浪费性能，</p>
+</li>
+<li><p>Vue3.0 通过编译阶段对静态模版的分析，编译生成了<code>Block tree</code></p>
+</li>
+</ul>
+<p>Block tree是一个将模版基于动态节点指令切割的嵌套区块，每个区块内部的节点结构都是固定的，借助Block tree将vnode更新性能由与模版整体大小提升为与动态内容的数量相关。</p>
+<p>除此之外，3，0还包含了对Slot的编译优化，事件侦听函数的缓存优化，并且在运行时重写了diff算法。</p>
+<h2 id="三、语法API优化：-composition-API"><a href="#三、语法API优化：-composition-API" class="headerlink" title="三、语法API优化： composition API"></a>三、语法API优化： composition API</h2><hr>
+<h3 id="1、优化逻辑组织"><a href="#1、优化逻辑组织" class="headerlink" title="1、优化逻辑组织"></a>1、优化逻辑组织</h3><ul>
+<li>Vue.js1.x和Vue.js2.x使用<code>Options API</code><br>编译组件的时候，一个组件可能有多个逻辑点，当使用ptions API的时候，每一个逻辑关注点都有自己的Options,如果需要修改一个逻辑关注点，就需要在单个文件中不断上下切换和寻找。</li>
+<li>Vue.js3.0使用<code>Composition API</code><br>某个逻辑关注点相关的代码都放在一个函数里，需要修改一个功能时，就不需要在文件中跳来跳去。</li>
+</ul>
+<h3 id="1、优化逻辑复用-mixins"><a href="#1、优化逻辑复用-mixins" class="headerlink" title="1、优化逻辑复用 mixins"></a>1、优化逻辑复用 mixins</h3><p><strong>问题：</strong>当一个项目中混入大量mixins，会有两个明显的问题，命名冲突和数据来源不清晰。</p>
+<p>mixin可以定义自己的props,data,并且他们之间是无感的，所以很容易定义相同的变量，导致命名冲突，导致数据来源不清晰。</p>
+<ul>
+<li>Vue3.0书写示例：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//mousePositionMixin.js</span><br><span class="line">import &#123; ref, onMounted, onUnmounted &#125; from &apos;vue&apos;</span><br><span class="line">export default function useMousePosition() &#123;</span><br><span class="line">  const x = ref(0)</span><br><span class="line">  const y = ref(0)</span><br><span class="line">  const update = e =&gt; &#123;</span><br><span class="line">    x.value = e.pageX</span><br><span class="line">    y.value = e.pageY</span><br><span class="line">  &#125;</span><br><span class="line">  onMounted(() =&gt; &#123;</span><br><span class="line">    window.addEventListener(&apos;mousemove&apos;, update)</span><br><span class="line">  &#125;)</span><br><span class="line">  onUnmounted(() =&gt; &#123;</span><br><span class="line">    window.removeEventListener(&apos;mousemove&apos;, update)</span><br><span class="line">  &#125;)</span><br><span class="line">  return &#123; x, y &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>使用示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    Mouse position: x &#123;&#123; x &#125;&#125; / y &#123;&#123; y &#125;&#125;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">  import useMousePosition from &apos;./mouse&apos;</span><br><span class="line">  export default &#123;</span><br><span class="line">    setup() &#123;</span><br><span class="line">      const &#123; x, y &#125; = useMousePosition()</span><br><span class="line">      return &#123; x, y &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，整个数据来源清晰了，即时编辑很多的hook函数，也不会出现命名冲突。</p>
+<h2 id="不兼容"><a href="#不兼容" class="headerlink" title="不兼容"></a>不兼容</h2><hr>
+<p>Vue3.0是使用ES2015的语法开发的，有些API如Proxy是没有polyfill的，不兼容IE11</p>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考链接： </p>
+<ul>
+<li><a href="https://segmentfault.com/a/1190000019309820?utm_source=tag-newest" target="_blank" rel="noopener">https://segmentfault.com/a/1190000019309820?utm_source=tag-newest</a></li>
+<li><a href="https://kaiwu.lagou.com/course/courseInfo.htm?courseId=326#/detail/pc?id=4054" target="_blank" rel="noopener">https://kaiwu.lagou.com/course/courseInfo.htm?courseId=326#/detail/pc?id=4054</a></li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Vue/"># Vue</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/01/web-engineering3/">前端工程化工具 ---- module-alias</a>
+            
+            
+            <a class="next" rel="next" href="/2020/11/20/scss1/">vue项目中引入全局scss变量</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

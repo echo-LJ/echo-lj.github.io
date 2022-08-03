@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>Vue.js3.0源码部分流程--原理解析 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Vue.js3.0源码部分流程--原理解析</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: December 29, 2020&nbsp;&nbsp;10:21:06
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h4 id="挂载组件中有一个创建渲染上下文代理的流程，为什么要需要代理？"><a href="#挂载组件中有一个创建渲染上下文代理的流程，为什么要需要代理？" class="headerlink" title="挂载组件中有一个创建渲染上下文代理的流程，为什么要需要代理？"></a>挂载组件中有一个创建渲染上下文代理的流程，为什么要需要代理？</h4><p>首先是创建渲染上下文代理的流程，它主要对 instance.ctx 做了代理。<br>在 Vue.js 2.x 中，也有类似的数据代理逻辑，比如 props 求值后的数据，实际上存储在 this._props 上，而 data 中定义的数据存储在 this._data 上。</p>
+<p>在初始化组件的时候，data 中定义的 msg 在组件内部是存储在 this._data 上的，而模板渲染的时候访问 this.msg，实际上访问的是 this._data.msg，这是因为 Vue.js 2.x 在初始化 data 的时候，做了一层 proxy 代理。</p>
+<p>到了 Vue.js 3.0，为了方便维护，我们把组件中不同状态的数据存储到不同的属性中，比如存储到 setupState、ctx、data、props 中。我们在执行组件渲染函数的时候，为了方便用户使用，<code>会直接访问渲染上下文 instance.ctx 中的属性</code>，所以我们也要做一层 proxy，对渲染上下文 instance.ctx 属性的访问和修改，代理到对 setupState、ctx、data、props 中的数据的访问和修改。</p>
+<h4 id="分析-proxy-的几个方法：-get、set-和-has。"><a href="#分析-proxy-的几个方法：-get、set-和-has。" class="headerlink" title="分析 proxy 的几个方法： get、set 和 has。"></a>分析 proxy 的几个方法： get、set 和 has。</h4><h6 id="get方法"><a href="#get方法" class="headerlink" title="get方法"></a>get方法</h6><p><code>访问渲染上下文 instance.ctx 中的属性</code>，就会进入get属性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">const PublicInstanceProxyHandlers = &#123;</span><br><span class="line">  get (&#123; _: instance &#125;, key) &#123;</span><br><span class="line">    const &#123; ctx, setupState, data, props, accessCache, type, appContext &#125; = instance</span><br><span class="line">    if (key[0] !== &apos;$&apos;) &#123;</span><br><span class="line">      // setupState / data / props / ctx</span><br><span class="line">      // 渲染代理的属性访问缓存中</span><br><span class="line">      const n = accessCache[key]</span><br><span class="line">      if (n !== undefined) &#123;</span><br><span class="line">        // 从缓存中取</span><br><span class="line">        switch (n) &#123;</span><br><span class="line">          case 0: /* SETUP */</span><br><span class="line">            return setupState[key]</span><br><span class="line">          case 1 :/* DATA */</span><br><span class="line">            return data[key]</span><br><span class="line">          case 3 :/* CONTEXT */</span><br><span class="line">            return ctx[key]</span><br><span class="line">          case 2: /* PROPS */</span><br><span class="line">            return props[key]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      else if (setupState !== EMPTY_OBJ &amp;&amp; hasOwn(setupState, key)) &#123;</span><br><span class="line">        accessCache[key] = 0</span><br><span class="line">        // 从 setupState 中取数据</span><br><span class="line">        return setupState[key]</span><br><span class="line">      &#125;</span><br><span class="line">      else if (data !== EMPTY_OBJ &amp;&amp; hasOwn(data, key)) &#123;</span><br><span class="line">        accessCache[key] = 1</span><br><span class="line">        // 从 data 中取数据</span><br><span class="line">        return data[key]</span><br><span class="line">      &#125;</span><br><span class="line">      else if (</span><br><span class="line">        type.props &amp;&amp;</span><br><span class="line">        hasOwn(normalizePropsOptions(type.props)[0], key)) &#123;</span><br><span class="line">        accessCache[key] = 2</span><br><span class="line">        // 从 props 中取数据</span><br><span class="line">        return props[key]</span><br><span class="line">      &#125;</span><br><span class="line">      else if (ctx !== EMPTY_OBJ &amp;&amp; hasOwn(ctx, key)) &#123;</span><br><span class="line">        accessCache[key] = 3</span><br><span class="line">        // 从 ctx 中取数据</span><br><span class="line">        return ctx[key]</span><br><span class="line">      &#125;</span><br><span class="line">      else &#123;</span><br><span class="line">        // 都取不到</span><br><span class="line">        accessCache[key] = 4</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    const publicGetter = publicPropertiesMap[key]</span><br><span class="line">    let cssModule, globalProperties</span><br><span class="line">    // 公开的 $xxx 属性或方法</span><br><span class="line">    if (publicGetter) &#123;</span><br><span class="line">      return publicGetter(instance)</span><br><span class="line">    &#125;</span><br><span class="line">    else if (</span><br><span class="line">      // css 模块，通过 vue-loader 编译的时候注入</span><br><span class="line">      (cssModule = type.__cssModules) &amp;&amp;</span><br><span class="line">      (cssModule = cssModule[key])) &#123;</span><br><span class="line">      return cssModule</span><br><span class="line">    &#125;</span><br><span class="line">    else if (ctx !== EMPTY_OBJ &amp;&amp; hasOwn(ctx, key)) &#123;</span><br><span class="line">      // 用户自定义的属性，也用 `$` 开头</span><br><span class="line">      accessCache[key] = 3</span><br><span class="line">      return ctx[key]</span><br><span class="line">    &#125;</span><br><span class="line">    else if (</span><br><span class="line">      // 全局定义的属性</span><br><span class="line">      ((globalProperties = appContext.config.globalProperties),</span><br><span class="line">        hasOwn(globalProperties, key))) &#123;</span><br><span class="line">      return globalProperties[key]</span><br><span class="line">    &#125;</span><br><span class="line">    else if ((process.env.NODE_ENV !== &apos;production&apos;) &amp;&amp;</span><br><span class="line">      currentRenderingInstance &amp;&amp; key.indexOf(&apos;__v&apos;) !== 0) &#123;</span><br><span class="line">      if (data !== EMPTY_OBJ &amp;&amp; key[0] === &apos;$&apos; &amp;&amp; hasOwn(data, key)) &#123;</span><br><span class="line">        // 如果在 data 中定义的数据以 $ 开头，会报警告，因为 $ 是保留字符，不会做代理</span><br><span class="line">        warn(`Property $&#123;JSON.stringify(key)&#125; must be accessed via $data because it starts with a reserved ` +</span><br><span class="line">          `character and is not proxied on the render context.`)</span><br><span class="line">      &#125;</span><br><span class="line">      else &#123;</span><br><span class="line">        // 在模板中使用的变量如果没有定义，报警告</span><br><span class="line">        warn(`Property $&#123;JSON.stringify(key)&#125; was accessed during render ` +</span><br><span class="line">          `but is not defined on instance.`)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>1、函数首先判断 key 不以 $ 开头的情况，这部分数据可能是 setupState、data、props、ctx 中的一种，其中 data、props 我们已经很熟悉了；setupState 就是 setup 函数返回的数据。</p>
+<p>依次判断 <code>setupState、data、props、ctx</code> 中是否包含这个key, 如果包含就返回对应值.判断顺序决定了取对应值的优先级。 </p>
+<p>2、再回到 get 函数中，我们可以看到这里定义了 accessCache 作为渲染代理的属性访问缓存，它具体是干什么的呢？<br>组件在渲染时会经常访问数据进而触发 get 函数，这其中最昂贵的部分就是多次调用 hasOwn 去判断 key 在不在某个类型的数据中，但是在普通对象上执行简单的属性访问相对要快得多。所以在第一次获取 key 对应的数据后，我们利用 accessCache[key] 去缓存数据，下一次再次根据 key 查找数据，我们就可以直接通过 accessCache[key] 获取对应的值，就不需要依次调用 hasOwn 去判断了。</p>
+<p>3、key 以 $ 开头。</p>
+<ul>
+<li>首先判断是不是 Vue.js 内部公开的 $xxx 属性或方法（比如 $parent）</li>
+<li>然后判断是不是 vue-loader 编译注入的 css 模块内部的 key；</li>
+<li>接着判断是不是用户自定义以 $ 开头的 key；</li>
+<li>最后判断是不是全局属性。</li>
+<li>如果都不满足，就剩两种情况了，即在非生产环境下就会报两种类型的警告，第一种是在 data 中定义的数据以 $ 开头的警告，因为 $ 是保留字符，不会做代理；第二种是在模板中使用的变量没有定义的警告。</li>
+</ul>
+<h6 id="set方法"><a href="#set方法" class="headerlink" title="set方法"></a>set方法</h6><p>修改 instance.ctx 渲染上下文中的属性的时候，就会进入 set 函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">const PublicInstanceProxyHandlers = &#123;</span><br><span class="line">  set (&#123; _: instance &#125;, key, value) &#123;</span><br><span class="line">    const &#123; data, setupState, ctx &#125; = instance</span><br><span class="line">    if (setupState !== EMPTY_OBJ &amp;&amp; hasOwn(setupState, key)) &#123;</span><br><span class="line">      // 给 setupState 赋值</span><br><span class="line">      setupState[key] = value</span><br><span class="line">    &#125;</span><br><span class="line">    else if (data !== EMPTY_OBJ &amp;&amp; hasOwn(data, key)) &#123;</span><br><span class="line">      // 给 data 赋值</span><br><span class="line">      data[key] = value</span><br><span class="line">    &#125;</span><br><span class="line">    else if (key in instance.props) &#123;</span><br><span class="line">      // 不能直接给 props 赋值</span><br><span class="line">      (process.env.NODE_ENV !== &apos;production&apos;) &amp;&amp;</span><br><span class="line">      warn(`Attempting to mutate prop &quot;$&#123;key&#125;&quot;. Props are readonly.`, instance)</span><br><span class="line">      return false</span><br><span class="line">    &#125;</span><br><span class="line">    if (key[0] === &apos;$&apos; &amp;&amp; key.slice(1) in instance) &#123;</span><br><span class="line">      // 不能给 Vue 内部以 $ 开头的保留属性赋值</span><br><span class="line">      (process.env.NODE_ENV !== &apos;production&apos;) &amp;&amp;</span><br><span class="line">      warn(`Attempting to mutate public property &quot;$&#123;key&#125;&quot;. ` +</span><br><span class="line">        `Properties starting with $ are reserved and readonly.`, instance)</span><br><span class="line">      return false</span><br><span class="line">    &#125;</span><br><span class="line">    else &#123;</span><br><span class="line">      // 用户自定义数据赋值</span><br><span class="line">      ctx[key] = value</span><br><span class="line">    &#125;</span><br><span class="line">    return true</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>函数主要做的事情就是对渲染上下文 instance.ctx 中的属性赋值，它实际上是代理到对应的数据类型中去完成赋值操作的。这里仍然要注意顺序问题，和 get 一样，优先判断 setupState，然后是 data，接着是 props。</p>
+<p>如果是用户自定义的数据，比如在 created 生命周期内定义的数据，它仅用于组件上下文的共享,会将数据保留到 ctx 中。</p>
+<h6 id="has-代理过程"><a href="#has-代理过程" class="headerlink" title="has 代理过程"></a>has 代理过程</h6><p>判断属性是否存在于 instance.ctx 渲染上下文中时，就会进入 has 函数。<br><code>举个🌰：</code>当执行 created 钩子函数中的 ‘msg’ in this 时，就会触发 has 函数。<br>依次判断 key 是否存在于 accessCache、data、setupState、props 、用户自定义数据、公开属性以及全局属性中，然后返回结果。</p>
+<h4 id="源码中组件挂载时有一步判断处理-setup-函数的流程，都做了什么？"><a href="#源码中组件挂载时有一步判断处理-setup-函数的流程，都做了什么？" class="headerlink" title="源码中组件挂载时有一步判断处理 setup 函数的流程，都做了什么？"></a>源码中组件挂载时有一步判断处理 setup 函数的流程，都做了什么？</h4><h6 id="1、创建-setup-函数上下文"><a href="#1、创建-setup-函数上下文" class="headerlink" title="1、创建 setup 函数上下文"></a>1、创建 setup 函数上下文</h6><p>setup中参数&gt;1 ，则创建上下文。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 判断处理 setup 函数</span><br><span class="line">const &#123; setup &#125; = Component</span><br><span class="line">if (setup) &#123;</span><br><span class="line">  // 如果 setup 函数带参数，则创建一个 setupContext</span><br><span class="line">  const setupContext = (instance.setupContext =</span><br><span class="line">    setup.length &gt; 1 ? createSetupContext(instance) : null)</span><br><span class="line">  // 执行 setup 函数获取结果</span><br><span class="line">  const setupResult = callWithErrorHandling(setup, instance, 0 /* SETUP_FUNCTION */, [instance.props, setupContext])</span><br><span class="line">  // 处理 setup 执行结果</span><br><span class="line">  handleSetupResult(instance, setupResult)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>举个🌰：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;p&gt;&#123;&#123; msg &#125;&#125;&lt;/p&gt;</span><br><span class="line">  &lt;button @click=&quot;onClick&quot;&gt;Toggle&lt;/button&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">  export default &#123;</span><br><span class="line">    props: &#123;</span><br><span class="line">      msg: String</span><br><span class="line">    &#125;,</span><br><span class="line">    setup (props, &#123; emit &#125;) &#123;</span><br><span class="line">      function onClick () &#123;</span><br><span class="line">        emit(&apos;toggle&apos;)</span><br><span class="line">      &#125;</span><br><span class="line">      return &#123;</span><br><span class="line">        onClick</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>我们在父组件引用这个组件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;HelloWorld @toggle=&quot;toggle&quot; :msg=&quot;msg&quot;&gt;&lt;/HelloWorld&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">  import &#123; ref &#125; from &apos;vue&apos;</span><br><span class="line">  import HelloWorld from &quot;./components/HelloWorld&quot;;</span><br><span class="line">  export default &#123;</span><br><span class="line">    components: &#123; HelloWorld &#125;,</span><br><span class="line">    setup () &#123;</span><br><span class="line">      const msg = ref(&apos;Hello World&apos;)</span><br><span class="line">      function toggle () &#123;</span><br><span class="line">        msg.value = msg.value === &apos;Hello World&apos; ? &apos;Hello Vue&apos; : &apos;Hello World&apos;</span><br><span class="line">      &#125;</span><br><span class="line">      return &#123;</span><br><span class="line">        toggle,</span><br><span class="line">        msg</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>HelloWorld 子组件的 setup 函数接收两个参数，第一个参数 props 对应父组件传入的 props 数据，第二个参数 emit 是一个对象，实际上就是 setupContext。<br>下面来看一下<code>createSetupContext</code> 函数来创建 <code>setupContext</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function createSetupContext (instance) &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">    attrs: instance.attrs,</span><br><span class="line">    slots: instance.slots,</span><br><span class="line">    emit: instance.emit</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>setupContext 让我们在 setup 函数内部可以获取到组件的属性、插槽以及派发事件的方法 emit。</p>
+<h6 id="2、执行-setup-函数并获取结果"><a href="#2、执行-setup-函数并获取结果" class="headerlink" title="2、执行 setup 函数并获取结果"></a>2、执行 setup 函数并获取结果</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const setupResult = callWithErrorHandling(setup, instance, 0 /* SETUP_FUNCTION */, [instance.props, setupContext])</span><br></pre></td></tr></table></figure>
+<h6 id="3、handleSetupResult-函数来处理结果"><a href="#3、handleSetupResult-函数来处理结果" class="headerlink" title="3、handleSetupResult 函数来处理结果"></a>3、handleSetupResult 函数来处理结果</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">handleSetupResult(instance, setupResult)</span><br></pre></td></tr></table></figure>
+<p>函数处理逻辑：当 setupResult 是一个对象的时候，我们把它变成了响应式并赋值给 instance.setupState，这样在模板渲染的时候，依据前面的代理规则，instance.ctx 就可以从 instance.setupState 上获取到对应的数据，这就在 setup 函数与模板渲染间建立了联系。</p>
+<p><strong> setup 不仅仅支持返回一个对象，也可以返回一个函数作为组件的渲染函数</strong></p>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考链接： </p>
+<ul>
+<li><a href="https://kaiwu.lagou.com/course/courseInfo.htm?courseId=326#/detail/pc" target="_blank" rel="noopener">https://kaiwu.lagou.com/course/courseInfo.htm?courseId=326#/detail/pc</a></li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Vue/"># Vue</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/29/vue13/">Vue.js3.0响应式内部的实现原理-原理解析</a>
+            
+            
+            <a class="next" rel="next" href="/2020/12/17/web-engineering5/">前端工程化---琐碎小记</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

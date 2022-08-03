@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>web-test3 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">web-test3</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: January 25, 2021&nbsp;&nbsp;17:47:58
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>1.写 React / Vue 项目时为什么要在列表组件中写key，其作用是什么?<br>vue和react都是采用diff算法来对比新旧虚拟节点，从而更新节点。在vue的diff函数中（建议先了解一下diff算法过程）。<br>在交叉对比中，当新节点跟旧节点头尾交叉对比没有结果时，会根据新节点的key去对比旧节点数组中的key，从而找到相应旧节点（这里对应的是一个key =&gt; index 的map映射）。如果没找到就认为是一个新增节点。而如果没有key，那么就会采用遍历查找的方式去找到对应的旧节点。一种一个map映射，另一种是遍历查找。相比而言。map映射的速度更快。<br>2.什么是防抖和节流？有什么区别？如何实现<br>防抖:触发高频事件后n秒内函数只会执行一次，如果n秒内高频事件再次被触发，则重新计算时间<br>思路：每次触发事件时都取消之前的延时调用方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function debounce(fn) &#123;</span><br><span class="line"> let timeout = null; // 创建一个标记用来存放定时器的返回值</span><br><span class="line">      return function () &#123;</span><br><span class="line">        clearTimeout(timeout); // 每当用户输入的时候把前一个 setTimeout clear 掉</span><br><span class="line">        timeout = setTimeout(() =&gt; &#123; // 然后又创建一个新的 setTimeout, 这样就能保证输入字符后的 interval 间隔内如果还有字符输入的话，就不会执行 fn 函数</span><br><span class="line">          fn.apply(this, arguments);</span><br><span class="line">        &#125;, 500);</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    function sayHi() &#123;</span><br><span class="line">      console.log(&apos;防抖成功&apos;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    var inp = document.getElementById(&apos;inp&apos;);</span><br><span class="line">    inp.addEventListener(&apos;input&apos;, debounce(sayHi)); // 防抖</span><br></pre></td></tr></table></figure></p>
+<p>节流:高频事件触发，但在n秒内只会执行一次，所以节流会稀释函数的执行频率<br>思路：每次触发事件时都判断当前是否有等待执行的延时函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function throttle(fn) &#123;</span><br><span class="line">      let canRun = true; // 通过闭包保存一个标记</span><br><span class="line">      return function () &#123;</span><br><span class="line">        if (!canRun) return; // 在函数开头判断标记是否为true，不为true则return</span><br><span class="line">        canRun = false; // 立即设置为false</span><br><span class="line">        setTimeout(() =&gt; &#123; // 将外部传入的函数的执行放在setTimeout中</span><br><span class="line">          fn.apply(this, arguments);</span><br><span class="line">          // 最后在setTimeout执行完毕后再把标记设置为true(关键)表示可以执行下一次循环了。当定时器没有执行的时候标记永远是false，在开头被return掉</span><br><span class="line">          canRun = true;</span><br><span class="line">        &#125;, 500);</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    function sayHi(e) &#123;</span><br><span class="line">      console.log(e.target.innerWidth, e.target.innerHeight);</span><br><span class="line">    &#125;</span><br><span class="line">    window.addEventListener(&apos;resize&apos;, throttle(sayHi));</span><br></pre></td></tr></table></figure></p>
+<p>3.介绍下 Set、Map、WeakSet 和 WeakMap 的区别？<br>Set<br>1.成员不能重复<br>2.只有健值，没有健名，有点类似数组。<br>3.可以遍历，方法有add, delete,has<br>weakSet<br>成员都是对象<br>成员都是弱引用，随时可以消失。 可以用来保存DOM节点，不容易造成内存泄漏<br>不能遍历，方法有add, delete,has<br>Map<br>本质上是健值对的集合，类似集合<br>可以遍历，方法很多，可以干跟各种数据格式转换<br>weakMap<br>1.直接受对象作为健名（null除外），不接受其他类型的值作为健名<br>健名所指向的对象，不计入垃圾回收机制<br>不能遍历，方法同get,set,has,delete</p>
+<ol start="4">
+<li>介绍下深度优先遍历和广度优先遍历，如何实现？<br>深度优先遍历DFS：<br>假设初始状态是图中所有顶点均未被访问，则从某个顶点v出发，首先访问该顶点然后依次从它的各个未被访问的邻接点出发深度优先搜索遍历图，直至图中所有和v有路径相通的顶点都被访问到。若此时尚有其他顶点未被访问到，则另选一个未被访问的顶点作起始点，重复上述过程，直至图中所有顶点都被访问到为止。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">let deepTraversal1 = (node, nodeList = []) =&gt; &#123;</span><br><span class="line">  if (node !== null) &#123;</span><br><span class="line">    nodeList.push(node)</span><br><span class="line">    let children = node.children</span><br><span class="line">    for (let i = 0; i &lt; children.length; i++) &#123;</span><br><span class="line">      deepTraversal1(children[i], nodeList)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return nodeList</span><br><span class="line">&#125;</span><br><span class="line">let deepTraversal2 = (node) =&gt; &#123;</span><br><span class="line">    let nodes = []</span><br><span class="line">    if (node !== null) &#123;</span><br><span class="line">      nodes.push(node)</span><br><span class="line">      let children = node.children</span><br><span class="line">      for (let i = 0; i &lt; children.length; i++) &#123;</span><br><span class="line">        nodes = nodes.concat(deepTraversal2(children[i]))</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return nodes</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>广度优先遍历 BFS<br>从图中某顶点v出发，在访问了v之后依次访问v的各个未曾访问过的邻接点，然后分别从这些邻接点出发依次访问它们的邻接点，并使得“先被访问的顶点的邻接点先于后被访问的顶点的邻接点被访问，直至图中所有已被访问的顶点的邻接点都被访问到。 如果此时图中尚有顶点未被访问，则需要另选一个未曾被访问过的顶点作为新的起始点，重复上述过程，直至图中所有顶点都被访问到为止。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">let widthTraversal2 = (node) =&gt; &#123;</span><br><span class="line">  let nodes = []</span><br><span class="line">  let stack = []</span><br><span class="line">  if (node) &#123;</span><br><span class="line">    stack.push(node)</span><br><span class="line">    while (stack.length) &#123;</span><br><span class="line">      let item = stack.shift()</span><br><span class="line">      let children = item.children</span><br><span class="line">      nodes.push(item)</span><br><span class="line">        // 队列，先进先出</span><br><span class="line">        // nodes = [] stack = [parent]</span><br><span class="line">        // nodes = [parent] stack = [child1,child2,child3]</span><br><span class="line">        // nodes = [parent, child1] stack = [child2,child3,child1-1,child1-2]</span><br><span class="line">        // nodes = [parent,child1,child2]</span><br><span class="line">      for (let i = 0; i &lt; children.length; i++) &#123;</span><br><span class="line">        stack.push(children[i])</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return nodes</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>5.ES5/ES6 的继承除了写法以外还有什么区别？<br>class 声明会提升，但不会初始化赋值。Foo 进入暂时性死区，类似于 let、const 声明变量。<br>const bar = new Bar(); // it’s ok<br>function Bar() {<br>  this.bar = 42;<br>}</p>
+<p>const foo = new Foo(); // ReferenceError: Foo is not defined<br>class Foo {<br>  constructor() {<br>    this.foo = 42;<br>  }<br>}<br>class 声明内部会启用严格模式。<br>// 引用一个未声明的变量<br>function Bar() {<br>  baz = 42; // it’s ok<br>}<br>const bar = new Bar();</p>
+<p>class Foo {<br>  constructor() {<br>    fol = 42; // ReferenceError: fol is not defined<br>  }<br>}<br>const foo = new Foo();<br>class 的所有方法（包括静态方法和实例方法）都是不可枚举的。<br>// 引用一个未声明的变量<br>function Bar() {<br>  this.bar = 42;<br>}<br>Bar.answer = function() {<br>  return 42;<br>};<br>Bar.prototype.print = function() {<br>  console.log(this.bar);<br>};<br>const barKeys = Object.keys(Bar); // [‘answer’]<br>const barProtoKeys = Object.keys(Bar.prototype); // [‘print’]</p>
+<p>class Foo {<br>  constructor() {<br>    this.foo = 42;<br>  }<br>  static answer() {<br>    return 42;<br>  }<br>  print() {<br>    console.log(this.foo);<br>  }<br>}<br>const fooKeys = Object.keys(Foo); // []<br>const fooProtoKeys = Object.keys(Foo.prototype); // []<br>class 的所有方法（包括静态方法和实例方法）都没有原型对象 prototype，所以也没有[[construct]]，不能使用 new 来调用。<br>function Bar() {<br>  this.bar = 42;<br>}<br>Bar.prototype.print = function() {<br>  console.log(this.bar);<br>};</p>
+<p>const bar = new Bar();<br>const barPrint = new bar.print(); // it’s ok</p>
+<p>class Foo {<br>  constructor() {<br>    this.foo = 42;<br>  }<br>  print() {<br>    console.log(this.foo);<br>  }<br>}<br>const foo = new Foo();<br>const fooPrint = new foo.print(); // TypeError: foo.print is not a constructor<br>必须使用 new 调用 class。<br>function Bar() {<br>  this.bar = 42;<br>}<br>const bar = Bar(); // it’s ok</p>
+<p>class Foo {<br>  constructor() {<br>    this.foo = 42;<br>  }<br>}<br>const foo = Foo(); // TypeError: Class constructor Foo cannot be invoked without ‘new’<br>class 内部无法重写类名。<br>function Bar() {<br>  Bar = ‘Baz’; // it’s ok<br>  this.bar = 42;<br>}<br>const bar = new Bar();<br>// Bar: ‘Baz’<br>// bar: Bar {bar: 42}  </p>
+<p>class Foo {<br>  constructor() {<br>    this.foo = 42;<br>    Foo = ‘Fol’; // TypeError: Assignment to constant variable<br>  }<br>}<br>const foo = new Foo();<br>Foo = ‘Fol’; // it’s ok<br>6.编写一个程序将数组扁平化去并除其中重复部分数据，最终得到一个升序且不重复的数组<br>Array.from(new Set(arr.flat(Infinity))).sort((a,b)=&gt;{ return a-b})<br>7.JS 异步解决方案的发展历程以及优缺点</p>
+<ol>
+<li>回调函数（callback）<br>setTimeout(() =&gt; {<br> // callback 函数体<br>}, 1000)<br>缺点：回调地狱，不能用 try catch 捕获错误，不能 return</li>
+</ol>
+<p>回调地狱的根本问题在于：</p>
+<p>缺乏顺序性： 回调地狱导致的调试困难，和大脑的思维方式不符<br>嵌套函数存在耦合性，一旦有所改动，就会牵一发而动全身，即（控制反转）<br>嵌套函数过多的多话，很难处理错误<br>ajax(‘XXX1’, () =&gt; {<br>    // callback 函数体<br>    ajax(‘XXX2’, () =&gt; {<br>        // callback 函数体<br>        ajax(‘XXX3’, () =&gt; {<br>            // callback 函数体<br>        })<br>    })<br>})<br>优点：解决了同步的问题（只要有一个任务耗时很长，后面的任务都必须排队等着，会拖延整个程序的执行。）</p>
+<ol start="2">
+<li>Promise<br>Promise就是为了解决callback的问题而产生的。</li>
+</ol>
+<p>Promise 实现了链式调用，也就是说每次 then 后返回的都是一个全新 Promise，如果我们在 then 中 return ，return 的结果会被 Promise.resolve() 包装</p>
+<p>优点：解决了回调地狱的问题</p>
+<p>ajax(‘XXX1’)<br>  .then(res =&gt; {<br>      // 操作逻辑<br>      return ajax(‘XXX2’)<br>  }).then(res =&gt; {<br>      // 操作逻辑<br>      return ajax(‘XXX3’)<br>  }).then(res =&gt; {<br>      // 操作逻辑<br>  })<br>缺点：无法取消 Promise ，错误需要通过回调函数来捕获</p>
+<ol start="3">
+<li>Generator<br>特点：可以控制函数的执行，可以配合 co 函数库使用</li>
+</ol>
+<p>function *fetch() {<br>    yield ajax(‘XXX1’, () =&gt; {})<br>    yield ajax(‘XXX2’, () =&gt; {})<br>    yield ajax(‘XXX3’, () =&gt; {})<br>}<br>let it = fetch()<br>let result1 = it.next()<br>let result2 = it.next()<br>let result3 = it.next()</p>
+<ol start="4">
+<li>Async/await<br>async、await 是异步的终极解决方案</li>
+</ol>
+<p>优点是：代码清晰，不用像 Promise 写一大堆 then 链，处理了回调地狱的问题</p>
+<p>缺点：await 将异步代码改造成同步代码，如果多个异步操作没有依赖性而使用 await 会导致性能上的降低。</p>
+<p>async function test() {<br>  // 以下代码没有依赖性的话，完全可以使用 Promise.all 的方式<br>  // 如果有依赖性的话，其实就是解决回调地狱的例子了<br>  await fetch(‘XXX1’)<br>  await fetch(‘XXX2’)<br>  await fetch(‘XXX3’)<br>}<br>下面来看一个使用 await 的例子：</p>
+<p>let a = 0<br>let b = async () =&gt; {<br>  a = a + await 10<br>  console.log(‘2’, a) // -&gt; ‘2’ 10<br>}<br>b()<br>a++<br>console.log(‘1’, a) // -&gt; ‘1’ 1<br>对于以上代码你可能会有疑惑，让我来解释下原因</p>
+<p>首先函数 b 先执行，在执行到 await 10 之前变量 a 还是 0，因为 await 内部实现了 generator ，generator 会保留堆栈中东西，所以这时候 a = 0 被保存了下来<br>因为 await 是异步操作，后来的表达式不返回 Promise 的话，就会包装成 Promise.reslove(返回值)，然后会去执行函数外的同步代码<br>同步代码执行完毕后开始执行异步代码，将保存下来的值拿出来使用，这时候 a = 0 + 10<br>上述解释中提到了 await 内部实现了 generator，其实 await 就是 generator 加上 Promise的语法糖，且内部实现了自动执行 generator。如果你熟悉 co 的话，其实自己就可以实现这样的语法糖。<br>8.如何实现一个 new<br>function _new(fn, …arg) {<br>    const obj = Object.create(fn.prototype);<br>    const ret = fn.apply(obj, arg);<br>    return ret instanceof Object ? ret : obj;<br>}<br>9.介绍下重绘和回流（Repaint &amp; Reflow），以及如何进行优化</p>
+<ol>
+<li>浏览器渲染机制<br>浏览器采用流式布局模型（Flow Based Layout）<br>浏览器会把HTML解析成DOM，把CSS解析成CSSOM，DOM和CSSOM合并就产生了渲染树（Render Tree）。<br>有了RenderTree，我们就知道了所有节点的样式，然后计算他们在页面上的大小和位置，最后把节点绘制到页面上。<br>由于浏览器使用流式布局，对Render Tree的计算通常只需要遍历一次就可以完成，但table及其内部元素除外，他们可能需要多次计算，通常要花3倍于同等元素的时间，这也是为什么要避免使用table布局的原因之一。</li>
+<li><p>重绘<br>由于节点的几何属性发生改变或者由于样式发生改变而不会影响布局的，称为重绘，例如outline, visibility, color、background-color等，重绘的代价是高昂的，因为浏览器必须验证DOM树上其他节点元素的可见性。</p>
+</li>
+<li><p>回流<br>回流是布局或者几何属性需要改变就称为回流。回流是影响浏览器性能的关键因素，因为其变化涉及到部分页面（或是整个页面）的布局更新。一个元素的回流可能会导致了其所有子元素以及DOM中紧随其后的节点、祖先节点元素的随后的回流。</p>
+</li>
+</ol>
+<p><body></body></p>
+<p><div class="error"><br>    <h4>我的组件</h4><br>    <p><strong>错误：</strong>错误的描述…</p><br>    <h5>错误纠正</h5><br>    <ol><br>        <li>第一步</li><br>        <li>第二步</li><br>    </ol><br></div><br><br>在上面的HTML片段中，对该段落(</p><p>标签)回流将会引发强烈的回流，因为它是一个子节点。这也导致了祖先的回流（div.error和body – 视浏览器而定）。此外，</p><h5>和<ol>也会有简单的回流，因为其在DOM中在回流元素之后。大部分的回流将导致页面的重新渲染。<p></p>
+<p>回流必定会发生重绘，重绘不一定会引发回流。</p>
+<ol start="4">
+<li>浏览器优化<br>现代浏览器大多都是通过队列机制来批量更新布局，浏览器会把修改操作放在队列中，至少一个浏览器刷新（即16.6ms）才会清空队列，但当你获取布局信息的时候，队列中可能有会影响这些属性或方法返回值的操作，即使没有，浏览器也会强制清空队列，触发回流与重绘来确保返回正确的值。</li>
+</ol>
+<p>主要包括以下属性或方法：</p>
+<p>offsetTop、offsetLeft、offsetWidth、offsetHeight<br>scrollTop、scrollLeft、scrollWidth、scrollHeight<br>clientTop、clientLeft、clientWidth、clientHeight<br>width、height<br>getComputedStyle()<br>getBoundingClientRect()<br>所以，我们应该避免频繁的使用上述的属性，他们都会强制渲染刷新队列。</p>
+<ol start="5">
+<li>减少重绘与回流<br>CSS</li>
+</ol>
+<p>使用 transform 替代 top</p>
+<p>使用 visibility 替换 display: none ，因为前者只会引起重绘，后者会引发回流（改变了布局</p>
+<p>避免使用table布局，可能很小的一个小改动会造成整个 table 的重新布局。</p>
+<p>尽可能在DOM树的最末端改变class，回流是不可避免的，但可以减少其影响。尽可能在DOM树的最末端改变class，可以限制了回流的范围，使其影响尽可能少的节点。</p>
+<p>避免设置多层内联样式，CSS 选择符从右往左匹配查找，避免节点层级过多。</p>
+<p><div><br>  <a> <span></span> </a><br></div></p>
+<p><style><br>  span {<br>    color: red;<br>  }<br>  div &gt; a &gt; span {<br>    color: red;<br>  }<br></style><br>对于第一种设置样式的方式来说，浏览器只需要找到页面中所有的 span 标签然后设置颜色，但是对于第二种设置样式的方式来说，浏览器首先需要找到所有的 span 标签，然后找到 span 标签上的 a 标签，最后再去找到 div 标签，然后给符合这种条件的 span 标签设置颜色，这样的递归过程就很复杂。所以我们应该尽可能的避免写过于具体的 CSS 选择器，然后对于 HTML 来说也尽量少的添加无意义标签，保证层级扁平。</p>
+<p>将动画效果应用到position属性为absolute或fixed的元素上，避免影响其他元素的布局，这样只是一个重绘，而不是回流，同时，控制动画速度可以选择 requestAnimationFrame，详见探讨 requestAnimationFrame。</p>
+<p>避免使用CSS表达式，可能会引发回流。</p>
+<p>将频繁重绘或者回流的节点设置为图层，图层能够阻止该节点的渲染行为影响别的节点，例如will-change、video、iframe等标签，浏览器会自动将该节点变为图层。</p>
+<p>CSS3 硬件加速（GPU加速），使用css3硬件加速，可以让transform、opacity、filters这些动画不会引起回流重绘 。但是对于动画的其它属性，比如background-color这些，还是会引起回流重绘的，不过它还是可以提升这些动画的性能。</p>
+<p>JavaScript</p>
+<p>避免频繁操作样式，最好一次性重写style属性，或者将样式列表定义为class并一次性更改class属性。<br>避免频繁操作DOM，创建一个documentFragment，在它上面应用所有DOM操作，最后再把它添加到文档中。<br>避免频繁读取会引发回流/重绘的属性，如果确实需要多次使用，就用一个变量缓存起来。<br>对具有复杂动画的元素使用绝对定位，使它脱离文档流，否则会引起父元素及后续元素频繁回流。<br>10.介绍下观察者模式和订阅-发布模式的区别，各自适用于什么场景<br>观察者模式中主体和观察者是互相感知的，发布-订阅模式是借助第三方来实现调度的，发布者和订阅者之间互不感知<br>11.聊聊 Vue 的双向数据绑定，Model 如何改变 View，View 又是如何改变 Model 的<br>明明是单向绑定，只是 m -&gt; v，在 vue 2.x 中 通过 defineProperty 实现的数据劫持，getter 收集依赖，setter 调用更新回调，这个过程是 vue 黑盒提供的，也就是说数据驱动视图，开发人员只需关注数据的变更即可；再说 v -&gt; m，通过 v-model 的方式，指令添加是开发人员加的吧，如果一个组件有多个 v-model ，你要自己写 v-on 和 data 的修改吧¬</p>
+</ol></h5>
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2021/01/26/web-test4/">工程化</a>
+            
+            
+            <a class="next" rel="next" href="/2021/01/20/web-test2/">前端面试题 ---- [1]</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

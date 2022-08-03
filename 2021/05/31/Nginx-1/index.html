@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>前端需要掌握的Nginx知识点 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">前端需要掌握的Nginx知识点</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: May 31, 2021&nbsp;&nbsp;13:56:08
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h2 id="什么是Nginx"><a href="#什么是Nginx" class="headerlink" title="什么是Nginx?"></a>什么是Nginx?</h2><hr>
+<p>Nginx是一款免费开源的<code>高性能HTTP服务器</code>以及<code>反向代理服务器</code>（Reverse Proxy）,同时可以提供IMAP/POP3/SMATP代理服务等功能。能够快速的响应静态页面请求和支持第三方功能模块扩展。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-55b9a71caa94f146.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="下载 (2).png"></p>
+<h2 id="Nginx的优点"><a href="#Nginx的优点" class="headerlink" title="Nginx的优点"></a>Nginx的优点</h2><hr>
+<ul>
+<li>高并发、高性能（官方给出的并发数据5万，实际中可以达到2-4万）</li>
+<li>轻量级、内存消耗少</li>
+<li>稳定性高，宕机概率低</li>
+<li>支持热部署</li>
+<li>模块化设计，扩展性较好</li>
+<li>cpu亲和</li>
+</ul>
+<h2 id="Nginx常用的场景"><a href="#Nginx常用的场景" class="headerlink" title="Nginx常用的场景"></a>Nginx常用的场景</h2><hr>
+<ul>
+<li>静态资源服务器</li>
+<li>动态匹配</li>
+<li>反向代理</li>
+<li>Gzip压缩</li>
+<li>负载均衡</li>
+</ul>
+<h2 id="Nginx的安装配置"><a href="#Nginx的安装配置" class="headerlink" title="Nginx的安装配置"></a>Nginx的安装配置</h2><hr>
+<p>mac下镜像飞速安装Homebrew教程: <a href="https://zhuanlan.zhihu.com/p/90508170" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/90508170</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ brew install nginx</span><br></pre></td></tr></table></figure></p>
+<h3 id="Nginx常用的命令"><a href="#Nginx常用的命令" class="headerlink" title="Nginx常用的命令"></a>Nginx常用的命令</h3><hr>
+<ul>
+<li>启动: <code>nginx</code></li>
+<li>查看版本号: <code>nginx -v</code></li>
+<li>查看nginx 编译的参数: <code>nginx -V</code></li>
+<li>重新启动nginx: <code>nginx -s reload</code></li>
+<li>优雅重启，并重新载入配置文件nginx.conf: <code>/usr/local/nginx/sbin/nginx  -s  reload</code></li>
+<li>优雅停止nginx，有连接时会等连接请求完成再杀死worker进程 <code>/usr/local/nginx/sbin/nginx  -s  quit</code></li>
+<li>编辑配置文件:<code>vim /usr/local/etc/nginx/nginx.conf</code><br>具体常用的命令参考如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">nginx -s stop       快速关闭Nginx，可能不保存相关信息，并迅速终止web服务。</span><br><span class="line">nginx -s quit       平稳关闭Nginx，保存相关信息，有安排的结束web服务。</span><br><span class="line">nginx -s reload     因改变了Nginx相关配置，需要重新加载配置而重载。</span><br><span class="line">nginx -s reopen     重新打开日志文件。</span><br><span class="line">nginx -c filename   为 Nginx 指定一个配置文件，来代替缺省的。</span><br><span class="line">nginx -t            不运行，仅测试配置文件。nginx 将检查配置文件的语法的正确性，并尝试打开配置文件中所引用到的文件。</span><br><span class="line">nginx -v            显示 nginx 的版本。</span><br><span class="line">nginx -V            显示 nginx 的版本，编译器版本和配置参数。</span><br><span class="line">ps -ef | grep nginx 检查一下nginx服务是否在运行</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>成功看到欢迎页面～！（对应的html是/usr/local/var/www/index.html）<br><img src="https://upload-images.jianshu.io/upload_images/11846892-2f6135da18e116c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2021-05-31 下午3.14.28.png"></p>
+<h3 id="Nginx的默认配置"><a href="#Nginx的默认配置" class="headerlink" title="Nginx的默认配置"></a>Nginx的默认配置</h3><hr>
+<blockquote>
+<p>Nginx 安装目录下的nginx.conf就是Nginx全局的配置文件，我们主要修改这里的内容。nginx.conf.default作为配置文件的备份。</p>
+</blockquote>
+<p>nginx默认使用8080端口 如果发现端口被占用了，可以杀掉使用使用改端口的进程，也可以修改<code>/usr/local/etc/nginx/nginx.conf</code>下的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       8181;</span><br><span class="line">        server_name  localhost;  </span><br><span class="line"></span><br><span class="line">        #charset koi8-r;</span><br><span class="line">        .....</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>nginx.conf</code>中的配置信息如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#user  nobody;</span><br><span class="line">#设置工作进程的数量</span><br><span class="line">worker_processes  1;</span><br><span class="line"></span><br><span class="line">#错误日志存放目录</span><br><span class="line">#error_log  logs/error.log;</span><br><span class="line">#error_log  logs/error.log  notice;</span><br><span class="line">#error_log  logs/error.log  info;</span><br><span class="line"></span><br><span class="line">#进程pid存放位置</span><br><span class="line">#pid        logs/nginx.pid;</span><br><span class="line"></span><br><span class="line"># 处理连接</span><br><span class="line">events &#123;</span><br><span class="line">    # 设置连接数,单个后台进程的最大并发数</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    # 文件拓展名查找集合</span><br><span class="line">    include       mime.types;</span><br><span class="line">    # 当查找不到对应类型的时候默认值</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    # 日志格式，定义别名为 main</span><br><span class="line">    #log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</span><br><span class="line">    #                  &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</span><br><span class="line">    #                  &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;</span><br><span class="line">    </span><br><span class="line">    #nginx访问日志存放位置</span><br><span class="line">    #access_log  logs/access.log  main;</span><br><span class="line"></span><br><span class="line">    # 调用 sendfile 系统传输文件</span><br><span class="line">    sendfile        on;  #开启高效传输模式</span><br><span class="line">    #tcp_nopush     on; #减少网络报文段的数量</span><br><span class="line"></span><br><span class="line">    # 客户端与服务器连接超时时间，超时自动断开</span><br><span class="line">    #keepalive_timeout  0;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line"></span><br><span class="line">    # 开启gizip 压缩</span><br><span class="line">    #gzip  on;</span><br><span class="line"></span><br><span class="line">    # 虚拟主机</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       8181;</span><br><span class="line">        server_name  localhost;</span><br><span class="line"></span><br><span class="line">        #charset koi8-r;</span><br><span class="line"></span><br><span class="line">        #access_log  logs/host.access.log  main;</span><br><span class="line"></span><br><span class="line">        # 路由</span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line"></span><br><span class="line">            #第一种情况 拒绝访问ip地址段为 50-100 的ip访问</span><br><span class="line">            deny 192.168.10.50/100;</span><br><span class="line">            </span><br><span class="line">            # 第二种情况 只允许ip地址为 192.168.10.50 的ip访问</span><br><span class="line">            allow 192.168.10.50;</span><br><span class="line">            deny all;</span><br><span class="line">            </span><br><span class="line">            # 第三种情况 这样配置都不能访问，从上到下依次匹配</span><br><span class="line">            deny all;</span><br><span class="line">            allow 192.168.10.50;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        #error_page  404              /404.html;</span><br><span class="line"></span><br><span class="line">        # redirect server error pages to the static page /50x.html</span><br><span class="line">        #</span><br><span class="line">        error_page   500 502 503 504  /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">            root   html;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        # proxy the PHP scripts to Apache listening on 127.0.0.1:80</span><br><span class="line">        #</span><br><span class="line">        #location ~ \.php$ &#123;</span><br><span class="line">        #    proxy_pass   http://127.0.0.1;</span><br><span class="line">        #&#125;</span><br><span class="line"></span><br><span class="line">        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span><br><span class="line">        #</span><br><span class="line">        #location ~ \.php$ &#123;</span><br><span class="line">        #    root           html;</span><br><span class="line">        #    fastcgi_pass   127.0.0.1:9000;</span><br><span class="line">        #    fastcgi_index  index.php;</span><br><span class="line">        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;</span><br><span class="line">        #    include        fastcgi_params;</span><br><span class="line">        #&#125;</span><br><span class="line"></span><br><span class="line">        # deny access to .htaccess files, if Apache&apos;s document root</span><br><span class="line">        # concurs with nginx&apos;s one</span><br><span class="line">        #</span><br><span class="line">        #location ~ /\.ht &#123;</span><br><span class="line">        #    deny  all;</span><br><span class="line">        #&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    # another virtual host using mix of IP-, name-, and port-based configuration</span><br><span class="line">    #</span><br><span class="line">    #server &#123;</span><br><span class="line">    #    listen       8000;</span><br><span class="line">    #    listen       somename:8080;</span><br><span class="line">    #    server_name  somename  alias  another.alias;</span><br><span class="line"></span><br><span class="line">    #    location / &#123;</span><br><span class="line">    #        root   html;</span><br><span class="line">    #        index  index.html index.htm;</span><br><span class="line">    #    &#125;</span><br><span class="line">    #&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    # HTTPS server</span><br><span class="line">    #</span><br><span class="line">    #server &#123;</span><br><span class="line">    #    listen       443 ssl;</span><br><span class="line">    #    server_name  localhost;</span><br><span class="line"></span><br><span class="line">    #    ssl_certificate      cert.pem;</span><br><span class="line">    #    ssl_certificate_key  cert.key;</span><br><span class="line"></span><br><span class="line">    #    ssl_session_cache    shared:SSL:1m;</span><br><span class="line">    #    ssl_session_timeout  5m;</span><br><span class="line"></span><br><span class="line">    #    ssl_ciphers  HIGH:!aNULL:!MD5;</span><br><span class="line">    #    ssl_prefer_server_ciphers  on;</span><br><span class="line"></span><br><span class="line">    #    location / &#123;</span><br><span class="line">    #        root   html;</span><br><span class="line">    #        index  index.html index.htm;</span><br><span class="line">    #    &#125;</span><br><span class="line">    #&#125;</span><br><span class="line">    include servers/*;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="搭建静态站点"><a href="#搭建静态站点" class="headerlink" title="搭建静态站点"></a>搭建静态站点</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 虚拟主机server块</span><br><span class="line">server &#123;</span><br><span class="line">    # 端口</span><br><span class="line">    listen   8080;</span><br><span class="line">    # 匹配请求中的host值</span><br><span class="line">    server_name  localhost;</span><br><span class="line">    </span><br><span class="line">    # 监听请求路径</span><br><span class="line">    location / &#123;</span><br><span class="line">        # 查找目录</span><br><span class="line">        root /source;</span><br><span class="line">        # 默认查找</span><br><span class="line">        index index.html index.htm;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>字段说明： </p>
+<ul>
+<li>server 配置虚拟主机的相关参数，可以有多个</li>
+<li>server_name 通过请求中的host值 找到对应的虚拟主机的配置</li>
+<li>location 配置请求路由，处理相关页面情况</li>
+<li>root 查找资源的路径</li>
+</ul>
+<p>配置完成后执行 <code>nginx -t</code> 看是否有错误，如果看到的是下面这种就是成功了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf test is successful</span><br></pre></td></tr></table></figure></p>
+<p>然后执行<code>nginx -s reload</code> 更新Nginx配置文件,这时候打开浏览器 输入 localhost:8080 应该就能看到你的页面了。</p>
+<ul>
+<li>如果启动失败<figure class="highlight plain"><figcaption><span>[emerg] bind() to 0.0.0.0:8080 failed (48: Address already in use)</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">nginx: [emerg] bind() to 0.0.0.0:8080 failed (48: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:8080 failed (48: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:8080 failed (48: Address already in use)</span><br><span class="line">nginx: [emerg] bind() to 0.0.0.0:8080 f</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>排查原因：可能是nginx自己占用了80端口，又把自己block住，只要<code>killall -9 nginx</code> 即可</p>
+<p>参考链接: <a href="https://blog.csdn.net/msbls5/article/details/14165519" target="_blank" rel="noopener">https://blog.csdn.net/msbls5/article/details/14165519</a></p>
+<h3 id="动态匹配（请求过滤）"><a href="#动态匹配（请求过滤）" class="headerlink" title="动态匹配（请求过滤）"></a>动态匹配（请求过滤）</h3><blockquote>
+<p>通常在开发环境或者测试环境的时候呢我们修改了代码，因为浏览器缓存，可能不会生效，需要手动清除缓存，才能看到修改后的效果，这里我们做一个配置让浏览器不缓存相关的资源。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location ~* \.(js|css|png|jpg|gif)$ &#123;</span><br><span class="line">    add_header Cache-Control no-store;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p><code>~* .(js|css|png|jpg|gif)$</code> 是匹配以相关文件类型然后单独处理。 <code>add_header</code> 是给请求的响应加上一个头信息<code>Cache-Control no-store</code>，告知浏览器禁用缓存，每次都从服务器获取 效果如下：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-eac9fb9d093c1c11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2021-05-31 下午3.37.13.png"></p>
+<h4 id="匹配规则"><a href="#匹配规则" class="headerlink" title="匹配规则"></a>匹配规则</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">location = / &#123;</span><br><span class="line">    [ configuration A ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location / &#123;</span><br><span class="line">    [ configuration B ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location /documents/ &#123;</span><br><span class="line">    [ configuration C ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location ^~ /images/ &#123;</span><br><span class="line">    [ configuration D ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location ~* \.(gif|jpg|jpeg)$ &#123;</span><br><span class="line">    [ configuration E ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><code>location =|～|～*|^~| /uri/</code></strong></p>
+<ul>
+<li>= 表示精确匹配。只有请求的url路径与后面的字符串完全相等时，才会命中（优先级最高）。</li>
+<li>^~ 表示如果该符号后面的字符是最佳匹配，采用该规则，不再进行后续的查找。</li>
+<li>~ 表示该规则是使用正则定义的，区分大小写。</li>
+<li>~* 表示该规则是使用正则定义的，不区分大小写。</li>
+<li>/ 通用匹配，任何请求都会匹配到<h4 id="通过状态码来过滤请求"><a href="#通过状态码来过滤请求" class="headerlink" title="通过状态码来过滤请求"></a>通过状态码来过滤请求</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 通过状态码，返回指定的错误页面</span><br><span class="line">error_page 500 502 503 504 /50x.html;</span><br><span class="line">location = /50x.html &#123;</span><br><span class="line">    root /source/error_page;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="反向代理解决跨域"><a href="#反向代理解决跨域" class="headerlink" title="反向代理解决跨域"></a>反向代理解决跨域</h2><hr>
+<p>在前后端分离的开发中，跨域问题是一个非常常见的问题，现在解决跨域问题比较常用的两种方式为：</p>
+<ul>
+<li>跨域资源请求（CORS）</li>
+<li>Nginx反向代理<br><img src="https://upload-images.jianshu.io/upload_images/11846892-6da0da0820a53e49.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="612653-20190226142303336-49757621.png"></li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-a382f291e2bb04e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2021-05-31 下午4.29.29.png"></p>
+<p>先来看上面的图 ，当用户请求xx.720ui.com/server1的时候，Nginx会将请求转发给Server1这个服务器上的具体应用，从而达到跨域的目的</p>
+<p>同时nginx解决跨域时常用的参数配置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">location /api &#123;   </span><br><span class="line">    # 请求host传给后端</span><br><span class="line">    proxy_set_header Host $http_host;</span><br><span class="line">    # 请求ip 传给后端</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">    # 请求协议传给后端</span><br><span class="line">    proxy_set_header X-Scheme $scheme;</span><br><span class="line">    # 路径重写</span><br><span class="line">    rewrite  /api/(.*)  /$1  break;</span><br><span class="line">    # 代理服务器</span><br><span class="line">    proxy_pass http://localhost:9000;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>拦截路径/api, 可以通过正则匹配</li>
+<li>proxy_set_header 允许重新定义或添加字段传递给代理服务器的请求头</li>
+<li><code>$http_host</code>  $remote_addr、$scheme 为Nginx内置变量</li>
+<li>rewrite 根据rewrite后的请求URI，将路径重写，如：接口路径为 /user, 我们可以请求 /api/user。（为什么需要重写uri？因为在使用Nginx做反向代理的时候，需要匹配到跨域的接口再做转发，为了方便匹配，会人为的在原接口中添加一段路径（或标示， 如例子中的api），因此需要在匹配之后、转发之前把添加的那段去掉，因此需要rewrite）</li>
+<li>break 继续本次请求后面的处理 ,停止匹配下面的location。需要注意的是与之类似的last执行过程则是停止当前这个请求，并根据rewrite匹配的规则重新发起一个请求，从上到下依次匹配location后面的规则</li>
+<li>proxy_pass 代理服务器<blockquote>
+<p>原理：Nginx拦截到相关匹配规则, Nginx再将请求转发到<a href="http://localhost:9090，Nginx得到请求后再响应到前端，可以直接请求/api/user完成请求。" target="_blank" rel="noopener">http://localhost:9090，Nginx得到请求后再响应到前端，可以直接请求/api/user完成请求。</a><br>nginx跨域请求一个简单的dome:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">server</span><br><span class="line">&#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    server_name www.1212.com;</span><br><span class="line"></span><br><span class="line">    location ^~ /blog/ &#123;</span><br><span class="line">        proxy_pass http://blog.12121.com/;</span><br><span class="line">    &#125;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ul>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考链接：</p>
+<ol>
+<li><a href="https://juejin.cn/post/6844903817595584525" target="_blank" rel="noopener">https://juejin.cn/post/6844903817595584525</a></li>
+<li><a href="https://juejin.cn/post/6844904082067423246" target="_blank" rel="noopener">https://juejin.cn/post/6844904082067423246</a></li>
+<li><a href="https://juejin.cn/post/6844904020360986631" target="_blank" rel="noopener">https://juejin.cn/post/6844904020360986631</a></li>
+</ol>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Nginx/"># Nginx</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2021/06/02/ts-rpllup-1/">TypeScript+Rollup快速构建JS-SDK</a>
+            
+            
+            <a class="next" rel="next" href="/2021/05/27/roadMap2021/">2021 前端开发路线图</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

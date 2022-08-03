@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>leeCode-337： 打家劫舍 III（动态规划）-中等 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">leeCode-337： 打家劫舍 III（动态规划）-中等</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: June 20, 2022&nbsp;&nbsp;14:24:22
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+
+<h2 id="题目描述：-小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为-root-。-除了-root-之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。-如果-两个直接相连的房子在同一天晚上被打劫-，房屋将自动报警。-给定二叉树的-root-。返回-在不触动警报的情况下-，小偷能够盗取的最高金额"><a href="#题目描述：-小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为-root-。-除了-root-之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。-如果-两个直接相连的房子在同一天晚上被打劫-，房屋将自动报警。-给定二叉树的-root-。返回-在不触动警报的情况下-，小偷能够盗取的最高金额" class="headerlink" title="题目描述： 小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。 除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。 给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额"></a>题目描述： 小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。 除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。 给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额</h2><p><strong>示例1:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-8f3a99d99348ef97.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-20 下午2.25.17.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入: root = [3,2,3,null,3,null,1]</span><br><span class="line">输出: 7 </span><br><span class="line">解释: 小偷一晚能够盗取的最高金额 3 + 3 + 1 = 7</span><br></pre></td></tr></table></figure>
+<p><strong>示例2:</strong><br><img src="https://upload-images.jianshu.io/upload_images/11846892-a08993dea77c0308.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-20 下午2.25.42.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入: root = [3,4,5,1,3,null,1]</span><br><span class="line">输出: 9</span><br><span class="line">解释: 小偷一晚能够盗取的最高金额 4 + 5 = 9</span><br></pre></td></tr></table></figure>
+<h2 id="题解方法一："><a href="#题解方法一：" class="headerlink" title="题解方法一："></a>题解方法一：</h2><p><code>简化一下这个问题:</code>一棵二叉树，树上的每个点都有对应的权值，每个点有两种状态（选中和不选中），问在不能同时选中有父子关系的点的情况下，能选中的点的最大权值和是多少</p>
+<p>我们可以用 f(o) 表示选择 o 节点的情况下，o 节点的子树上被选择的节点的最大权值和；g(o) 表示不选择 o 节点的情况下，o 节点的子树上被选择的节点的最大权值和；l 和 r 代表 oo 的左右孩子。</p>
+<ul>
+<li>当 o 被选中时，o 的左右孩子都不能被选中，故 o 被选中情况下子树上被选中点的最大权值和为 l 和 r 不被选中的最大权值和相加，即 f(o) = g(l) + g(r)</li>
+<li>当 o 不被选中时，o 的左右孩子可以被选中，也可以不被选中。对于 o 的某个具体的孩子 x，它对 o 的贡献是 x 被选中和不被选中情况下权值和的较大值。故 g(o) = Math.max(f(l) , g(l))+Math.max(f(r) , g(r)) </li>
+</ul>
+<p>至此，我们可以用哈希表来存 f 和 g 的函数值，用深度优先搜索的办法后序遍历这棵二叉树，我们就可以得到每一个节点的 f 和 g。根节点的 f 和 g 的最大值就是我们要找的答案。</p>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">var rob = function(root) &#123;</span><br><span class="line">    const f = new Map();</span><br><span class="line">    const g = new Map();</span><br><span class="line"></span><br><span class="line">    const dfs = (node) =&gt; &#123;</span><br><span class="line">        if (node === null) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        dfs(node.left);</span><br><span class="line">        dfs(node.right);</span><br><span class="line">        f.set(node, node.val + (g.get(node.left) || 0) + (g.get(node.right) || 0));</span><br><span class="line">        g.set(node, Math.max(f.get(node.left) || 0, g.get(node.left) || 0) + Math.max(f.get(node.right) || 0, g.get(node.right) || 0));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    dfs(root);</span><br><span class="line">    return Math.max(f.get(root) || 0, g.get(root) || 0);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以做一个小小的优化，我们发现无论是 f(o) 还是 g(o)，他们最终的值只和 f(l)、g(l)、f(r)、g(r) 有关，所以对于每个节点，我们只关心它的孩子节点们的 f 和 g 是多少。我们可以设计一个结构，表示某个节点的 f 和 g 值，在每次递归返回的时候，都把这个点对应的 f 和 g 返回给上一级调用，这样可以省去哈希表的空间。</p>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">var rob = function(root) &#123;</span><br><span class="line">    const dfs = (node) =&gt; &#123;</span><br><span class="line">        if (node === null) &#123;</span><br><span class="line">            return [0, 0];</span><br><span class="line">        &#125;</span><br><span class="line">        const l = dfs(node.left);</span><br><span class="line">        const r = dfs(node.right);</span><br><span class="line">        const selected = node.val + l[1] + r[1];</span><br><span class="line">        const notSelected = Math.max(l[0], l[1]) + Math.max(r[0], r[1]);</span><br><span class="line">        return [selected, notSelected];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    const rootStatus = dfs(root);</span><br><span class="line">    return Math.max(rootStatus[0], rootStatus[1]);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考链接：<br><a href="https://github.com/sisterAn/JavaScript-Algorithms/issues/41" target="_blank" rel="noopener">https://github.com/sisterAn/JavaScript-Algorithms/issues/41</a><br><a href="https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by--22/" target="_blank" rel="noopener">https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by--22/</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/算法/"># 算法</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/06/21/algorithm-110/">leeCode-110：平衡二叉树（自顶向下的递归、自底向上的递归）-简单</a>
+            
+            
+            <a class="next" rel="next" href="/2022/06/17/algorithm-437/">leeCode-437： 路径总和III-中等</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

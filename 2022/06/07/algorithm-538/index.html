@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>leeCode-538： 把二叉搜索树转换为累加树： (反序中序遍历)-中等 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">leeCode-538： 把二叉搜索树转换为累加树： (反序中序遍历)-中等</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: June 7, 2022&nbsp;&nbsp;16:22:15
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h2 id="题目描述：-给出二叉-搜索-树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater-Sum-Tree），使每个节点-node-的新值等于原树中大于或等于-node-val-的值之和-。"><a href="#题目描述：-给出二叉-搜索-树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater-Sum-Tree），使每个节点-node-的新值等于原树中大于或等于-node-val-的值之和-。" class="headerlink" title="题目描述： 给出二叉 搜索 树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点 node 的新值等于原树中大于或等于 node.val 的值之和 。"></a>题目描述： 给出二叉 搜索 树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），使每个节点 node 的新值等于原树中大于或等于 node.val 的值之和 。</h2><p><strong><code>提醒一下: 二叉搜索树满足下列约束条件</code></strong></p>
+<ul>
+<li>节点的左子树仅包含键 小于 节点键的节点。</li>
+<li>节点的右子树仅包含键 大于 节点键的节点。</li>
+<li>左右子树也必须是二叉搜索树。</li>
+</ul>
+<p><strong>示例1:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-d7aa9f950e857af9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="demo1.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：[4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]</span><br><span class="line">输出：[30,36,21,36,35,26,15,null,null,null,33,null,null,null,8]</span><br></pre></td></tr></table></figure>
+<p><strong>示例2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [0,null,1]</span><br><span class="line">输出：[1,null,1]</span><br></pre></td></tr></table></figure>
+<p><strong>示例3:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1,0,2]</span><br><span class="line">输出：[3,3,2]</span><br></pre></td></tr></table></figure>
+<p><strong>示例4:</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [3,2,4,1]</span><br><span class="line">输出：[7,9,4,10]</span><br></pre></td></tr></table></figure></p>
+<p><strong>示例5:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-317cb88b31fa5df5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2022-04-24 下午4.29.39.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1,null,2]</span><br><span class="line">输出：[1,2]</span><br></pre></td></tr></table></figure>
+<p><strong><code>解题分析</code></strong>：二叉搜索树是一棵空树，或者是具有下列性质的二叉树：</p>
+<ul>
+<li><p>若它的左子树不空，则左子树上所有节点的值均小于它的根节点的值；</p>
+</li>
+<li><p>若它的右子树不空，则右子树上所有节点的值均大于它的根节点的值；</p>
+</li>
+<li><p>它的左、右子树也分别为二叉搜索树。</p>
+</li>
+<li><p>由这样的性质我们可以发现，二叉搜索树的中序遍历是一个单调递增的有序序列。如果我们反序地中序遍历该二叉搜索树，即可得到一个单调递减的有序序列。</p>
+</li>
+</ul>
+<h2 id="题解方法一：反序中序遍历"><a href="#题解方法一：反序中序遍历" class="headerlink" title="题解方法一：反序中序遍历"></a>题解方法一：反序中序遍历</h2><p><strong><code>解题思路:</code></strong> 我们只需要反序中序遍历该二叉搜索树，记录过程中的节点值之和，并不断更新当前遍历到的节点的节点值，即可得到题目要求的累加树。</p>
+<p>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var convertBST = function(root) &#123;</span><br><span class="line">    var sum = 0; // 执行代码第一步</span><br><span class="line">    var inorder = (root) =&gt; &#123;</span><br><span class="line">        if(!root) return </span><br><span class="line">        inorder(root.right)</span><br><span class="line">        sum += root.val</span><br><span class="line">        root.val = sum;</span><br><span class="line">        inorder(root.left)</span><br><span class="line">    &#125;</span><br><span class="line">    inorder(root) // 执行代码第一步</span><br><span class="line">    return root</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>我们以示例1为例，进行图解分析<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [3,2,4,1]</span><br><span class="line">输出：[7,9,4,10]</span><br></pre></td></tr></table></figure></p>
+<p>执行代码第一步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var convertBST = function(root) &#123;</span><br><span class="line">    var sum = 0; // 执行代码第一步</span><br><span class="line">    var inorder = (root) =&gt; &#123;</span><br><span class="line">        if(!root) return </span><br><span class="line">        inorder(root.right)</span><br><span class="line">        sum += root.val</span><br><span class="line">        root.val = sum;</span><br><span class="line">        inorder(root.left)</span><br><span class="line">    &#125;</span><br><span class="line">    inorder(root) // 执行代码第一步</span><br><span class="line">    return root</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-08c1f0f313574741.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="step1.png"><br>执行代码第二步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inorder(root.right)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-e6bb6dce99403d3b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-07 下午5.08.05.png"></p>
+<p>执行代码第三步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 第二步中的inorder(root.right)</span><br><span class="line">var inorder = (root) =&gt; &#123; root = 4</span><br><span class="line">    if(!root) return </span><br><span class="line">    inorder(root.right)</span><br><span class="line">    sum += root.val  // 执行代码第三步： sum = 4</span><br><span class="line">    root.val = sum;</span><br><span class="line">    inorder(root.left)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-d438442a578bd45c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-07 下午5.17.06.png"></p>
+<p>执行代码第四、五步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 第三步中的(root.left) root = 4 root.left = null</span><br><span class="line">var inorder = (root) =&gt; &#123; </span><br><span class="line">    if(!root) return  // 执行代码第五步 root === null， 跳出方法即跳出第二步中进入(root.right) 这个方法(root.right = 4)</span><br><span class="line">    inorder(root.right)</span><br><span class="line">    sum += root.val  </span><br><span class="line">    root.val = sum;</span><br><span class="line">    inorder(root.left) // 执行代码第四步root.left = null</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-12708c99dd1a2b94.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-07 下午5.26.52.png"></p>
+<p>执行代码第六步：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 进入第二步中的方法 root = 3 sum = 4</span><br><span class="line"></span><br><span class="line"> sum += root.val</span><br><span class="line"> root.val = sum;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-247d62b277c870b8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-07 下午5.27.39.png"></p>
+<p>执行代码第七步：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 进入第二步中的方法 root = 7 sum = 7</span><br><span class="line"></span><br><span class="line"> inorder(root.left)  // root.left = 2</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-8042920d416924f2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-07 下午5.29.02.png"></p>
+<p>执行代码第八步：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 第七步中的(root.left) root = 2 root.right = null  sum = 7</span><br><span class="line">var inorder = (root) =&gt; &#123; </span><br><span class="line">    if(!root) return  </span><br><span class="line">    inorder(root.right) // 执行代码第八步： root.right = null 跳出方法，sum不变</span><br><span class="line">    sum += root.val   // 执行代码第八步： sum = 9= 7+2</span><br><span class="line">    root.val = sum;  // 执行代码第八步： root = 9</span><br><span class="line">    inorder(root.left) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-8042920d416924f2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-07 下午5.29.02.png"></p>
+<p>执行代码第九步：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 第八步中的(root.left) root = 1 root.right = null  sum = 9</span><br><span class="line">var inorder = (root) =&gt; &#123; </span><br><span class="line">    if(!root) return  </span><br><span class="line">    inorder(root.right) // 执行代码第9步： root.right = null 跳出方法，sum不变</span><br><span class="line">    sum += root.val   // 执行代码第9步： sum = 10 = 9 +1</span><br><span class="line">    root.val = sum;  // 执行代码第9步： root = 10 </span><br><span class="line">    inorder(root.left) // 执行代码第9步 root.left = null 跳出方法</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-c70acfd89dc3950e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-07 下午5.33.50.png"></p>
+<p>执行完毕！</p>
+<h2 id="题解方法二：Morris遍历"><a href="#题解方法二：Morris遍历" class="headerlink" title="题解方法二：Morris遍历"></a>题解方法二：Morris遍历</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">var convertBST = function(root) &#123;</span><br><span class="line">    let sum = 0</span><br><span class="line">    let node = root</span><br><span class="line">    while(node) &#123;</span><br><span class="line">        if(node.right == null) &#123;</span><br><span class="line">            sum+= node.val;</span><br><span class="line">            node.val = sum</span><br><span class="line">            node = node.left</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            let succ = getSuccessor(node)</span><br><span class="line">            if(succ.left) &#123;</span><br><span class="line">                succ.left = null;</span><br><span class="line">                sum += node.val</span><br><span class="line">                node.val = sum</span><br><span class="line">                node =node.left</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                succ.left = node;</span><br><span class="line">                node = node.right</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return root</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var getSuccessor = (node) =&gt; &#123;</span><br><span class="line">    let succ = node.right</span><br><span class="line">    while(succ.left &amp;&amp; succ.left != node) &#123;</span><br><span class="line">        succ = succ.left</span><br><span class="line">    &#125;</span><br><span class="line">    return succ</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们以示例1为例，进行图解分析<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [3,2,4,1]</span><br><span class="line">输出：[7,9,4,10]</span><br></pre></td></tr></table></figure></p>
+<p>执行代码第1步：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">var convertBST = function(root) &#123; // 执行代码第1步: root = 3</span><br><span class="line">    let sum = 0</span><br><span class="line">    let node = root</span><br><span class="line">    while(node) &#123;</span><br><span class="line">        if(node.right == null) &#123;</span><br><span class="line">            sum+= node.val;</span><br><span class="line">            node.val = sum</span><br><span class="line">            node = node.left</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            let succ = getSuccessor(node) // 执行代码第1步: node = 3</span><br><span class="line">            if(succ.left) &#123;</span><br><span class="line">                succ.left = null;</span><br><span class="line">                sum += node.val</span><br><span class="line">                node.val = sum</span><br><span class="line">                node =node.left</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                succ.left = node;</span><br><span class="line">                node = node.right</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return root</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-c4cc7a2661e37e6b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-08 下午2.51.52.png"></p>
+<p>执行代码第2步：</p>
+<ul>
+<li>获取到当前节点的右子树的最左侧节点<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var getSuccessor = (node) =&gt; &#123; // 执行代码第2步: 3</span><br><span class="line">    let succ = node.right </span><br><span class="line">    while(succ.left &amp;&amp; succ.left != node) &#123;</span><br><span class="line">        succ = succ.left</span><br><span class="line">    &#125;</span><br><span class="line">    return succ // 执行代码第2步: succ = 4</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-9271a7e396aed83f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-08 下午2.52.12.png"></p>
+<p>执行代码第3步：</p>
+<ul>
+<li>回到第一步中的<code>let succ = getSuccessor(node)</code>的这行代码，在第2步中我们已经获取到succ = 4</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">var convertBST = function(root) &#123; // 执行代码第1步: root = 3</span><br><span class="line">    let sum = 0</span><br><span class="line">    let node = root</span><br><span class="line">    while(node) &#123;</span><br><span class="line">        if(node.right == null) &#123;</span><br><span class="line">            sum+= node.val;</span><br><span class="line">            node.val = sum</span><br><span class="line">            node = node.left</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            let succ = getSuccessor(node) // 执行代码第2步: node = 3 succ = 4</span><br><span class="line">            if(succ.left) &#123;</span><br><span class="line">                succ.left = null;</span><br><span class="line">                sum += node.val</span><br><span class="line">                node.val = sum</span><br><span class="line">                node =node.left</span><br><span class="line">            &#125;else &#123;  // 执行代码第3步: node = 3 succ = 4</span><br><span class="line">                succ.left = node;  // 执行代码第3步: succ.left = 3</span><br><span class="line">                node = node.right // 执行代码第3步: node = 4</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return root</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-eddc2aad4ad40ef8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-08 下午2.53.59.png"></p>
+<p>执行到目前为止，可以看到，我们已经把root变成只有左子树，那么接下来可以逐行进行累加即可!</p>
+<p>执行代码第4步：</p>
+<ul>
+<li>重新逐次进入while循环， 因为没有右子树，逐次遍历左节点，向下累加，即可得到新的累加树<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">var convertBST = function(root) &#123;</span><br><span class="line">    let sum = 0</span><br><span class="line">    let node = root</span><br><span class="line">    while(node) &#123; // 执行代码第4步: node = 4</span><br><span class="line">        if(node.right == null) &#123;</span><br><span class="line">            sum+= node.val; // 执行代码第4步: sum = 4</span><br><span class="line">            node.val = sum  </span><br><span class="line">            node = node.left //  执行代码第4步: node = 3</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            let succ = getSuccessor(node) </span><br><span class="line">            if(succ.left) &#123;</span><br><span class="line">                succ.left = null;</span><br><span class="line">                sum += node.val</span><br><span class="line">                node.val = sum</span><br><span class="line">                node =node.left</span><br><span class="line">            &#125;else &#123;  </span><br><span class="line">                succ.left = node;  </span><br><span class="line">                node = node.right </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return root</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-b4d6219f932844f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-08 下午2.59.36.png"><br><img src="https://upload-images.jianshu.io/upload_images/11846892-3a52d15361f47c28.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-08 下午2.59.58.png"></p>
+<p>执行代码第5步：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-cb21b90a583ef7ed.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-08 下午3.00.32.png"><br><img src="https://upload-images.jianshu.io/upload_images/11846892-00d9349c5d72db9a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-08 下午3.01.34.png"></p>
+<p>执行代码第6步：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-0b858b1842fb5a8a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-08 下午3.02.31.png"><br><img src="https://upload-images.jianshu.io/upload_images/11846892-77546d21818cef5a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-08 下午3.02.43.png"></p>
+<p>执行代码第7步：<br><img src="https://upload-images.jianshu.io/upload_images/11846892-7cc2e54e53489fe1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-08 下午3.03.53.png"><br><img src="https://upload-images.jianshu.io/upload_images/11846892-dae16723c3d569cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-08 下午3.04.29.png"></p>
+<p>此时node = null跳出while循环即可，返回root！</p>
+<h2 id="执行完毕！！"><a href="#执行完毕！！" class="headerlink" title="执行完毕！！"></a>执行完毕！！</h2><p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考链接：<br><a href="https://leetcode.cn/problems/convert-bst-to-greater-tree/solution/ba-er-cha-sou-suo-shu-zhuan-huan-wei-lei-jia-sh-14/" target="_blank" rel="noopener">https://leetcode.cn/problems/convert-bst-to-greater-tree/solution/ba-er-cha-sou-suo-shu-zhuan-huan-wei-lei-jia-sh-14/</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/算法/"># 算法</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/06/08/algorithm-104/">leeCode-104： 二叉树的最大深度：(深度优先搜索)-简单</a>
+            
+            
+            <a class="next" rel="next" href="/2022/06/06/algorithm-96/">leeCode-96： 不同的二叉搜索树：(动态规划、数学-卡塔兰数)-中等</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

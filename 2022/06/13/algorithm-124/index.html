@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>leeCode-124： 二叉树中的最大路径和：(递归)-困难 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">leeCode-124： 二叉树中的最大路径和：(递归)-困难</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: June 13, 2022&nbsp;&nbsp;13:57:09
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h2 id="题目描述：路径-被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中-至多出现一次-。该路径-至少包含一个-节点，且不一定经过根节点，路径和-是路径中各节点值的总和，给你一个二叉树的根节点-root-，返回其-最大路径和-。"><a href="#题目描述：路径-被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中-至多出现一次-。该路径-至少包含一个-节点，且不一定经过根节点，路径和-是路径中各节点值的总和，给你一个二叉树的根节点-root-，返回其-最大路径和-。" class="headerlink" title="题目描述：路径 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 至多出现一次 。该路径 至少包含一个 节点，且不一定经过根节点，路径和 是路径中各节点值的总和，给你一个二叉树的根节点 root ，返回其 最大路径和 。"></a>题目描述：路径 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 至多出现一次 。该路径 至少包含一个 节点，且不一定经过根节点，路径和 是路径中各节点值的总和，给你一个二叉树的根节点 root ，返回其 最大路径和 。</h2><p>⚠️⚠️：这个题属实有点难啊！幸亏找到了一个逻辑讲述比较清晰的题解。<br><strong>示例1:</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-2f75b887ea164dd7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-13 下午2.00.05.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [1,2,3]</span><br><span class="line">输出：6</span><br><span class="line">解释：最优路径是 2 -&gt; 1 -&gt; 3 ，路径和为 2 + 1 + 3 = 6</span><br></pre></td></tr></table></figure>
+<p><strong>示例2:</strong><br><img src="https://upload-images.jianshu.io/upload_images/11846892-04abb51ec6cb6f4f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-13 下午2.01.18.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：root = [-10,9,20,null,null,15,7]</span><br><span class="line">输出：42</span><br><span class="line">解释：最优路径是 15 -&gt; 20 -&gt; 7 ，路径和为 15 + 20 + 7 = 42</span><br></pre></td></tr></table></figure>
+<p><strong>示例3:</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root = []</span><br><span class="line">输出：0</span><br></pre></td></tr></table></figure></p>
+<h3 id="题解方法一：-递归"><a href="#题解方法一：-递归" class="headerlink" title="题解方法一： 递归"></a>题解方法一： 递归</h3><p><strong><code>解题思路：</code></strong></p>
+<ul>
+<li>路径每到一个节点，有 3 种选择：1. 停在当前节点。2. 走到左子节点。3. 走到右子节点。</li>
+<li>走到子节点，又面临这 3 种选择，递归适合处理这种规模不同的同一问题。</li>
+<li>注意，不能走进一个分支又掉头回来走另一个分支，路径会重叠，不符合题目要求。</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-0d4880bdb75e8dd1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-13 下午2.21.13.png"></p>
+<p><strong><code>定义递归函数</code></strong></p>
+<ul>
+<li>对于一个父节点，它关心自己走入一个子树，从中捞取的最大收益，不关心具体怎么走。</li>
+<li>定义dfs函数：返回当前子树能向父节点“提供”的最大路径和。即，一条从父节点延伸下来的路径，能在当前子树中捞取的最大收益。分三种情况：<br>1、路径停在当前子树的根节点，在当前子树的最大收益：root.val<br>2、走入左子树，在当前子树的最大收益：root.val + dfs(root.left)<br>3、走入右子树，在当前子树的最大收益：root.val + dfs(root.right)</li>
+<li>这对应了前面所说的三种选择，最大收益取三者最大：root.val+max(0, dfs(root.left), dfs(root.right))</li>
+<li><strong>再次提醒</strong>: 一条从父节点延伸下来的路径，不能走入左子树又掉头走右子树，不能两头收益。</li>
+<li>当遍历到null节点时，null 子树提供不了收益，返回 0。</li>
+<li><strong>如果某个子树 dfs 结果为负</strong>，走入它，收益不增反减，该子树就没用，需杜绝走入，像对待 null 一样让它返回 0（壮士断腕）。<br><img src="https://upload-images.jianshu.io/upload_images/11846892-a5a6af4b7c4c7c8c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-13 下午2.24.32.png"></li>
+</ul>
+<p><strong><code>子树中的内部路径要包含根节点</code></strong></p>
+<ul>
+<li>题意可知，最大路径和，是可能产生于其中一个子树中的，就好比下图左一。</li>
+<li>所以每递归一个子树，都求一下当前子树内部的最大路径和，见下图右一的绿字，从中比较出最大的。</li>
+<li><strong>注意</strong>: 一个子树内部的路径，要包含当前子树的根节点。如果不包含，那还算什么属于当前子树的路径，那就是当前子树的子树的内部路径了。</li>
+<li>所以，一个子树内部的最大路径和 = 左子树提供的最大路径和 + 根节点值 + 右子树提供的最大路径和。即dfs(root.left)+root.val+dfs(root.right)</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/11846892-6f1f6bd11427aa93.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="截屏2022-06-13 下午2.26.19.png"></p>
+<p>代码实现如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">const maxPathSum = (root) =&gt; &#123;</span><br><span class="line">    let maxSum = Number.MIN_SAFE_INTEGER; // 最大路径和</span><br><span class="line">    const def = (root) =&gt; &#123;</span><br><span class="line">        if(!root) return 0 // 遍历到null节点，收益0</span><br><span class="line">        const left = dfs(root.left);  // 左子树提供的最大路径和</span><br><span class="line">        const right = dfr(root.right); // 右子树提供的最大路径和</span><br><span class="line">        const innerMaxSum = left + root.val + right  // 当前子树内部的最大路径和</span><br><span class="line">        maxSum = Math.max(maxSum, innerMaxSum);  // 挑战最大纪录</span><br><span class="line">        const outputMaxSum = root.val + Math.max(0, left, right); // 当前子树对外提供的最大和</span><br><span class="line"></span><br><span class="line">        // 如果对外提供的路径和为负，直接返回0，否则正常返回</span><br><span class="line"></span><br><span class="line">        return outputMaxSum &lt; 0 ？ 0:outputMaxSum</span><br><span class="line">    &#125;</span><br><span class="line">    dfs(root)</span><br><span class="line">    return maxSum</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>总结：大功告成✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️✌️</p>
+<p>参考链接：<br><a href="https://leetcode.cn/problems/binary-tree-maximum-path-sum/solution/shou-hui-tu-jie-hen-you-ya-de-yi-dao-dfsti-by-hyj8/" target="_blank" rel="noopener">https://leetcode.cn/problems/binary-tree-maximum-path-sum/solution/shou-hui-tu-jie-hen-you-ya-de-yi-dao-dfsti-by-hyj8/</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/算法/"># 算法</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/06/14/algorithm-297/">leeCode-297： 二叉树的序列化与反序列化 (遍历、递归两种解法)-困难</a>
+            
+            
+            <a class="next" rel="next" href="/2022/06/10/algorithm-102/">leeCode-102： 二叉树的层次遍历：(广度优先搜索)-中等</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

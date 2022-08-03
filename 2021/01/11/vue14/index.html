@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>Vue.js3.0 &amp; Vue.js2.x 细节对比 | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Vue.js3.0 &amp; Vue.js2.x 细节对比</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: January 11, 2021&nbsp;&nbsp;15:26:45
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h2 id="一个dialog-组件使用的是-position-absolute-绝对定位的方式，如果它的父级-DOM-有-position-不为-static-的布局方式，那么-dialog-的定位就受到了影响，不能按预期渲染了，解决方案？"><a href="#一个dialog-组件使用的是-position-absolute-绝对定位的方式，如果它的父级-DOM-有-position-不为-static-的布局方式，那么-dialog-的定位就受到了影响，不能按预期渲染了，解决方案？" class="headerlink" title="一个dialog 组件使用的是 position:absolute 绝对定位的方式，如果它的父级 DOM 有 position 不为 static 的布局方式，那么 dialog 的定位就受到了影响，不能按预期渲染了，解决方案？"></a>一个dialog 组件使用的是 position:absolute 绝对定位的方式，如果它的父级 DOM 有 position 不为 static 的布局方式，那么 dialog 的定位就受到了影响，不能按预期渲染了，解决方案？</h2><p>解决方案是把 dialog 组件渲染的这部分 DOM 挂载到 body 下面。<br><strong>Vue.js2.x</strong><br>可以依赖开源插件 portal-vue 或者是 vue-create-api实现。</p>
+<p><strong>Vue.js 3.0</strong><br>把这一能力内置到内核中，提供了一个内置组件 Teleport。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;teleport to=&quot;body&quot;&gt;</span><br><span class="line">    &lt;Dialog ref=&quot;dialog&quot;&gt;&lt;/Dialog&gt;</span><br><span class="line">  &lt;/teleport&gt;</span><br></pre></td></tr></table></figure></p>
+<p>to 可以是一个 DOM 选择器字符串，也可以是一个 DOM 节点.</p>
+<h2 id="通过v-if、v-else频繁切换组件渲染，会触发组件挂载和卸载流程，挂载和卸载都是一个递归过程，会有一定的性能损耗，如何解决呢？"><a href="#通过v-if、v-else频繁切换组件渲染，会触发组件挂载和卸载流程，挂载和卸载都是一个递归过程，会有一定的性能损耗，如何解决呢？" class="headerlink" title="通过v-if、v-else频繁切换组件渲染，会触发组件挂载和卸载流程，挂载和卸载都是一个递归过程，会有一定的性能损耗，如何解决呢？"></a>通过v-if、v-else频繁切换组件渲染，会触发组件挂载和卸载流程，挂载和卸载都是一个递归过程，会有一定的性能损耗，如何解决呢？</h2><p>Vue.js 提供了内置组件 KeepAlive<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;keep-alive&gt;</span><br><span class="line">  &lt;comp-a v-if=&quot;flag&quot;&gt;&lt;/comp-a&gt;</span><br><span class="line">  &lt;comp-b v-else&gt;&lt;/comp-b&gt;</span><br><span class="line">  &lt;button @click=&quot;flag=!flag&quot;&gt;toggle&lt;/button&gt;</span><br><span class="line">&lt;/keep-alive&gt;</span><br></pre></td></tr></table></figure></p>
+<p>KeepAlive 是一个抽象组件，它并不会渲染成一个真实的 DOM，只会渲染内部包裹的子节点，并且让内部的子组件在切换的时候，不会走一整套递归卸载和挂载 DOM的流程，从而优化了性能。</p>
+<h2 id="Transition-组件"><a href="#Transition-组件" class="headerlink" title="Transition 组件"></a>Transition 组件</h2><p>过渡动画的触发条件:</p>
+<ul>
+<li>条件渲染 (使用 v-if)；</li>
+<li>条件展示 (使用 v-show)；</li>
+<li>动态组件；</li>
+<li>组件根节点。<br>在进入/离开过渡的时候会有 6 个 class 切换:</li>
+<li><p>v-enter-from：定义进入过渡的开始状态。在元素被插入之前生效，在元素被插入之后的下一帧移除。</p>
+</li>
+<li><p>v-enter-active：定义进入过渡生效时的状态。在整个进入过渡的阶段中应用，在元素被插入之前生效，在过渡动画完成之后移除。这个类可以被用来定义进入过渡的过程时间，延迟和曲线函数。</p>
+</li>
+<li><p>v-enter-to：定义进入过渡的结束状态。在元素被插入之后下一帧生效 (与此同时 v-enter-from 被移除)，在过渡动画完成之后移除。</p>
+</li>
+<li><p>v-leave-from：定义离开过渡的开始状态。在离开过渡被触发时立刻生效，下一帧被移除。</p>
+</li>
+<li><p>v-leave-active：定义离开过渡生效时的状态。在整个离开过渡的阶段中应用，在离开过渡被触发时立刻生效，在过渡动画完成之后移除。这个类可以被用来定义离开过渡的过程时间，延迟和曲线函数。</p>
+</li>
+<li><p>v-leave-to：定义离开过渡的结束状态。在离开过渡被触发之后下一帧生效 (与此同时 v-leave-from 被删除)，在过渡动画完成之后移除。</p>
+</li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2021/01/19/1/">VUE项目的优化</a>
+            
+            
+            <a class="next" rel="next" href="/2020/12/29/vue13/">Vue.js3.0响应式内部的实现原理-原理解析</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

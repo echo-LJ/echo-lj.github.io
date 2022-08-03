@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Echo">
+
+
+
+    <meta name="description" content="blog">
+
+
+
+<title>vite和webpack对比，为什么vite在dev模式下运行快很多？ | Echo的博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Echo&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Echo&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">vite和webpack对比，为什么vite在dev模式下运行快很多？</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: Echo
+                    
+
+                    
+                        <div class="post-time">
+                        Date: August 3, 2021&nbsp;&nbsp;13:43:47
+                        </div>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <meta name="referrer" content="no-referrer">
+
+<h2 id="一、-对比分析"><a href="#一、-对比分析" class="headerlink" title="一、 对比分析"></a>一、 对比分析</h2><ul>
+<li><p><code>Webpack</code>会先打包，然后启动开发服务器，请求服务器时直接给予打包结果。而<code>Vite</code>是直接启动开发服务器，请求哪个模块在对该模块进行实时编译。</p>
+</li>
+<li><p>由于现在浏览器本身就支持<code>ES Module</code>,会自动向依赖的Module发出请求，<code>Vite</code>就是充分利用这一点，将开发环境下的模块文件，就作为浏览器要执行的文件，而不是像<code>Webpack</code>那样进行打包合并。</p>
+</li>
+<li>由于<code>Vite</code>在启动的时候并不需要打包，也就意味着不需要分析模块的依赖、不需要编译，因此启动速度非常快。当浏览器请求某个模块时，再根据需要对模块内容进行编译。这种按需动态编译的方式、极大的缩减了编译时间，项目越复杂，模块越多，<code>Vite</code>的优势越明显。</li>
+<li>在<code>HMR(热更新)</code>方面，当改动了一个模块后，仅需让浏览器访问重新请求该模块即可，不像<code>Webpac</code>k那样需要把该模块的相关依赖模块全部编译一次，效率更高。<br>当需要打包到生产环境时，<code>Vite</code>采用的是传统的<code>Rollup</code>(也可以手动配置webpack来)进行打包，因此Vite的主要优势在开发阶段。另外，由于Vite利用的是ES Module,因此在代码中（除了vite.config.js里面，这里面是node的执行环境）不可以使用CommonJs.</li>
+</ul>
+<h2 id="二、-Webpack与Vite的思考"><a href="#二、-Webpack与Vite的思考" class="headerlink" title="二、 Webpack与Vite的思考"></a>二、 Webpack与Vite的思考</h2><p>基于ES Module的bundleless构建工具很火，比如Vite,号称“下一代的前端构建工具”。甚至一度有很多人认为，有了Vite之后就不要Webpack了。虽然Vite现在很火，也有很多人尝鲜，但现实恰好与大家的观念相反，目前几乎没有人把Vite用于实际项目的开发。</p>
+<h4 id="2-1-为什么Webpack需要打包。"><a href="#2-1-为什么Webpack需要打包。" class="headerlink" title="2.1 为什么Webpack需要打包。"></a>2.1 为什么Webpack需要打包。</h4><ul>
+<li>在过去HTTP/1.1受网络延迟和浏览器并行请求限制等原因，将资源合并压缩有助于减少HTTP请求从而提升网页性能。</li>
+<li>JavaScript本身并没有提供模块系统。虽然Node中提供了Common.js的模块化机制，但浏览器本身并不支持。而且虽然ES2015标准中提供了语法层面的模块化规范，但是现在仍然是implementation-defined(实现定义)的状态，无论是Node.js还是浏览器均不支持（使用bable还是会编译为Common.js）。直到2017年Chrome61发布，浏览器才具有了对JavaScript Module的原生支持。因此使用Webpack显然好处不止一点点，不仅可以对静态资源进行打包压缩，还实现了一套模块系统，另外还有各种loader,plugin,可以对打包的代码进行polyfill，还可以编译转换.less、.vue、.jsx等在浏览器无法识别的文件格式，更重要的是提供了HMR机制，极大了提升开发体验。</li>
+</ul>
+<h4 id="2-2-Webpack的痛点。"><a href="#2-2-Webpack的痛点。" class="headerlink" title="2.2 Webpack的痛点。"></a>2.2 Webpack的痛点。</h4><ul>
+<li>由于Webpack在打包时需要构建模块依赖图，因此需要递归遍历所有的模块，最明显的就是随着打包体积的增长，构建时间也线性增长，启动时间也相应增加。</li>
+<li>当我们修改了其中的文件后，webpack需要重新打包。</li>
+<li>由于webpack打包后会对源码进行编译和压缩，代码的可读性大大降低，因此在开发环境下，我们需要借助sourceMap进行调试，而开始SourceMap无疑会大大降低打包速度。</li>
+<li>随着项目体积的增加，打包出来的包也越来越大，过大的包会延长页面首屏加载时间，对此Webpack也有解决方案，即使用Tree Shaking、Lazy-loading、CommonsChunkPlugin等。</li>
+</ul>
+<h4 id="2-3-为什么现在不需要打包了"><a href="#2-3-为什么现在不需要打包了" class="headerlink" title="2.3 为什么现在不需要打包了"></a>2.3 为什么现在不需要打包了</h4><ul>
+<li>首先最主要的是现在HTTP/2.0实现了多路复用和首部压缩，解决了HTTP/1.x队头阻塞的问题，因此通过资源合并压缩减少HTTP的请求对页面性能不会有下显著提升了。</li>
+<li>其次、随着Chrome61发布，现在各大浏览器逐一支持ESM,直接浏览器便可以解析imports,无需自己实现模块化优化了。通过浏览器原生ESM最大的好处就是可以实现按需加载，不用打包了，构建时间复杂度为o(1),启动很快，只需要启动devServer即可。</li>
+<li>和snowPack类似，Vite也是利用浏览器原声的ESM去解析imports,然后像devServer请求模块，在服务器端使用esbuild对模块进行及时编译后返回，（主要是转换.less、.vue、.jsx、.tsx等浏览器无法处理的文件，而不是编译为ES5来兼容老旧浏览器）。</li>
+</ul>
+<h4 id="2-4-Vite为什么使用esbuild进行编译"><a href="#2-4-Vite为什么使用esbuild进行编译" class="headerlink" title="2.4 Vite为什么使用esbuild进行编译"></a>2.4 Vite为什么使用esbuild进行编译</h4><p>快！<br>经过测试对比，webpack的打包速度大约是54.5s,而esbuild大约是0.37s。这是因为esbuild是用goLang编写的，自然比用Javascript写的构建工具快很多。同时esbuild中的算法经过精心设计，大量使用了并行操作，可以充分利用CPU资源。另外，esbuild没有使用第三方依赖，和内存高效利用，也是打包快的原因。<br>esbuild无法取代webpack的两个原因：</p>
+<ul>
+<li>esbuild虽然有loader,但是没有插件机制。</li>
+<li>esbuild没有热更新。</li>
+</ul>
+<h4 id="2-5-Vite解决热更新问题，是否可以取代webpack了。"><a href="#2-5-Vite解决热更新问题，是否可以取代webpack了。" class="headerlink" title="2.5 Vite解决热更新问题，是否可以取代webpack了。"></a>2.5 Vite解决热更新问题，是否可以取代webpack了。</h4><p>现在把Vite用于实际项目的开发比较少。</p>
+<ul>
+<li>Vite在开发环境使用原声ESM,但在生产环境仍需要使用Rollup打包。因为嵌套import会导致大量请求。即使使用HTTP/2.0，在使用未打包的ESM仍然效率低下。所以为了在生产环境获得最佳的加载性能，最好将代码bundle一遍。</li>
+</ul>
+<p>所以现在看来，Vite更像是开发工具，而不是用于生产环境的构建工具，另外本地使用浏览器ESM解析模块，而生产环境使用Rollup打包，所以可能存在两个环境代码不一致的问题，线上出现bug,很难排查。<br>综上，Vite其实和vue-cli一样，可以说是Vue官方给个人开发者，或中小企业提供的脚手架工具，毕竟不用自己造轮子啦。正如Vue-cli是对webpack的封装一样，Vite是对esbuild的封装.因此”Vite能干掉webpack”这句话本身就是不对等的，充其量作为一下代脚手架，而且Vite只能在开发阶段使用ESM,生产环境还需要使用Rollup打包，基本上只有浏览器支持完全和基于QUIC协议的HTTP/3普及之后才可能大规模使用ESM,更何况，Webpack发展至今loader和plugin生态已经十分丰富，而bundleless构建工具的生态还在起步阶段。长远看来ESM极具发展潜力，不排除以后Bundleless构建工具可能会超过Webpack，但是Webpack在前端工程化中仍起着很重要的作用。</p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2021/11/22/JS5/">4 个你从未听说过的更强大 JavaScript 运算符</a>
+            
+            
+            <a class="next" rel="next" href="/2021/06/28/performanceOptimization-LightHouse/">Chrome 灯塔简介</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Echo | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
